@@ -11,6 +11,9 @@
  * The class is documented in the file itself. If you find any bugs help me out and report them. Reporting can be done by sending an email to php-css-to-inline-styles-bugs[at]verkoyen[dot]eu.
  * If you report a bug, make sure you give me enough information (include your code).
  *
+ * Changelog since 1.0.1
+ * - fixed some stuff on specifity
+ *
  * Changelog since 1.0.0
  * - rewrote the buildXPathQuery-method
  * - fixed some stuff on specifity
@@ -28,7 +31,7 @@
  * This software is provided by the author "as is" and any express or implied warranties, including, but not limited to, the implied warranties of merchantability and fitness for a particular purpose are disclaimed. In no event shall the author be liable for any direct, indirect, incidental, special, exemplary, or consequential damages (including, but not limited to, procurement of substitute goods or services; loss of use, data, or profits; or business interruption) however caused and on any theory of liability, whether in contract, strict liability, or tort (including negligence or otherwise) arising in any way out of the use of this software, even if advised of the possibility of such damage.
  *
  * @author		Tijs Verkoyen <php-css-to-inline-styles@verkoyen.eu>
- * @version		1.0.1
+ * @version		1.0.2
  *
  * @copyright	Copyright (c) 2010, Tijs Verkoyen. All rights reserved.
  * @license		BSD License
@@ -121,7 +124,7 @@ class CSSToInlineStyles
 								'\1[ contains( concat( " ", @\2, " " ), concat( " ", "\3", " " ) ) ]',
 								'\1[ contains( concat( " ", @class, " " ), concat( " ", "\2", " " ) ) ]',
 								'\1[ @id = "\2" ]',
-								'*[ @id = "\1" ]'
+								'//*[ @id = "\1" ]'
 							);
 
 		// return
