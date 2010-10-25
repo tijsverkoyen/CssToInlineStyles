@@ -11,6 +11,11 @@
  * The class is documented in the file itself. If you find any bugs help me out and report them. Reporting can be done by sending an email to php-css-to-inline-styles-bugs[at]verkoyen[dot]eu.
  * If you report a bug, make sure you give me enough information (include your code).
  *
+ * Changelog since 1.0.0
+ * - rewrote the buildXPathQuery-method
+ * - fixed some stuff on specifity
+ * - added a way to use inline style-blocks
+ *
  * License
  * Copyright (c) 2010, Tijs Verkoyen. All rights reserved.
  *
@@ -23,7 +28,7 @@
  * This software is provided by the author "as is" and any express or implied warranties, including, but not limited to, the implied warranties of merchantability and fitness for a particular purpose are disclaimed. In no event shall the author be liable for any direct, indirect, incidental, special, exemplary, or consequential damages (including, but not limited to, procurement of substitute goods or services; loss of use, data, or profits; or business interruption) however caused and on any theory of liability, whether in contract, strict liability, or tort (including negligence or otherwise) arising in any way out of the use of this software, even if advised of the possibility of such damage.
  *
  * @author		Tijs Verkoyen <php-css-to-inline-styles@verkoyen.eu>
- * @version		1.0.0
+ * @version		1.0.1
  *
  * @copyright	Copyright (c) 2010, Tijs Verkoyen. All rights reserved.
  * @license		BSD License
@@ -47,14 +52,6 @@ class CSSToInlineStyles
 
 
 	/**
-	 * The HTML to process
-	 *
-	 * @var	string
-	 */
-	private $html;
-
-
-	/**
 	 * Should the generated HTML be cleaned
 	 *
 	 * @var	bool
@@ -63,7 +60,22 @@ class CSSToInlineStyles
 
 
 	/**
-	 * Constructor
+	 * The HTML to process
+	 *
+	 * @var	string
+	 */
+	private $html;
+
+
+	/**
+	 * Use inline-styles block as CSS
+	 *
+	 * @var	bool
+	 */
+	private $useInlineStylesBlock = false;
+
+
+	/**
 	 * Creates an instance, you could set the HTML and CSS here, or load it later.
 	 *
 	 * @return	void
@@ -85,25 +97,31 @@ class CSSToInlineStyles
 	 */
 	private function buildXPathQuery($selector)
 	{
-		// @todo	implement http://plasmasturm.org/log/444/
-
 		// redefine
 		$selector = (string) $selector;
 
 		// the CSS selector
-		$cssSelector = array(	'/\s+>\s+/',					// E > F	matches any F element that is a child of an element E.
-								'/(\w+)\s+\+\s+(\w+)/',			// E > F	matches any F element that is a child of an element E.
-								'/\s+/',						// E F 		matches any F element that is a descendant of an E element.
-								'/(\w+)?\#([\w\-]+)/e',			// #		matches id attributes
-								'/(\w+|\*)?((\.[\w\-]+)+)/e'	// .		matches class attributes
+		$cssSelector = array(	'/(\w)\s+(\w)/',				// E F				Matches any F element that is a descendant of an E element
+								'/(\w)\s*>\s*(\w)/',			// E > F			Matches any F element that is a child of an element E
+								'/(\w):first-child/',			// E:first-child	Matches element E when E is the first child of its parent
+								'/(\w)\s*\+\s*(\w)/',			// E + F			Matches any F element immediately preceded by an element
+								'/(\w)\[([\w\-]+)]/',			// E[foo]			Matches any E element with the "foo" attribute set (whatever the value)
+								'/(\w)\[([\w\-]+)\=\"(.*)\"]/',	// E[foo="warning"]	Matches any E element whose "foo" attribute value is exactly equal to "warning"
+								'/(\w+|\*)?\.([\w\-]+)+/',		// div.warning		HTML only. The same as DIV[class~="warning"]
+								'/(\w+)+\#([\w\-]+)/',			// E#myid			Matches any E element with id-attribute equal to "myid"
+								'/\#([\w\-]+)/'					// #myid			Matches any element with id-attribute equal to "myid"
 							);
 
 		// the xPath-equivalent
-		$xPathQuery = array(	'/',
-								'\\1/following-sibling::*[1]/self::\\2',
-								'//',
-								"(strlen('\\1') ? '\\1' : '*').'[@id=\"\\2\"]'",
-								"(strlen('\\1') ? '\\1' : '*').'[contains(concat(\" \",@class,\" \"),concat(\" \",\"'.implode('\",\" \"))][contains(concat(\" \",@class,\" \"),concat(\" \",\"',explode('.',substr('\\2',1))).'\",\" \"))]'",
+		$xPathQuery = array(	'\1//\2',
+								'\1/\2',
+								'*[1]/self::\1',
+								'\1/following-sibling::*[1]/self::\2',
+								'\1 [ @\2 ]',
+								'\1[ contains( concat( " ", @\2, " " ), concat( " ", "\3", " " ) ) ]',
+								'\1[ contains( concat( " ", @class, " " ), concat( " ", "\2", " " ) ) ]',
+								'\1[ @id = "\2" ]',
+								'*[ @id = "\1" ]'
 							);
 
 		// return
@@ -132,13 +150,13 @@ class CSSToInlineStyles
 		foreach($chunks as $chunk)
 		{
 			// an ID is important, so give it a high specifity
-			if(strstr($chunk, '#') !== false) $specifity += 1000;
+			if(strstr($chunk, '#') !== false) $specifity += 100;
 
 			// classes are more important than a tag, but less important then an ID
-			elseif(strstr($chunk, '.')) $specifity += 100;
+			elseif(strstr($chunk, '.')) $specifity += 10;
 
 			// anything else isn't that important
-			else $specifity += 10;
+			else $specifity += 1;
 		}
 
 		// return
@@ -174,9 +192,25 @@ class CSSToInlineStyles
 	{
 		// validate
 		if($this->html == null) throw new CSSToInlineStylesException('No HTML provided.');
-		if($this->css == null) throw new CSSToInlineStylesException('No CSS provided.');
 
-		// load css
+		// should we use inline style-block
+		if($this->useInlineStylesBlock)
+		{
+			// init var
+			$matches = array();
+
+			// match the style blocks
+			preg_match_all('|<style(.*)>(.*)</style>|isU', $this->html, $matches);
+
+			// any style-blocks found?
+			if(!empty($matches[2]))
+			{
+				// add
+				foreach($matches[2] as $match) $this->css .= trim($match) ."\n";
+			}
+		}
+
+		// process css
 		$this->processCSS();
 
 		// create new DOMDocument
@@ -205,6 +239,9 @@ class CSSToInlineStyles
 
 				// search elements
 				$elements = $xPath->query($query);
+
+				// validate elements
+				if($elements === false) continue;
 
 				// loop found elements
 				foreach($elements as $element)
@@ -278,7 +315,7 @@ class CSSToInlineStyles
 	private function processCSS()
 	{
 		// init vars
-		$css = $this->css;
+		$css = (string) $this->css;
 
 		// remove newlines
 		$css = str_replace(array("\r", "\n"), '', $css);
@@ -293,7 +330,10 @@ class CSSToInlineStyles
 		$css = preg_replace('/\s\s+/', ' ', $css);
 
 		// rules are splitted by }
-		$rules = explode('}', $css);
+		$rules = (array) explode('}', $css);
+
+		// init var
+		$i = 1;
 
 		// loop rules
 		foreach($rules as $rule)
@@ -316,9 +356,6 @@ class CSSToInlineStyles
 			// loop selectors
 			foreach($selectors as $selector)
 			{
-				// validate selector
-				if(strstr($selector, ':') !== false) throw new CSSToInlineStylesException('Pseudo-selectors ('. $selector .') aren\'t allowed.');
-
 				// cleanup
 				$selector = trim($selector);
 
@@ -337,6 +374,9 @@ class CSSToInlineStyles
 				// add into global rules
 				$this->cssRules[] = $ruleSet;
 			}
+
+			// increment
+			$i++;
 		}
 
 		// sort based on specifity
@@ -345,10 +385,10 @@ class CSSToInlineStyles
 
 
 	/**
-	 * CSS-properties can be defined in a random order, the render engine will process them in a specified order
-	 * this method will sort the properties on specifity
+	 * Process the CSS-properties
 	 *
-	 * @param unknown_type $propertyString
+	 * @return	array
+	 * @param	string $propertyString
 	 */
 	private function processCSSProperties($propertyString)
 	{
@@ -399,8 +439,6 @@ class CSSToInlineStyles
 	 */
 	public function setCSS($css)
 	{
-		// @later	implement a way to set an URL
-		// @later	implement a way to set multiple CSS files
 		$this->css = (string) $css;
 	}
 
@@ -418,6 +456,18 @@ class CSSToInlineStyles
 
 
 	/**
+	 * Set use of inline styles block
+	 * If this is enabled the class will use the style-block in the HTML.
+	 *
+	 * @param	bool[optional] $on
+	 */
+	public function setUseInlineStylesBlock($on = true)
+	{
+		$this->useInlineStylesBlock = (bool) $on;
+	}
+
+
+	/**
 	 * Sort an array on the specifity element
 	 *
 	 * @return	int
@@ -427,7 +477,7 @@ class CSSToInlineStyles
 	private static function sortOnSpecifity($e1, $e2)
 	{
 		// validate
-		if(!isset($e1['specifity']) || isset($e2['specifity'])) return 0;
+		if(!isset($e1['specifity']) || !isset($e2['specifity'])) return 0;
 
 		// lower
 		if($e1['specifity'] < $e2['specifity']) return -1;
