@@ -11,6 +11,11 @@
  * The class is documented in the file itself. If you find any bugs help me out and report them. Reporting can be done by sending an email to php-css-to-inline-styles-bugs[at]verkoyen[dot]eu.
  * If you report a bug, make sure you give me enough information (include your code).
  *
+ * Changelog since 1.0.2
+ * - .class are matched from now on.
+ * - fixed issue with #id
+ * - new beta-feature: added a way to output valid XHTML (thx to Matt Hornsby)
+ *
  * Changelog since 1.0.1
  * - fixed some stuff on specifity
  *
@@ -31,7 +36,7 @@
  * This software is provided by the author "as is" and any express or implied warranties, including, but not limited to, the implied warranties of merchantability and fitness for a particular purpose are disclaimed. In no event shall the author be liable for any direct, indirect, incidental, special, exemplary, or consequential damages (including, but not limited to, procurement of substitute goods or services; loss of use, data, or profits; or business interruption) however caused and on any theory of liability, whether in contract, strict liability, or tort (including negligence or otherwise) arising in any way out of the use of this software, even if advised of the possibility of such damage.
  *
  * @author		Tijs Verkoyen <php-css-to-inline-styles@verkoyen.eu>
- * @version		1.0.2
+ * @version		1.0.3
  *
  * @copyright	Copyright (c) 2010, Tijs Verkoyen. All rights reserved.
  * @license		BSD License
@@ -110,21 +115,23 @@ class CSSToInlineStyles
 								'/(\w)\s*\+\s*(\w)/',			// E + F			Matches any F element immediately preceded by an element
 								'/(\w)\[([\w\-]+)]/',			// E[foo]			Matches any E element with the "foo" attribute set (whatever the value)
 								'/(\w)\[([\w\-]+)\=\"(.*)\"]/',	// E[foo="warning"]	Matches any E element whose "foo" attribute value is exactly equal to "warning"
-								'/(\w+|\*)?\.([\w\-]+)+/',		// div.warning		HTML only. The same as DIV[class~="warning"]
+								'/(\w+|\*)+\.([\w\-]+)+/',		// div.warning		HTML only. The same as DIV[class~="warning"]
+								'/\.([\w\-]+)/',				// .warning			HTML only. The same as *[class~="warning"]
 								'/(\w+)+\#([\w\-]+)/',			// E#myid			Matches any E element with id-attribute equal to "myid"
 								'/\#([\w\-]+)/'					// #myid			Matches any element with id-attribute equal to "myid"
 							);
 
 		// the xPath-equivalent
-		$xPathQuery = array(	'\1//\2',
-								'\1/\2',
-								'*[1]/self::\1',
-								'\1/following-sibling::*[1]/self::\2',
-								'\1 [ @\2 ]',
-								'\1[ contains( concat( " ", @\2, " " ), concat( " ", "\3", " " ) ) ]',
-								'\1[ contains( concat( " ", @class, " " ), concat( " ", "\2", " " ) ) ]',
-								'\1[ @id = "\2" ]',
-								'//*[ @id = "\1" ]'
+		$xPathQuery = array(	'\1//\2',																		// E F				Matches any F element that is a descendant of an E element
+								'\1/\2',																		// E > F			Matches any F element that is a child of an element E
+								'*[1]/self::\1',																// E:first-child	Matches element E when E is the first child of its parent
+								'\1/following-sibling::*[1]/self::\2',											// E + F			Matches any F element immediately preceded by an element
+								'\1 [ @\2 ]',																	// E[foo]			Matches any E element with the "foo" attribute set (whatever the value)
+								'\1[ contains( concat( " ", @\2, " " ), concat( " ", "\3", " " ) ) ]',			// E[foo="warning"]	Matches any E element whose "foo" attribute value is exactly equal to "warning"
+								'\1[ contains( concat( " ", @class, " " ), concat( " ", "\2", " " ) ) ]',		// div.warning		HTML only. The same as DIV[class~="warning"]
+								'*[ contains( concat( " ", @class, " " ), concat( " ", "\1", " " ) ) ]',		// .warning			HTML only. The same as *[class~="warning"]
+								'\1[ @id = "\2" ]',																// E#myid			Matches any E element with id-attribute equal to "myid"
+								'*[ @id = "\1" ]'																// #myid			Matches any element with id-attribute equal to "myid"
 							);
 
 		// return
@@ -190,9 +197,13 @@ class CSSToInlineStyles
 	 * Converts the loaded HTML into an HTML-string with inline styles based on the loaded CSS
 	 *
 	 * @return	string
+	 * @param	bool $outputXHTML	Should we output valid XHTML?
 	 */
-	public function convert()
+	public function convert($outputXHTML = false)
 	{
+		// redefine
+		$outputXHTML = (bool) $outputXHTML;
+
 		// validate
 		if($this->html == null) throw new CSSToInlineStylesException('No HTML provided.');
 
@@ -299,8 +310,25 @@ class CSSToInlineStyles
 			}
 		}
 
-		// get the HTML
-		$html = $document->saveHTML();
+		// should we output XHTML?
+		if($outputXHTML)
+		{
+			// set formating
+			$document->formatOutput = true;
+
+			// get the HTML as XML
+			$html = $document->saveXML(null, LIBXML_NOEMPTYTAG);
+
+			// remove the XML-header
+			$html = str_replace('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'."\n", '', $html);
+		}
+
+		// just regular HTML 4.01 as it should be used in newsletters
+		else
+		{
+			// get the HTML
+			$html = $document->saveHTML();
+		}
 
 		// cleanup the HTML if we need to
 		if($this->cleanup) $html = $this->cleanupHTML($html);
