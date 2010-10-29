@@ -15,6 +15,7 @@
  * - .class are matched from now on.
  * - fixed issue with #id
  * - new beta-feature: added a way to output valid XHTML (thx to Matt Hornsby)
+ * - added setEncoding() to indicate the encoding
  *
  * Changelog since 1.0.1
  * - fixed some stuff on specifity
@@ -36,7 +37,7 @@
  * This software is provided by the author "as is" and any express or implied warranties, including, but not limited to, the implied warranties of merchantability and fitness for a particular purpose are disclaimed. In no event shall the author be liable for any direct, indirect, incidental, special, exemplary, or consequential damages (including, but not limited to, procurement of substitute goods or services; loss of use, data, or profits; or business interruption) however caused and on any theory of liability, whether in contract, strict liability, or tort (including negligence or otherwise) arising in any way out of the use of this software, even if advised of the possibility of such damage.
  *
  * @author		Tijs Verkoyen <php-css-to-inline-styles@verkoyen.eu>
- * @version		1.0.3
+ * @version		1.0.2
  *
  * @copyright	Copyright (c) 2010, Tijs Verkoyen. All rights reserved.
  * @license		BSD License
@@ -65,6 +66,14 @@ class CSSToInlineStyles
 	 * @var	bool
 	 */
 	private $cleanup = false;
+
+
+	/**
+	 * The encoding to use.
+	 *
+	 * @var	string
+	 */
+	private $encoding = 'UTF-8';
 
 
 	/**
@@ -228,7 +237,7 @@ class CSSToInlineStyles
 		$this->processCSS();
 
 		// create new DOMDocument
-		$document = new DOMDocument();
+		$document = new DOMDocument('1.0', $this->getEncoding());
 
 		// set error level
 		libxml_use_internal_errors(true);
@@ -335,6 +344,17 @@ class CSSToInlineStyles
 
 		// return
 		return $html;
+	}
+
+
+	/**
+	 * Get the encoding to use
+	 *
+	 * @return	string
+	 */
+	private function getEncoding()
+	{
+		return $this->encoding;
 	}
 
 
@@ -471,6 +491,18 @@ class CSSToInlineStyles
 	public function setCSS($css)
 	{
 		$this->css = (string) $css;
+	}
+
+
+	/**
+	 * Set the encoding to use with the DOMDocument
+	 *
+	 * @return	void
+	 * @param	string $encoding
+	 */
+	public function setEnconding($encoding)
+	{
+		$this->encoding = (string) $encoding;
 	}
 
 
