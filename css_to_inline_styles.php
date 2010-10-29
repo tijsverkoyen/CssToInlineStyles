@@ -420,7 +420,7 @@ class CSSToInlineStyles
 				$ruleSet['properties'] = $this->processCSSProperties($cssProperties);
 
 				// calculate specifity
-				$ruleSet['specifity'] = $this->calculateCSSSpecifity($selector);
+				$ruleSet['specifity'] = $this->calculateCSSSpecifity($selector) + $i;
 
 				// add into global rules
 				$this->cssRules[] = $ruleSet;
