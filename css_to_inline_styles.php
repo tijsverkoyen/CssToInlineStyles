@@ -12,7 +12,8 @@
  * If you report a bug, make sure you give me enough information (include your code).
  *
  * Changelog since 1.0.3
- * - fixed some code-styling issues.
+ * - fixed some code-styling issues
+ * - added support for multiple values
  *
  * Changelog since 1.0.2
  * - .class are matched from now on.
@@ -311,7 +312,13 @@ class CSSToInlineStyles
 					$propertyChunks = array();
 
 					// build chunks
-					foreach($properties as $key => $value) $propertyChunks[] = $key .': '. $value .';';
+					foreach($properties as $key => $values)
+					{
+						foreach((array) $values as $value)
+						{
+							$propertyChunks[] = $key .': '. $value .';';
+						}
+					}
 
 					// build properties string
 					$propertiesString = implode(' ', $propertyChunks);
@@ -461,8 +468,12 @@ class CSSToInlineStyles
 			// validate
 			if(!isset($chunks[1])) continue;
 
+			// cleanup
+			$chunks[0] = trim($chunks[0]);
+			$chunks[1] = trim($chunks[1]);
+
 			// add to pairs array
-			$pairs[trim($chunks[0])] = trim($chunks[1]);
+			if(!isset($pairs[$chunks[0]]) || !in_array($chunks[1], $pairs[$chunks[0]])) $pairs[$chunks[0]][] = $chunks[1];
 		}
 
 		// sort the pairs
