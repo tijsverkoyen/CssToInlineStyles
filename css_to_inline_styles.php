@@ -148,7 +148,7 @@ class CSSToInlineStyles
 							);
 
 		// return
-		return (string) '//'. preg_replace($cssSelector, $xPathQuery, $selector);
+		return (string) '//' . preg_replace($cssSelector, $xPathQuery, $selector);
 	}
 
 
@@ -233,7 +233,7 @@ class CSSToInlineStyles
 			if(!empty($matches[2]))
 			{
 				// add
-				foreach($matches[2] as $match) $this->css .= trim($match) ."\n";
+				foreach($matches[2] as $match) $this->css .= trim($match) . "\n";
 			}
 		}
 
@@ -316,7 +316,7 @@ class CSSToInlineStyles
 					{
 						foreach((array) $values as $value)
 						{
-							$propertyChunks[] = $key .': '. $value .';';
+							$propertyChunks[] = $key . ': ' . $value . ';';
 						}
 					}
 
@@ -339,7 +339,7 @@ class CSSToInlineStyles
 			$html = $document->saveXML(null, LIBXML_NOEMPTYTAG);
 
 			// remove the XML-header
-			$html = str_replace('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'."\n", '', $html);
+			$html = str_replace('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' . "\n", '', $html);
 		}
 
 		// just regular HTML 4.01 as it should be used in newsletters
