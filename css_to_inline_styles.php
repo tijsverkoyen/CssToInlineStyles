@@ -11,6 +11,9 @@
  * The class is documented in the file itself. If you find any bugs help me out and report them. Reporting can be done by sending an email to php-css-to-inline-styles-bugs[at]verkoyen[dot]eu.
  * If you report a bug, make sure you give me enough information (include your code).
  *
+ * Changelog since 1.0.4
+ * - beter handling of XHTML output, thx to Michele Locati.
+ *
  * Changelog since 1.0.3
  * - fixed some code-styling issues
  * - added support for multiple values
@@ -148,7 +151,7 @@ class CSSToInlineStyles
 							);
 
 		// return
-		return (string) '//'. preg_replace($cssSelector, $xPathQuery, $selector);
+		return (string) '//' . preg_replace($cssSelector, $xPathQuery, $selector);
 	}
 
 
@@ -316,7 +319,7 @@ class CSSToInlineStyles
 					{
 						foreach((array) $values as $value)
 						{
-							$propertyChunks[] = $key .': '. $value .';';
+							$propertyChunks[] = $key . ': ' . $value . ';';
 						}
 					}
 
@@ -338,8 +341,18 @@ class CSSToInlineStyles
 			// get the HTML as XML
 			$html = $document->saveXML(null, LIBXML_NOEMPTYTAG);
 
-			// remove the XML-header
-			$html = str_replace('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'."\n", '', $html);
+			// get start of the XML-declaration
+			$startPosition = strpos($html, '<?xml');
+
+			// valid start position?
+			if($startPosition !== false)
+			{
+				// get end of the xml-declaration
+				$endPosition = strpos($html, '?>', $startPosition);
+
+				// remove the XML-header
+				$html = ltrim(substr($html, $endPosition + 1));
+			}
 		}
 
 		// just regular HTML 4.01 as it should be used in newsletters
