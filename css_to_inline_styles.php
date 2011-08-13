@@ -579,6 +579,34 @@ class CSSToInlineStyles
 		// fallback
 		return 0;
 	}
+    
+    /**
+     * Loads full HTML page
+     * extracts all <style> tags to CSS rules
+     * 
+     * @param   string $html
+     * @return CSSToInlineStyles
+     */
+    public function load($html)
+    {
+        $document = new DOMDocument();
+        $document->loadHTML($html);
+        
+        //extract styles
+        
+        $css = '';
+        
+        foreach($document->getElementsByTagName('style') as $style)
+        {
+            $css.=$style->textContent."\n";
+            $style->parentNode->removeChild($style);
+        }
+        
+        $this->css = $css;
+        $this->html = $document->saveHTML(); 
+        
+        return $this;
+    }
 }
 
 
@@ -590,5 +618,3 @@ class CSSToInlineStyles
 class CSSToInlineStylesException extends Exception
 {
 }
-
-?>
