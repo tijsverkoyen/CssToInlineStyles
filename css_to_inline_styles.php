@@ -11,6 +11,9 @@
  * The class is documented in the file itself. If you find any bugs help me out and report them. Reporting can be done by sending an email to php-css-to-inline-styles-bugs[at]verkoyen[dot]eu.
  * If you report a bug, make sure you give me enough information (include your code).
  *
+ * Changelog since 1.0.5
+ * - preserve original styles.
+ *
  * Changelog since 1.0.4
  * - beter handling of XHTML output, thx to Michele Locati.
  *
@@ -276,6 +279,20 @@ class CSSToInlineStyles
 				// loop found elements
 				foreach($elements as $element)
 				{
+					// no styles stored?
+					if($element->attributes->getNamedItem('data-css-to-inline-styles-original-styles') == null)
+					{
+						// init var
+						$originalStyle = '';
+						if($element->attributes->getNamedItem('style') !== null) $originalStyle = $element->attributes->getNamedItem('style')->value;
+
+						// store original styles
+						$element->setAttribute('data-css-to-inline-styles-original-styles', $originalStyle);
+
+						// clear the styles
+						$element->setAttribute('style', '');
+					}
+
 					// init var
 					$properties = array();
 
@@ -329,6 +346,97 @@ class CSSToInlineStyles
 					// set attribute
 					if($propertiesString != '') $element->setAttribute('style', $propertiesString);
 				}
+			}
+
+			// reapply original styles
+			$query = $this->buildXPathQuery('*[@data-css-to-inline-styles-original-styles]');
+
+			// validate query
+			if($query === false) continue;
+
+			// search elements
+			$elements = $xPath->query($query);
+
+			// loop found elements
+			foreach($elements as $element)
+			{
+				// get the original styles
+				$originalStyle = $element->attributes->getNamedItem('data-css-to-inline-styles-original-styles')->value;
+
+				if($originalStyle != '')
+				{
+					$originalProperties = array();
+					$originalStyles = (array) explode(';', $originalStyle);
+
+					foreach($originalStyles as $property)
+					{
+						// validate property
+						if($property == '') continue;
+
+						// split into chunks
+						$chunks = (array) explode(':', trim($property), 2);
+
+						// validate
+						if(!isset($chunks[1])) continue;
+
+						// loop chunks
+						$originalProperties[$chunks[0]] = trim($chunks[1]);
+					}
+
+					// get current styles
+					$stylesAttribute = $element->attributes->getNamedItem('style');
+					$properties = array();
+
+					// any styles defined before?
+					if($stylesAttribute !== null)
+					{
+						// get value for the styles attribute
+						$definedStyles = (string) $stylesAttribute->value;
+
+						// split into properties
+						$definedProperties = (array) explode(';', $definedStyles);
+
+						// loop properties
+						foreach($definedProperties as $property)
+						{
+							// validate property
+							if($property == '') continue;
+
+							// split into chunks
+							$chunks = (array) explode(':', trim($property), 2);
+
+							// validate
+							if(!isset($chunks[1])) continue;
+
+							// loop chunks
+							$properties[$chunks[0]] = trim($chunks[1]);
+						}
+					}
+
+					// add new properties into the list
+					foreach($originalProperties as $key => $value) $properties[$key] = $value;
+
+					// build string
+					$propertyChunks = array();
+
+					// build chunks
+					foreach($properties as $key => $values)
+					{
+						foreach((array) $values as $value)
+						{
+							$propertyChunks[] = $key . ': ' . $value . ';';
+						}
+					}
+
+					// build properties string
+					$propertiesString = implode(' ', $propertyChunks);
+
+					// set attribute
+					if($propertiesString != '') $element->setAttribute('style', $propertiesString);
+				}
+
+				// remove placeholder
+				$element->removeAttribute('data-css-to-inline-styles-original-styles');
 			}
 		}
 
