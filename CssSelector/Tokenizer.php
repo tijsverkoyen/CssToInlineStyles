@@ -150,7 +150,11 @@ class Tokenizer
      */
     private function unescapeStringLiteral($literal)
     {
-        return preg_replace_callback('#(\\\\(?:[A-Fa-f0-9]{1,6}(?:\r\n|\s)?|[^A-Fa-f0-9]))#', function ($matches) use ($literal)
+      $this->_nonClosureLiteral = $literal;      
+      return preg_replace_callback('#(\\\\(?:[A-Fa-f0-9]{1,6}(?:\r\n|\s)?|[^A-Fa-f0-9]))#', array($this, 'nonClosureUnescapeStringLiteralCallback'));
+    }
+
+    private function nonClosureUnescapeStringLiteralCallback($matches)
         {
             if ($matches[0][0] == '\\' && strlen($matches[0]) > 1) {
                 $matches[0] = substr($matches[0], 1);
@@ -158,9 +162,8 @@ class Tokenizer
                     return chr(trim($matches[0]));
                 }
             } else {
-                throw new ParseException(sprintf('Invalid escape sequence %s in string %s', $matches[0], $literal));
+          throw new ParseException(sprintf('Invalid escape sequence %s in string %s', $matches[0], $this->_nonClosureLiteral ));
             }
-        }, $literal);
     }
 
     /**

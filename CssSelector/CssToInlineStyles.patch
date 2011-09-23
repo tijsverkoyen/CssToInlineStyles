@@ -1,8 +1,8 @@
-Fri Sep 23 18:06:12 NZST 2011  james@gogo.co.nz
-  * Isolate from Symfony and remove namespaces
+Fri Sep 23 22:18:40 NZST 2011  james@gogo.co.nz
+  * 5.2
 diff -rN -u old-CssSelector/CssSelector.php new-CssSelector/CssSelector.php
---- old-CssSelector/CssSelector.php	2011-09-23 19:29:25.000000000 +1200
-+++ new-CssSelector/CssSelector.php	2011-09-23 19:29:25.000000000 +1200
+--- old-CssSelector/CssSelector.php	2011-09-23 22:19:07.000000000 +1200
++++ new-CssSelector/CssSelector.php	2011-09-23 22:19:07.000000000 +1200
 @@ -9,9 +9,23 @@
   * file that was distributed with this source code.
   */
@@ -111,8 +111,8 @@ diff -rN -u old-CssSelector/CssSelector.php new-CssSelector/CssSelector.php
      }
  }
 diff -rN -u old-CssSelector/Exception/ParseException.php new-CssSelector/Exception/ParseException.php
---- old-CssSelector/Exception/ParseException.php	2011-09-23 19:29:25.000000000 +1200
-+++ new-CssSelector/Exception/ParseException.php	2011-09-23 19:29:25.000000000 +1200
+--- old-CssSelector/Exception/ParseException.php	2011-09-23 22:19:07.000000000 +1200
++++ new-CssSelector/Exception/ParseException.php	2011-09-23 22:19:07.000000000 +1200
 @@ -9,8 +9,6 @@
   * file that was distributed with this source code.
   */
@@ -131,8 +131,8 @@ diff -rN -u old-CssSelector/Exception/ParseException.php new-CssSelector/Excepti
  {
  }
 diff -rN -u old-CssSelector/Node/AttribNode.php new-CssSelector/Node/AttribNode.php
---- old-CssSelector/Node/AttribNode.php	2011-09-23 19:29:25.000000000 +1200
-+++ new-CssSelector/Node/AttribNode.php	2011-09-23 19:29:25.000000000 +1200
+--- old-CssSelector/Node/AttribNode.php	2011-09-23 22:19:07.000000000 +1200
++++ new-CssSelector/Node/AttribNode.php	2011-09-23 22:19:07.000000000 +1200
 @@ -9,11 +9,6 @@
   * file that was distributed with this source code.
   */
@@ -146,8 +146,8 @@ diff -rN -u old-CssSelector/Node/AttribNode.php new-CssSelector/Node/AttribNode.
   * AttribNode represents a "selector[namespace|attrib operator value]" node.
   *
 diff -rN -u old-CssSelector/Node/ClassNode.php new-CssSelector/Node/ClassNode.php
---- old-CssSelector/Node/ClassNode.php	2011-09-23 19:29:25.000000000 +1200
-+++ new-CssSelector/Node/ClassNode.php	2011-09-23 19:29:25.000000000 +1200
+--- old-CssSelector/Node/ClassNode.php	2011-09-23 22:19:07.000000000 +1200
++++ new-CssSelector/Node/ClassNode.php	2011-09-23 22:19:07.000000000 +1200
 @@ -9,10 +9,6 @@
   * file that was distributed with this source code.
   */
@@ -160,8 +160,8 @@ diff -rN -u old-CssSelector/Node/ClassNode.php new-CssSelector/Node/ClassNode.ph
   * ClassNode represents a "selector.className" node.
   *
 diff -rN -u old-CssSelector/Node/CombinedSelectorNode.php new-CssSelector/Node/CombinedSelectorNode.php
---- old-CssSelector/Node/CombinedSelectorNode.php	2011-09-23 19:29:25.000000000 +1200
-+++ new-CssSelector/Node/CombinedSelectorNode.php	2011-09-23 19:29:25.000000000 +1200
+--- old-CssSelector/Node/CombinedSelectorNode.php	2011-09-23 22:19:07.000000000 +1200
++++ new-CssSelector/Node/CombinedSelectorNode.php	2011-09-23 22:19:07.000000000 +1200
 @@ -9,10 +9,6 @@
   * file that was distributed with this source code.
   */
@@ -174,8 +174,8 @@ diff -rN -u old-CssSelector/Node/CombinedSelectorNode.php new-CssSelector/Node/C
   * CombinedSelectorNode represents a combinator node.
   *
 diff -rN -u old-CssSelector/Node/ElementNode.php new-CssSelector/Node/ElementNode.php
---- old-CssSelector/Node/ElementNode.php	2011-09-23 19:29:25.000000000 +1200
-+++ new-CssSelector/Node/ElementNode.php	2011-09-23 19:29:25.000000000 +1200
+--- old-CssSelector/Node/ElementNode.php	2011-09-23 22:19:07.000000000 +1200
++++ new-CssSelector/Node/ElementNode.php	2011-09-23 22:19:07.000000000 +1200
 @@ -9,10 +9,6 @@
   * file that was distributed with this source code.
   */
@@ -188,8 +188,8 @@ diff -rN -u old-CssSelector/Node/ElementNode.php new-CssSelector/Node/ElementNod
   * ElementNode represents a "namespace|element" node.
   *
 diff -rN -u old-CssSelector/Node/FunctionNode.php new-CssSelector/Node/FunctionNode.php
---- old-CssSelector/Node/FunctionNode.php	2011-09-23 19:29:25.000000000 +1200
-+++ new-CssSelector/Node/FunctionNode.php	2011-09-23 19:29:25.000000000 +1200
+--- old-CssSelector/Node/FunctionNode.php	2011-09-23 22:19:07.000000000 +1200
++++ new-CssSelector/Node/FunctionNode.php	2011-09-23 22:19:07.000000000 +1200
 @@ -9,10 +9,6 @@
   * file that was distributed with this source code.
   */
@@ -202,8 +202,8 @@ diff -rN -u old-CssSelector/Node/FunctionNode.php new-CssSelector/Node/FunctionN
  /**
   * FunctionNode represents a "selector:name(expr)" node.
 diff -rN -u old-CssSelector/Node/HashNode.php new-CssSelector/Node/HashNode.php
---- old-CssSelector/Node/HashNode.php	2011-09-23 19:29:25.000000000 +1200
-+++ new-CssSelector/Node/HashNode.php	2011-09-23 19:29:25.000000000 +1200
+--- old-CssSelector/Node/HashNode.php	2011-09-23 22:19:07.000000000 +1200
++++ new-CssSelector/Node/HashNode.php	2011-09-23 22:19:07.000000000 +1200
 @@ -9,10 +9,6 @@
   * file that was distributed with this source code.
   */
@@ -216,8 +216,8 @@ diff -rN -u old-CssSelector/Node/HashNode.php new-CssSelector/Node/HashNode.php
   * HashNode represents a "selector#id" node.
   *
 diff -rN -u old-CssSelector/Node/NodeInterface.php new-CssSelector/Node/NodeInterface.php
---- old-CssSelector/Node/NodeInterface.php	2011-09-23 19:29:25.000000000 +1200
-+++ new-CssSelector/Node/NodeInterface.php	2011-09-23 19:29:25.000000000 +1200
+--- old-CssSelector/Node/NodeInterface.php	2011-09-23 22:19:07.000000000 +1200
++++ new-CssSelector/Node/NodeInterface.php	2011-09-23 22:19:07.000000000 +1200
 @@ -9,8 +9,6 @@
   * file that was distributed with this source code.
   */
@@ -228,8 +228,8 @@ diff -rN -u old-CssSelector/Node/NodeInterface.php new-CssSelector/Node/NodeInte
   * ClassNode represents a "selector.className" node.
   *
 diff -rN -u old-CssSelector/Node/OrNode.php new-CssSelector/Node/OrNode.php
---- old-CssSelector/Node/OrNode.php	2011-09-23 19:29:25.000000000 +1200
-+++ new-CssSelector/Node/OrNode.php	2011-09-23 19:29:25.000000000 +1200
+--- old-CssSelector/Node/OrNode.php	2011-09-23 22:19:07.000000000 +1200
++++ new-CssSelector/Node/OrNode.php	2011-09-23 22:19:07.000000000 +1200
 @@ -9,10 +9,6 @@
   * file that was distributed with this source code.
   */
@@ -242,8 +242,8 @@ diff -rN -u old-CssSelector/Node/OrNode.php new-CssSelector/Node/OrNode.php
   * OrNode represents a "Or" node.
   *
 diff -rN -u old-CssSelector/Node/PseudoNode.php new-CssSelector/Node/PseudoNode.php
---- old-CssSelector/Node/PseudoNode.php	2011-09-23 19:29:25.000000000 +1200
-+++ new-CssSelector/Node/PseudoNode.php	2011-09-23 19:29:25.000000000 +1200
+--- old-CssSelector/Node/PseudoNode.php	2011-09-23 22:19:07.000000000 +1200
++++ new-CssSelector/Node/PseudoNode.php	2011-09-23 22:19:07.000000000 +1200
 @@ -9,10 +9,6 @@
   * file that was distributed with this source code.
   */
@@ -256,8 +256,8 @@ diff -rN -u old-CssSelector/Node/PseudoNode.php new-CssSelector/Node/PseudoNode.
   * PseudoNode represents a "selector:ident" node.
   *
 diff -rN -u old-CssSelector/README new-CssSelector/README
---- old-CssSelector/README	2011-09-23 19:29:25.000000000 +1200
-+++ new-CssSelector/README	2011-09-23 19:29:25.000000000 +1200
+--- old-CssSelector/README	2011-09-23 22:19:07.000000000 +1200
++++ new-CssSelector/README	2011-09-23 22:19:07.000000000 +1200
 @@ -1,3 +1,5 @@
 +FROM: https://github.com/symfony/symfony/tree/master/src/Symfony/Component/CssSelector
 +
@@ -265,8 +265,8 @@ diff -rN -u old-CssSelector/README new-CssSelector/README
  which is copyright Infrae and distributed under the BSD license.
  
 diff -rN -u old-CssSelector/Tokenizer.php new-CssSelector/Tokenizer.php
---- old-CssSelector/Tokenizer.php	2011-09-23 19:29:25.000000000 +1200
-+++ new-CssSelector/Tokenizer.php	2011-09-23 19:29:25.000000000 +1200
+--- old-CssSelector/Tokenizer.php	2011-09-23 22:19:07.000000000 +1200
++++ new-CssSelector/Tokenizer.php	2011-09-23 22:19:07.000000000 +1200
 @@ -9,10 +9,6 @@
   * file that was distributed with this source code.
   */
@@ -278,9 +278,33 @@ diff -rN -u old-CssSelector/Tokenizer.php new-CssSelector/Tokenizer.php
  /**
   * Tokenizer lexes a CSS Selector to tokens.
   *
+@@ -154,7 +150,11 @@
+      */
+     private function unescapeStringLiteral($literal)
+     {
+-        return preg_replace_callback('#(\\\\(?:[A-Fa-f0-9]{1,6}(?:\r\n|\s)?|[^A-Fa-f0-9]))#', function ($matches) use ($literal)
++      $this->_nonClosureLiteral = $literal;      
++      return preg_replace_callback('#(\\\\(?:[A-Fa-f0-9]{1,6}(?:\r\n|\s)?|[^A-Fa-f0-9]))#', array($this, 'nonClosureUnescapeStringLiteralCallback'));
++    }
++
++    private function nonClosureUnescapeStringLiteralCallback($matches)
+         {
+             if ($matches[0][0] == '\\' && strlen($matches[0]) > 1) {
+                 $matches[0] = substr($matches[0], 1);
+@@ -162,9 +162,8 @@
+                     return chr(trim($matches[0]));
+                 }
+             } else {
+-                throw new ParseException(sprintf('Invalid escape sequence %s in string %s', $matches[0], $literal));
++          throw new ParseException(sprintf('Invalid escape sequence %s in string %s', $matches[0], $this->_nonClosureLiteral ));
+             }
+-        }, $literal);
+     }
+ 
+     /**
 diff -rN -u old-CssSelector/Token.php new-CssSelector/Token.php
---- old-CssSelector/Token.php	2011-09-23 19:29:25.000000000 +1200
-+++ new-CssSelector/Token.php	2011-09-23 19:29:25.000000000 +1200
+--- old-CssSelector/Token.php	2011-09-23 22:19:07.000000000 +1200
++++ new-CssSelector/Token.php	2011-09-23 22:19:07.000000000 +1200
 @@ -9,8 +9,6 @@
   * file that was distributed with this source code.
   */
@@ -291,8 +315,8 @@ diff -rN -u old-CssSelector/Token.php new-CssSelector/Token.php
   * Token represents a CSS Selector token.
   *
 diff -rN -u old-CssSelector/TokenStream.php new-CssSelector/TokenStream.php
---- old-CssSelector/TokenStream.php	2011-09-23 19:29:25.000000000 +1200
-+++ new-CssSelector/TokenStream.php	2011-09-23 19:29:25.000000000 +1200
+--- old-CssSelector/TokenStream.php	2011-09-23 22:19:07.000000000 +1200
++++ new-CssSelector/TokenStream.php	2011-09-23 22:19:07.000000000 +1200
 @@ -9,8 +9,6 @@
   * file that was distributed with this source code.
   */
@@ -303,8 +327,8 @@ diff -rN -u old-CssSelector/TokenStream.php new-CssSelector/TokenStream.php
   * TokenStream represents a stream of CSS Selector tokens.
   *
 diff -rN -u old-CssSelector/XPathExprOr.php new-CssSelector/XPathExprOr.php
---- old-CssSelector/XPathExprOr.php	2011-09-23 19:29:25.000000000 +1200
-+++ new-CssSelector/XPathExprOr.php	2011-09-23 19:29:25.000000000 +1200
+--- old-CssSelector/XPathExprOr.php	2011-09-23 22:19:07.000000000 +1200
++++ new-CssSelector/XPathExprOr.php	2011-09-23 22:19:07.000000000 +1200
 @@ -9,7 +9,6 @@
   * file that was distributed with this source code.
   */
@@ -314,8 +338,8 @@ diff -rN -u old-CssSelector/XPathExprOr.php new-CssSelector/XPathExprOr.php
  /**
   * XPathExprOr represents XPath |'d expressions.
 diff -rN -u old-CssSelector/XPathExpr.php new-CssSelector/XPathExpr.php
---- old-CssSelector/XPathExpr.php	2011-09-23 19:29:25.000000000 +1200
-+++ new-CssSelector/XPathExpr.php	2011-09-23 19:29:25.000000000 +1200
+--- old-CssSelector/XPathExpr.php	2011-09-23 22:19:07.000000000 +1200
++++ new-CssSelector/XPathExpr.php	2011-09-23 22:19:07.000000000 +1200
 @@ -9,8 +9,6 @@
   * file that was distributed with this source code.
   */
