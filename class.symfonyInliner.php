@@ -127,7 +127,7 @@
      
     protected function resolve_url($Url, $RelativeToFile)
     {      
-      if(preg_match('/^https?:\/\//i', $Url)) return; // Absolute URLs OK
+      if(preg_match('/^https?:\/\//i', $Url)) return $Url; // Absolute URLs OK
       if(preg_match('/^\/\//', $Url)) return 'http:'.$Url; // Weird format absolute URLs (slashdot amongst others?)
       if(preg_match('/^\//', $Url)) // Absolute Files make into absolute URLs or absolute files from doc root
       {
@@ -207,7 +207,7 @@
       {
         $path = '';
       }   
-     
+      
       return $path;
     }
 
