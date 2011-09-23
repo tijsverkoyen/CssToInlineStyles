@@ -120,7 +120,7 @@ class CSSToInlineStyles
 	 * @return	string
 	 * @param	string $selector	The CSS-selector.
 	 */
-	private function buildXPathQuery($selector)
+	protected function buildXPathQuery($selector)
 	{
 		// redefine
 		$selector = (string) $selector;
