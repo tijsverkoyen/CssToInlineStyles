@@ -224,6 +224,8 @@ class CSSToInlineStyles
 		// validate
 		if($this->html == null) throw new CSSToInlineStylesException('No HTML provided.');
 
+		$this->convertLinkToStyle();
+
 		// should we use inline style-block
 		if($this->useInlineStylesBlock)
 		{
@@ -684,6 +686,34 @@ class CSSToInlineStyles
 
 		// fallback
 		return 0;
+	}
+
+	/**
+	 * Convert linked stylesheets to style blocks.
+	 *
+	 * @author Chris Gedrim [chris@gedr.im]
+	 *
+	 * @return void.
+	 */
+	private function convertLinkToStyle()
+	{
+		$html = $this->html;
+
+		$count = preg_match_all('/<link .*?href="(.*)".*?>/', $html, $matchesarray);
+
+		for ($i = 0; $i < $count; $i++)
+		{
+			if (strpos($matchesarray[0][$i], 'stylesheet') !== false)
+			{
+				$css = file_get_contents($matchesarray[1][$i]);
+
+				$style = '<style>'.$css.'</style>';
+
+				$html = str_replace($matchesarray[0][$i], $style, $html);
+			}
+		}
+
+		$this->html = $html;
 	}
 }
 
