@@ -684,8 +684,11 @@ class CSSToInlineStyles
 		$this->stripOriginalStyleTags = (bool) $on;
 	}
 	
-	/*
+	/**
+	 * Strip style tags into the generated HTML
 	 *
+	 * @return	string
+	 * @param	string $html	The HTML to strip style tags.
 	 */
 	private function stripOriginalStyleTags($html)
 	{
