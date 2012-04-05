@@ -98,7 +98,13 @@ class CSSToInlineStyles
 	 * @var	bool
 	 */
 	private $useInlineStylesBlock = false;
-
+	
+	/*
+	 * Strip original style tags
+	 *
+	 * @var bool
+	 */
+    private $stripOriginalStyleTags = false;
 
 	/**
 	 * Creates an instance, you could set the HTML and CSS here, or load it later.
@@ -470,6 +476,9 @@ class CSSToInlineStyles
 
 		// cleanup the HTML if we need to
 		if($this->cleanup) $html = $this->cleanupHTML($html);
+		
+		// strip original style tags if we need to
+		if ($this->stripOriginalStyleTags) $html = $this->stripOriginalStyleTags($html);
 
 		// return
 		return $html;
@@ -662,7 +671,29 @@ class CSSToInlineStyles
 	{
 		$this->useInlineStylesBlock = (bool) $on;
 	}
-
+	
+	/**
+	 * Set strip original style tags
+	 * If this is enabled the class will remove all style tags in the HTML.
+	 *
+	 * @return	void
+	 * @param	bool[optional] $onShould we process inline styles?
+	 */
+	public function setStripOriginalStyleTags($on = true)
+	{
+		$this->stripOriginalStyleTags = (bool) $on;
+	}
+	
+	/**
+	 * Strip style tags into the generated HTML
+	 *
+	 * @return	string
+	 * @param	string $html	The HTML to strip style tags.
+	 */
+	private function stripOriginalStyleTags($html)
+	{
+	    return preg_replace('|<style(.*)>(.*)</style>|isU', '', $html);
+	}
 
 	/**
 	 * Sort an array on the specifity element
