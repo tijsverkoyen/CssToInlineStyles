@@ -158,7 +158,8 @@ class CSSToInlineStyles
 							);
 
 		// return
-		return (string) '//' . preg_replace($cssSelector, $xPathQuery, $selector);
+		$str = (string) '//' . preg_replace($cssSelector, $xPathQuery, $selector);
+		return str_replace( '] *', ']//*', $str);
 	}
 
 
