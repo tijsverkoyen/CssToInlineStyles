@@ -126,7 +126,7 @@ class CSSToInlineStyles
 	 * @return	string
 	 * @param	string $selector	The CSS-selector.
 	 */
-	private function buildXPathQuery($selector)
+	protected function buildXPathQuery($selector)
 	{
 		// redefine
 		$selector = (string) $selector;
@@ -353,10 +353,7 @@ class CSSToInlineStyles
 			}
 
 			// reapply original styles
-			$query = $this->buildXPathQuery('*[@data-css-to-inline-styles-original-styles]');
-
-			// validate query
-			if($query === false) continue;
+			$query = '//*[@data-css-to-inline-styles-original-styles]';
 
 			// search elements
 			$elements = $xPath->query($query);

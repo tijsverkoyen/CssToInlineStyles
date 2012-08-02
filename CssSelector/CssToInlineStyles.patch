@@ -1,0 +1,360 @@
+Fri Sep 23 22:18:40 NZST 2011  james@gogo.co.nz
+  * 5.2
+diff -rN -u old-CssSelector/CssSelector.php new-CssSelector/CssSelector.php
+--- old-CssSelector/CssSelector.php	2011-09-23 22:19:07.000000000 +1200
++++ new-CssSelector/CssSelector.php	2011-09-23 22:19:07.000000000 +1200
+@@ -9,9 +9,23 @@
+  * file that was distributed with this source code.
+  */
+ 
+-namespace Symfony\Component\CssSelector;
++function css_selector_autoload($class)
++{
++  if(file_exists($f = (dirname(__FILE__) . '/'.$class.'.php'))) 
++  {
++    require_once($f);
++  }
++  elseif(file_exists($f = (dirname(__FILE__) . '/Node/'.$class.'.php'))) 
++  {
++    require_once($f);
++  }
++  elseif(file_exists($f = (dirname(__FILE__) . '/Exception/'.$class.'.php'))) 
++  {
++    require_once($f);
++  }  
++}
+ 
+-use Symfony\Component\CssSelector\Exception\ParseException;
++spl_autoload_register('css_selector_autoload');
+ 
+ /**
+  * CssSelector is the main entry point of the component and can convert CSS
+@@ -94,7 +108,7 @@
+ 
+         try {
+             return $this->parseSelectorGroup($stream);
+-        } catch (\Exception $e) {
++        } catch (Exception $e) {
+             $class = get_class($e);
+ 
+             throw new $class(sprintf('%s at %s -> %s', $e->getMessage(), implode($stream->getUsed(), ''), $stream->peek()), 0, $e);
+@@ -125,7 +139,7 @@
+             return $result[0];
+         }
+ 
+-        return new Node\OrNode($result);
++        return new OrNode($result);
+     }
+ 
+     /**
+@@ -158,7 +172,7 @@
+                 throw new ParseException(sprintf("Expected selector, got '%s'", $stream->peek()));
+             }
+ 
+-            $result = new Node\CombinedSelectorNode($result, $combinator, $nextSelector);
++            $result = new CombinedSelectorNode($result, $combinator, $nextSelector);
+         }
+ 
+         return $result;
+@@ -198,7 +212,7 @@
+             }
+         }
+ 
+-        $result = new Node\ElementNode($namespace, $element);
++        $result = new ElementNode($namespace, $element);
+         $hasHash = false;
+         while (true) {
+             $peek = $stream->peek();
+@@ -211,13 +225,13 @@
+                     // @codeCoverageIgnoreEnd
+                 }
+                 $stream->next();
+-                $result = new Node\HashNode($result, $stream->next());
++                $result = new HashNode($result, $stream->next());
+                 $hasHash = true;
+ 
+                 continue;
+             } elseif ('.' == $peek) {
+                 $stream->next();
+-                $result = new Node\ClassNode($result, $stream->next());
++                $result = new ClassNode($result, $stream->next());
+ 
+                 continue;
+             } elseif ('[' == $peek) {
+@@ -252,9 +266,9 @@
+                         throw new ParseException(sprintf("Expected ')', got '%s' and '%s'", $next, $selector));
+                     }
+ 
+-                    $result = new Node\FunctionNode($result, $type, $ident, $selector);
++                    $result = new FunctionNode($result, $type, $ident, $selector);
+                 } else {
+-                    $result = new Node\PseudoNode($result, $type, $ident);
++                    $result = new PseudoNode($result, $type, $ident);
+                 }
+ 
+                 continue;
+@@ -295,7 +309,7 @@
+         }
+ 
+         if ($stream->peek() == ']') {
+-            return new Node\AttribNode($selector, $namespace, $attrib, 'exists', null);
++            return new AttribNode($selector, $namespace, $attrib, 'exists', null);
+         }
+ 
+         $op = $stream->next();
+@@ -308,6 +322,6 @@
+             throw new ParseException(sprintf("Expected string or symbol, got '%s'", $value));
+         }
+ 
+-        return new Node\AttribNode($selector, $namespace, $attrib, $op, $value);
++        return new AttribNode($selector, $namespace, $attrib, $op, $value);
+     }
+ }
+diff -rN -u old-CssSelector/Exception/ParseException.php new-CssSelector/Exception/ParseException.php
+--- old-CssSelector/Exception/ParseException.php	2011-09-23 22:19:07.000000000 +1200
++++ new-CssSelector/Exception/ParseException.php	2011-09-23 22:19:07.000000000 +1200
+@@ -9,8 +9,6 @@
+  * file that was distributed with this source code.
+  */
+ 
+-namespace Symfony\Component\CssSelector\Exception;
+-
+ /**
+  * ParseException is thrown when a CSS selector syntax is not valid.
+  *
+@@ -19,6 +17,6 @@
+  *
+  * @author Fabien Potencier <fabien@symfony.com>
+  */
+-class ParseException extends \Exception
++class ParseException extends Exception
+ {
+ }
+diff -rN -u old-CssSelector/Node/AttribNode.php new-CssSelector/Node/AttribNode.php
+--- old-CssSelector/Node/AttribNode.php	2011-09-23 22:19:07.000000000 +1200
++++ new-CssSelector/Node/AttribNode.php	2011-09-23 22:19:07.000000000 +1200
+@@ -9,11 +9,6 @@
+  * file that was distributed with this source code.
+  */
+ 
+-namespace Symfony\Component\CssSelector\Node;
+-
+-use Symfony\Component\CssSelector\XPathExpr;
+-use Symfony\Component\CssSelector\Exception\ParseException;
+-
+ /**
+  * AttribNode represents a "selector[namespace|attrib operator value]" node.
+  *
+diff -rN -u old-CssSelector/Node/ClassNode.php new-CssSelector/Node/ClassNode.php
+--- old-CssSelector/Node/ClassNode.php	2011-09-23 22:19:07.000000000 +1200
++++ new-CssSelector/Node/ClassNode.php	2011-09-23 22:19:07.000000000 +1200
+@@ -9,10 +9,6 @@
+  * file that was distributed with this source code.
+  */
+ 
+-namespace Symfony\Component\CssSelector\Node;
+-
+-use Symfony\Component\CssSelector\XPathExpr;
+-
+ /**
+  * ClassNode represents a "selector.className" node.
+  *
+diff -rN -u old-CssSelector/Node/CombinedSelectorNode.php new-CssSelector/Node/CombinedSelectorNode.php
+--- old-CssSelector/Node/CombinedSelectorNode.php	2011-09-23 22:19:07.000000000 +1200
++++ new-CssSelector/Node/CombinedSelectorNode.php	2011-09-23 22:19:07.000000000 +1200
+@@ -9,10 +9,6 @@
+  * file that was distributed with this source code.
+  */
+ 
+-namespace Symfony\Component\CssSelector\Node;
+-
+-use Symfony\Component\CssSelector\Exception\ParseException;
+-
+ /**
+  * CombinedSelectorNode represents a combinator node.
+  *
+diff -rN -u old-CssSelector/Node/ElementNode.php new-CssSelector/Node/ElementNode.php
+--- old-CssSelector/Node/ElementNode.php	2011-09-23 22:19:07.000000000 +1200
++++ new-CssSelector/Node/ElementNode.php	2011-09-23 22:19:07.000000000 +1200
+@@ -9,10 +9,6 @@
+  * file that was distributed with this source code.
+  */
+ 
+-namespace Symfony\Component\CssSelector\Node;
+-
+-use Symfony\Component\CssSelector\XPathExpr;
+-
+ /**
+  * ElementNode represents a "namespace|element" node.
+  *
+diff -rN -u old-CssSelector/Node/FunctionNode.php new-CssSelector/Node/FunctionNode.php
+--- old-CssSelector/Node/FunctionNode.php	2011-09-23 22:19:07.000000000 +1200
++++ new-CssSelector/Node/FunctionNode.php	2011-09-23 22:19:07.000000000 +1200
+@@ -9,10 +9,6 @@
+  * file that was distributed with this source code.
+  */
+ 
+-namespace Symfony\Component\CssSelector\Node;
+-
+-use Symfony\Component\CssSelector\Exception\ParseException;
+-use Symfony\Component\CssSelector\XPathExpr;
+ 
+ /**
+  * FunctionNode represents a "selector:name(expr)" node.
+diff -rN -u old-CssSelector/Node/HashNode.php new-CssSelector/Node/HashNode.php
+--- old-CssSelector/Node/HashNode.php	2011-09-23 22:19:07.000000000 +1200
++++ new-CssSelector/Node/HashNode.php	2011-09-23 22:19:07.000000000 +1200
+@@ -9,10 +9,6 @@
+  * file that was distributed with this source code.
+  */
+ 
+-namespace Symfony\Component\CssSelector\Node;
+-
+-use Symfony\Component\CssSelector\XPathExpr;
+-
+ /**
+  * HashNode represents a "selector#id" node.
+  *
+diff -rN -u old-CssSelector/Node/NodeInterface.php new-CssSelector/Node/NodeInterface.php
+--- old-CssSelector/Node/NodeInterface.php	2011-09-23 22:19:07.000000000 +1200
++++ new-CssSelector/Node/NodeInterface.php	2011-09-23 22:19:07.000000000 +1200
+@@ -9,8 +9,6 @@
+  * file that was distributed with this source code.
+  */
+ 
+-namespace Symfony\Component\CssSelector\Node;
+-
+ /**
+  * ClassNode represents a "selector.className" node.
+  *
+diff -rN -u old-CssSelector/Node/OrNode.php new-CssSelector/Node/OrNode.php
+--- old-CssSelector/Node/OrNode.php	2011-09-23 22:19:07.000000000 +1200
++++ new-CssSelector/Node/OrNode.php	2011-09-23 22:19:07.000000000 +1200
+@@ -9,10 +9,6 @@
+  * file that was distributed with this source code.
+  */
+ 
+-namespace Symfony\Component\CssSelector\Node;
+-
+-use Symfony\Component\CssSelector\XPathExprOr;
+-
+ /**
+  * OrNode represents a "Or" node.
+  *
+diff -rN -u old-CssSelector/Node/PseudoNode.php new-CssSelector/Node/PseudoNode.php
+--- old-CssSelector/Node/PseudoNode.php	2011-09-23 22:19:07.000000000 +1200
++++ new-CssSelector/Node/PseudoNode.php	2011-09-23 22:19:07.000000000 +1200
+@@ -9,10 +9,6 @@
+  * file that was distributed with this source code.
+  */
+ 
+-namespace Symfony\Component\CssSelector\Node;
+-
+-use Symfony\Component\CssSelector\Exception\ParseException;
+-
+ /**
+  * PseudoNode represents a "selector:ident" node.
+  *
+diff -rN -u old-CssSelector/README new-CssSelector/README
+--- old-CssSelector/README	2011-09-23 22:19:07.000000000 +1200
++++ new-CssSelector/README	2011-09-23 22:19:07.000000000 +1200
+@@ -1,3 +1,5 @@
++FROM: https://github.com/symfony/symfony/tree/master/src/Symfony/Component/CssSelector
++
+ This component is a port of the Python lxml library,
+ which is copyright Infrae and distributed under the BSD license.
+ 
+diff -rN -u old-CssSelector/Tokenizer.php new-CssSelector/Tokenizer.php
+--- old-CssSelector/Tokenizer.php	2011-09-23 22:19:07.000000000 +1200
++++ new-CssSelector/Tokenizer.php	2011-09-23 22:19:07.000000000 +1200
+@@ -9,10 +9,6 @@
+  * file that was distributed with this source code.
+  */
+ 
+-namespace Symfony\Component\CssSelector;
+-
+-use Symfony\Component\CssSelector\Exception\ParseException;
+-
+ /**
+  * Tokenizer lexes a CSS Selector to tokens.
+  *
+@@ -154,7 +150,11 @@
+      */
+     private function unescapeStringLiteral($literal)
+     {
+-        return preg_replace_callback('#(\\\\(?:[A-Fa-f0-9]{1,6}(?:\r\n|\s)?|[^A-Fa-f0-9]))#', function ($matches) use ($literal)
++      $this->_nonClosureLiteral = $literal;      
++      return preg_replace_callback('#(\\\\(?:[A-Fa-f0-9]{1,6}(?:\r\n|\s)?|[^A-Fa-f0-9]))#', array($this, 'nonClosureUnescapeStringLiteralCallback'));
++    }
++
++    private function nonClosureUnescapeStringLiteralCallback($matches)
+         {
+             if ($matches[0][0] == '\\' && strlen($matches[0]) > 1) {
+                 $matches[0] = substr($matches[0], 1);
+@@ -162,9 +162,8 @@
+                     return chr(trim($matches[0]));
+                 }
+             } else {
+-                throw new ParseException(sprintf('Invalid escape sequence %s in string %s', $matches[0], $literal));
++          throw new ParseException(sprintf('Invalid escape sequence %s in string %s', $matches[0], $this->_nonClosureLiteral ));
+             }
+-        }, $literal);
+     }
+ 
+     /**
+diff -rN -u old-CssSelector/Token.php new-CssSelector/Token.php
+--- old-CssSelector/Token.php	2011-09-23 22:19:07.000000000 +1200
++++ new-CssSelector/Token.php	2011-09-23 22:19:07.000000000 +1200
+@@ -9,8 +9,6 @@
+  * file that was distributed with this source code.
+  */
+ 
+-namespace Symfony\Component\CssSelector;
+-
+ /**
+  * Token represents a CSS Selector token.
+  *
+diff -rN -u old-CssSelector/TokenStream.php new-CssSelector/TokenStream.php
+--- old-CssSelector/TokenStream.php	2011-09-23 22:19:07.000000000 +1200
++++ new-CssSelector/TokenStream.php	2011-09-23 22:19:07.000000000 +1200
+@@ -9,8 +9,6 @@
+  * file that was distributed with this source code.
+  */
+ 
+-namespace Symfony\Component\CssSelector;
+-
+ /**
+  * TokenStream represents a stream of CSS Selector tokens.
+  *
+diff -rN -u old-CssSelector/XPathExprOr.php new-CssSelector/XPathExprOr.php
+--- old-CssSelector/XPathExprOr.php	2011-09-23 22:19:07.000000000 +1200
++++ new-CssSelector/XPathExprOr.php	2011-09-23 22:19:07.000000000 +1200
+@@ -9,7 +9,6 @@
+  * file that was distributed with this source code.
+  */
+ 
+-namespace Symfony\Component\CssSelector;
+ 
+ /**
+  * XPathExprOr represents XPath |'d expressions.
+diff -rN -u old-CssSelector/XPathExpr.php new-CssSelector/XPathExpr.php
+--- old-CssSelector/XPathExpr.php	2011-09-23 22:19:07.000000000 +1200
++++ new-CssSelector/XPathExpr.php	2011-09-23 22:19:07.000000000 +1200
+@@ -9,8 +9,6 @@
+  * file that was distributed with this source code.
+  */
+ 
+-namespace Symfony\Component\CssSelector;
+-
+ /**
+  * XPathExpr represents an XPath expression.
+  *
+@@ -221,7 +219,7 @@
+      */
+     static public function xpathLiteral($s)
+     {
+-        if ($s instanceof Node\ElementNode) {
++        if ($s instanceof ElementNode) {
+             // This is probably a symbol that looks like an expression...
+             $s = $s->formatElement();
+         } else {
