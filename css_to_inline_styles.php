@@ -3,53 +3,8 @@
 /**
  * CSS to Inline Styles class
  *
- * This source file can be used to convert HTML with CSS into HTML with inline styles
- *
- * Known issues:
- * - no support for pseudo selectors
- *
- * The class is documented in the file itself. If you find any bugs help me out and report them. Reporting can be done by sending an email to php-css-to-inline-styles-bugs[at]verkoyen[dot]eu.
- * If you report a bug, make sure you give me enough information (include your code).
- *
- * Changelog since 1.0.5
- * - made the class available through composer
- *
- * Changelog since 1.0.4
- * - beter handling of XHTML output, thx to Michele Locati.
- * - preserve original styles.
- *
- * Changelog since 1.0.3
- * - fixed some code-styling issues
- * - added support for multiple values
- *
- * Changelog since 1.0.2
- * - .class are matched from now on.
- * - fixed issue with #id
- * - new beta-feature: added a way to output valid XHTML (thx to Matt Hornsby)
- * - added setEncoding() to indicate the encoding
- *
- * Changelog since 1.0.1
- * - fixed some stuff on specifity
- *
- * Changelog since 1.0.0
- * - rewrote the buildXPathQuery-method
- * - fixed some stuff on specifity
- * - added a way to use inline style-blocks
- *
- * License
- * Copyright (c), Tijs Verkoyen. All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
- * 3. The name of the author may not be used to endorse or promote products derived from this software without specific prior written permission.
- *
- * This software is provided by the author "as is" and any express or implied warranties, including, but not limited to, the implied warranties of merchantability and fitness for a particular purpose are disclaimed. In no event shall the author be liable for any direct, indirect, incidental, special, exemplary, or consequential damages (including, but not limited to, procurement of substitute goods or services; loss of use, data, or profits; or business interruption) however caused and on any theory of liability, whether in contract, strict liability, or tort (including negligence or otherwise) arising in any way out of the use of this software, even if advised of the possibility of such damage.
- *
  * @author		Tijs Verkoyen <php-css-to-inline-styles@verkoyen.eu>
  * @version		1.0.6
- *
  * @copyright	Copyright (c), Tijs Verkoyen. All rights reserved.
  * @license		BSD License
  */
