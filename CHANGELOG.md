@@ -1,3 +1,7 @@
+# Changelog since 1.0.6
+
+* made the class compliant with PSR2.
+
 # Changelog since 1.0.5
 
 * made the class available through composer

@@ -1,11 +1,13 @@
 <?php
 
 //require
+require_once '../../../autoload.php';
 require_once 'config.php';
-require_once '../css_to_inline_styles.php';
+
+use \TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 
 // create instance
-$cssToInlineStyles = new CSSToInlineStyles();
+$cssToInlineStyles = new CssToInlineStyles();
 
 $html = file_get_contents('./examples/sumo/index.htm');
 $css = file_get_contents('./examples/sumo/style.css');
@@ -13,5 +15,5 @@ $css = file_get_contents('./examples/sumo/style.css');
 $cssToInlineStyles->setHTML($html);
 $cssToInlineStyles->setCSS($css);
 
-//output
+// output
 echo $cssToInlineStyles->convert();
