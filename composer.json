@@ -12,10 +12,10 @@
 		}
 	],
 	"require": {
-		"php": ">=5.2.0",
-		"ext-curl": "*"
+		"php": ">=5.2.0"
 	},
+	"target-dir": "TijsVerkoyen/CssToInlineStyles",
 	"autoload": {
-		"classmap": [""]
+		"psr-0": {"TijsVerkoyen\\CssToInlineStyles": ""}
 	}
 }
