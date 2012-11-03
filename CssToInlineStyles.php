@@ -33,6 +33,13 @@ class CssToInlineStyles
     private $cleanup = false;
 
     /**
+     * Should the generated XHTML be formatted
+     *
+     * @var	bool
+     */
+    private $formattedXHTML = true;
+
+    /**
      * The encoding to use.
      *
      * @var	string
@@ -425,7 +432,7 @@ class CssToInlineStyles
         // should we output XHTML?
         if ($outputXHTML) {
             // set formating
-            $document->formatOutput = true;
+            $document->formatOutput = $this->formattedXHTML;
 
             // get the HTML as XML
             $html = $document->saveXML(null, LIBXML_NOEMPTYTAG);
@@ -439,7 +446,7 @@ class CssToInlineStyles
                 $endPosition = strpos($html, '?>', $startPosition);
 
                 // remove the XML-header
-                $html = ltrim(substr($html, $endPosition + 1));
+                $html = ltrim(substr($html, $endPosition + 2));
             }
         }
 
@@ -604,6 +611,18 @@ class CssToInlineStyles
         $this->cleanup = (bool) $on;
     }
 
+    /**
+     * Should the converted output be formatted when generating XHTML code?
+     *
+     * @return void
+     * @param  bool[optional] $on Should we enable formatting?
+     * @see http://www.php.net/manual/en/class.domdocument.php#domdocument.props.formatoutput
+     */
+    public function setFormattedXHTML($on = true)
+    {
+        $this->formattedXHTML = (bool) $on;
+    }
+    
     /**
      * Set CSS to use
      *
