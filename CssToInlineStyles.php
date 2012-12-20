@@ -497,6 +497,8 @@ class CssToInlineStyles
         // remove spaces
         $css = preg_replace('/\s\s+/', ' ', $css);
 
+        $css = preg_replace('/@media [^{]*{([^{}]|{[^{}]*})*}/', '', $css);
+
         // rules are splitted by }
         $rules = (array) explode('}', $css);
 
