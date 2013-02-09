@@ -1,3 +1,7 @@
+# Changelog since 1.2.0
+
+* introduced a flag to remove media queries before inlining. thx to [Stof](https://github.com/stof).
+
 # Changelog since 1.1.0
 
 * require php 5.3
