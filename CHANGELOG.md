@@ -1,3 +1,7 @@
+# Changelog since 1.1.0
+
+* require php 5.3
+
 # Changelog since 1.0.6
 
 * made the class compliant with PSR2.
