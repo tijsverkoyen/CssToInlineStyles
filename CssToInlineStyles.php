@@ -53,12 +53,19 @@ class CssToInlineStyles
      */
     private $useInlineStylesBlock = false;
 
-    /*
+    /**
      * Strip original style tags
      *
      * @var bool
      */
     private $stripOriginalStyleTags = false;
+
+    /**
+     * Exclude the media queries from the inlined styles
+     *
+     * @var bool
+     */
+    private $excludeMediaQueries = false;
 
     /**
      * Creates an instance, you could set the HTML and CSS here, or load it
@@ -497,6 +504,10 @@ class CssToInlineStyles
         // remove spaces
         $css = preg_replace('/\s\s+/', ' ', $css);
 
+        if ($this->excludeMediaQueries) {
+            $css = preg_replace('/@media [^{]*{([^{}]|{[^{}]*})*}/', '', $css);
+        }
+
         // rules are splitted by }
         $rules = (array) explode('}', $css);
 
@@ -656,11 +667,24 @@ class CssToInlineStyles
      * If this is enabled the class will remove all style tags in the HTML.
      *
      * @return void
-     * @param  bool[optional] $onShould we process inline styles?
+     * @param  bool[optional] $on Should we process inline styles?
      */
     public function setStripOriginalStyleTags($on = true)
     {
         $this->stripOriginalStyleTags = (bool) $on;
+    }
+
+    /**
+     * Set exclude media queries
+     *
+     * If this is enabled the media queries will be removed before inlining the rules
+     *
+     * @return void
+     * @param bool[optional] $on
+     */
+    public function setExcludeMediaQueries($on = true)
+    {
+        $this->excludeMediaQueries = (bool) $on;
     }
 
     /**
