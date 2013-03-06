@@ -95,9 +95,9 @@ class CssToInlineStyles
         // the CSS selector
         $cssSelector = array(
             // E F, Matches any F element that is a descendant of an E element
-            '/(\w)\s+(\w)/',
+            '/(\w)\s+([\w\*])/',
             // E > F, Matches any F element that is a child of an element E
-            '/(\w)\s*>\s*(\w)/',
+            '/(\w)\s*>\s*([\w\*])/',
             // E:first-child, Matches element E when E is the first child of its parent
             '/(\w):first-child/',
             // E + F, Matches any F element immediately preceded by an element
