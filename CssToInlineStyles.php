@@ -9,7 +9,7 @@
  * @copyright	Copyright (c), Tijs Verkoyen. All rights reserved.
  * @license		BSD License
  */
-class CssToInline
+class CssToInlineStyles
 {
     /**
      * The CSS to use
