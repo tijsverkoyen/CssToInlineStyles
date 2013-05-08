@@ -17,5 +17,10 @@
 	"target-dir": "TijsVerkoyen/CssToInlineStyles",
 	"autoload": {
 		"psr-0": {"TijsVerkoyen\\CssToInlineStyles": ""}
+	},
+	"extra": {
+		"branch-alias": {
+			"dev-master": "1.2.x-dev"
+		}
 	}
 }
