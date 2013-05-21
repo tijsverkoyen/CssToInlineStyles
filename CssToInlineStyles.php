@@ -189,10 +189,10 @@ class CssToInlineStyles
     private function cleanupHTML($html)
     {
         // remove classes
-        $html = preg_replace('/(\s)+class="(.*)"(\s)+/U', ' ', $html);
+        $html = preg_replace('/(\s)+class="(.*)"(\s)*/U', ' ', $html);
 
         // remove IDs
-        $html = preg_replace('/(\s)+id="(.*)"(\s)+/U', ' ', $html);
+        $html = preg_replace('/(\s)+id="(.*)"(\s)*/U', ' ', $html);
 
         // return
         return $html;
