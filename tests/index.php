@@ -1,8 +1,7 @@
 <?php
 
 //require
-require_once '../../../autoload.php';
-require_once 'config.php';
+require_once './../CssToInlineStyles.php';
 
 use \TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 
