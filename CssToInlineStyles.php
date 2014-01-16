@@ -236,7 +236,13 @@ class CssToInlineStyles
 
         // set error level
         libxml_use_internal_errors(true);
-
+        
+        //Check if html has ISO encoding and convert to UTF-8
+        $htmlEncode = mb_detect_encoding($this->html, array('ISO-8859-1','UTF-8'));
+        if($htmlEncode == 'ISO-8859-1'){                    
+            $this->html = utf8_encode($this->html);
+        }
+        
         // load HTML
         $document->loadHTML($this->html);
 
