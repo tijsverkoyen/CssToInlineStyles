@@ -21,3 +21,4 @@ each method is documented with PHPDoc.
 
 * [Each site based on Fork CMS](http://www.fork-cms.com)
 * [Print en Bind](http://www.printenbind.nl)
+* [Tiki Wiki CMS Groupware](http://sourceforge.net/p/tikiwiki/code/49505) (starting in Tiki 13)
