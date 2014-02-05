@@ -1,11 +1,11 @@
 <?php
-namespace TijsVerkoyen\CssToInlineStyles;
 
 /**
  * CSS to Inline Styles class
  *
  * @author		Tijs Verkoyen <php-css-to-inline-styles@verkoyen.eu>
- * @version		1.2.1
+ *              Stefan Friedl <admin@netzach.ws>
+ * @version		1.3.0
  * @copyright	Copyright (c), Tijs Verkoyen. All rights reserved.
  * @license		BSD License
  */
@@ -24,6 +24,21 @@ class CssToInlineStyles
      * @var	array
      */
     private $cssRules;
+
+    /**
+     * prefix for css deklarations of html attributes
+     *     (attr-width, attr-align, ... )
+     *     
+     * @var string
+     */
+    private $attributePrefix    = 'attr';
+
+    /**
+     * parse for css deklarations of html attributes
+     * 
+     * @var boolean
+     */
+    public $catchAttributes    = false;
 
     /**
      * Should the generated HTML be cleaned
@@ -247,6 +262,7 @@ class CssToInlineStyles
         if (!empty($this->cssRules)) {
             // loop rules
             foreach ($this->cssRules as $rule) {
+
                 // init var
                 $query = $this->buildXPathQuery($rule['selector']);
 
@@ -283,6 +299,7 @@ class CssToInlineStyles
 
                     // init var
                     $properties = array();
+                    $attributes = array();
 
                     // get current styles
                     $stylesAttribute = $element->attributes->getNamedItem('style');
@@ -305,12 +322,20 @@ class CssToInlineStyles
 
                             // validate
                             if(!isset($chunks[1])) continue;
-
+                            
                             // loop chunks
-                            $properties[$chunks[0]] = trim($chunks[1]);
+                            if( !$this->isAttribute($chunks[0]) ){
+                                $properties[$chunks[0]] = trim($chunks[1]);
+                            }else{ // it's an attribute
+                                $attributes[$chunks[0]] = trim($chunks[1]);
+                            }                            
+                            
                         }
                     }
 
+
+                    // SET SYTLE ATTRIBUTE
+                    //
                     // add new properties into the list
                     foreach ($rule['properties'] as $key => $value) {
                         $properties[$key] = $value;
@@ -332,6 +357,28 @@ class CssToInlineStyles
                     // set attribute
                     if ($propertiesString != '') {
                         $element->setAttribute('style', $propertiesString);
+                    }
+
+
+                    // SET OTHER ATTRIBUTES
+                    // 
+                    // add new properties into the list
+                    if( $this->catchAttributes ){
+                        foreach ($rule['attributes'] as $key => $value) {
+                            $attributes[$key] = $value;
+                        }
+
+                        // set attributes
+                        foreach ($attributes as $key => $values) {
+                            foreach ((array) $values as $value) {
+                                $value  = trim((string) $value);
+                                $attributeName  = substr($key, strlen($this->attributePrefix)+1);
+                                #$this->dump($value, false);
+                                
+                                if( $value != '' )
+                                    $element->setAttribute($attributeName, $value);
+                            }
+                        }
                     }
                 }
             }
@@ -393,7 +440,7 @@ class CssToInlineStyles
                             $chunks = (array) explode(':', trim($property), 2);
 
                             // validate
-                            if(!isset($chunks[1])) continue;
+                            if(!isset($chunks[1])) continue;                            
 
                             // loop chunks
                             $properties[$chunks[0]] = trim($chunks[1]);
@@ -547,6 +594,12 @@ class CssToInlineStyles
                     $cssProperties
                 );
 
+                if( $this->catchAttributes ){
+                    $ruleSet['attributes'] = $this->processCSSProperties(
+                        $cssProperties, true
+                    );
+                }
+
                 // calculate specifity
                 $ruleSet['specifity'] = $this->calculateCSSSpecifity(
                     $selector
@@ -571,8 +624,9 @@ class CssToInlineStyles
      *
      * @return array
      * @param  string $propertyString The CSS-properties.
+     * @param  string $catchAttributes Catch properties if false and attributes if true
      */
-    private function processCSSProperties($propertyString)
+    private function processCSSProperties($propertyString, $catchAttributes = FALSE)
     {
         // split into chunks
         $properties = (array) explode(';', $propertyString);
@@ -592,6 +646,11 @@ class CssToInlineStyles
             $chunks[0] = trim($chunks[0]);
             $chunks[1] = trim($chunks[1]);
 
+            // filter
+            if( ($catchAttributes && !$this->isAttribute($chunks[0])) || (!$catchAttributes && $this->isAttribute($chunks[0])) ){
+                continue;
+            }
+
             // add to pairs array
             if(!isset($pairs[$chunks[0]]) ||
                !in_array($chunks[1], $pairs[$chunks[0]])) {
@@ -604,6 +663,17 @@ class CssToInlineStyles
 
         // return
         return $pairs;
+    }
+
+    /**
+     * Set prefix for CSS deklarations of html attributes
+     *
+     * @return void
+     * @param str $prefix What prefix do you use for html attributes?
+     */
+    public function setAttributePrefix($prefix = NULL)
+    {
+        if( isset($prefix) ) $this->attributePrefix = (string) $prefix;
     }
 
     /**
@@ -688,6 +758,20 @@ class CssToInlineStyles
     }
 
     /**
+     * Checks if given property is an html attribute
+     *
+     * @return bool Is it an attribute?
+     * @param  str $property property name or deklaration ('foo:bar;')
+     */
+    private function isAttribute($property = NULL)
+    {
+        if( -1 !== strpos($property, ':', 0) ){            
+            list($property) = $pair = explode(':', $property);
+        }
+        return substr($property, 0, strlen($this->attributePrefix)) === $this->attributePrefix;
+    }
+
+    /**
      * Strip style tags into the generated HTML
      *
      * @return string
@@ -718,5 +802,20 @@ class CssToInlineStyles
 
         // fallback
         return 0;
+    }
+
+    /**
+     * Debug dumping method
+     *
+     * @return void
+     * @param  mixed $var What to dump?
+     * @param  boolean $die Die after dump?
+     */
+    private static function dump($var, $die = true)
+    {
+        echo '<pre>';
+        var_dump($var);
+        echo '</pre>';
+        if($die) die();
     }
 }

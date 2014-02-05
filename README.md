@@ -1,23 +1,23 @@
-# CssToInlineStyles class
+# CssToInlineStyles (PHP Class)
 
-> CssToInlineStyles is a class that enables you to convert HTML-pages/files into
-> HTML-pages/files with inline styles. This is very usefull when you're sending
-> emails.
+This is a extended version of CssToInlineStyles by Tijs Verkoyen
+> Original Repo: https://github.com/tijsverkoyen/CssToInlineStyles/
 
-## About
+### CssToInlineStyles is a class that enables you to convert CSS deklarations to inline styles.
 
-PHP CssToInlineStyles is a class to convert HTML into HTML with inline styles.
+> #### Extension by Stefan Friedl:
+> CssToInline now also enables you to define html attributes per CSS
+> ### TO DO
+> * clean code
+> * examples
+> * handle quotes in CSS declarations
+> * save original html attributes to use CSS declarations of html attributes as fallbacks (f.e. -> alt: ' ';)
 
 ## Documentation
 
-The class is well documented inline. If you use a decent IDE you'll see that
-each method is documented with PHPDoc.
+The class is well documented inline.
+If you use a decent IDE you'll see that each method is documented with PHPDoc.
 
 ## Known issues
 
 * no support for pseudo selectors
-
-## Sites using this class
-
-* [Each site based on Fork CMS](http://www.fork-cms.com)
-* [Print en Bind](http://www.printenbind.nl)
