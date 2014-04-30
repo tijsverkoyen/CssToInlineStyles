@@ -707,16 +707,12 @@ class CssToInlineStyles
      */
     private static function sortOnSpecifity($e1, $e2)
     {
-        // validate
-        if(!isset($e1['specifity']) || !isset($e2['specifity'])) return 0;
+        // don't need to validate ...
+        //if (!isset($e1['specifity']) || !isset($e2['specifity'])) return 0;
 
-        // lower
-        if($e1['specifity'] < $e2['specifity']) return -1;
-
-        // higher
-        if($e1['specifity'] > $e2['specifity']) return 1;
-
-        // fallback
-        return 0;
+        if ($e1['specificity'] == $e2['specificity']) {
+            return 0;
+        }
+        return $e1['specificity'] > $e2['specificity'] ? -1 : 1;
     }
 }
