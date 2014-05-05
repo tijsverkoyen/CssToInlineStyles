@@ -448,7 +448,7 @@ class CssToInlineStyles
                 $endPosition = strpos($html, '?>', $startPosition);
 
                 // remove the XML-header
-                $html = ltrim(substr($html, $endPosition + 1));
+                $html = ltrim(substr($html, $endPosition + 2));
             }
         }
 
