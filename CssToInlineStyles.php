@@ -707,9 +707,6 @@ class CssToInlineStyles
      */
     private static function sortOnSpecifity($e1, $e2)
     {
-        // don't need to validate ...
-        //if (!isset($e1['specifity']) || !isset($e2['specifity'])) return 0;
-
         if ($e1['specifity'] == $e2['specifity']) {
             return 0;
         }
