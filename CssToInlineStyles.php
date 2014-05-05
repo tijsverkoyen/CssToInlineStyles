@@ -710,9 +710,9 @@ class CssToInlineStyles
         // don't need to validate ...
         //if (!isset($e1['specifity']) || !isset($e2['specifity'])) return 0;
 
-        if ($e1['specificity'] == $e2['specificity']) {
+        if ($e1['specifity'] == $e2['specifity']) {
             return 0;
         }
-        return $e1['specificity'] > $e2['specificity'] ? -1 : 1;
+        return $e1['specifity'] > $e2['specifity'] ? -1 : 1;
     }
 }
