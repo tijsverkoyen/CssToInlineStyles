@@ -1,3 +1,8 @@
+# Changelog since 1.2.1
+
+* sortOnSpecifity is now working correctly, thx to [lifo101](https://github.com/lifo101),
+    for more information see the [Pull Request](https://github.com/tijsverkoyen/CssToInlineStyles/pull/37)
+
 # Changelog since 1.2.0
 
 * introduced a flag to remove media queries before inlining. thx to [Stof](https://github.com/stof).
