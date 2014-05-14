@@ -710,6 +710,6 @@ class CssToInlineStyles
         if ($e1['specifity'] == $e2['specifity']) {
             return 0;
         }
-        return $e1['specifity'] > $e2['specifity'] ? -1 : 1;
+        return ($e1['specifity'] < $e2['specifity']) ? -1 : 1;
     }
 }
