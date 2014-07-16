@@ -550,7 +550,7 @@ class CssToInlineStyles
                 // calculate specifity
                 $ruleSet['specifity'] = $this->calculateCSSSpecifity(
                     $selector
-                ) + $i;
+                ) + ($i/1000);
 
                 // add into global rules
                 $this->cssRules[] = $ruleSet;
