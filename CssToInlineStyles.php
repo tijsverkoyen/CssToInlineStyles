@@ -65,7 +65,7 @@ class CssToInlineStyles
      *
      * @var bool
      */
-    private $excludeMediaQueries = false;
+    private $excludeMediaQueries = true;
 
     /**
      * Creates an instance, you could set the HTML and CSS here, or load it
@@ -695,7 +695,19 @@ class CssToInlineStyles
      */
     private function stripOriginalStyleTags($html)
     {
-        return preg_replace('|<style(.*)>(.*)</style>|isU', '', $html);
+        // Search for all style tags
+        preg_match_all('|<style(.*)>(.*)</style>|isU', $html, $matches);
+
+        // Loop all matches
+        foreach ($matches[2] as $style) {
+            //Search for Media Queries
+            preg_match_all('/@media [^{]*{([^{}]|{[^{}]*})*}/', $style, $mqs);
+
+            // Replace the styles with only the Media Queries
+            $html = str_replace($style, implode("\n", $mqs[0]), $html);
+        }
+
+        return $html;
     }
 
     /**
