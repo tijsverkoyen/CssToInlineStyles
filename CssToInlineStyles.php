@@ -166,10 +166,10 @@ class CssToInlineStyles
         // loop chunks
         foreach ($chunks as $chunk) {
             // an ID is important, so give it a high specifity
-            if(strstr($chunk, '#') !== false) $specifity += 100;
+            if(strstr($chunk, '#') !== false) $specifity += 10000;
 
             // classes are more important than a tag, but less important then an ID
-            elseif(strstr($chunk, '.')) $specifity += 10;
+            elseif(strstr($chunk, '.')) $specifity += 100;
 
             // anything else isn't that important
             else $specifity += 1;
@@ -550,7 +550,7 @@ class CssToInlineStyles
                 // calculate specifity
                 $ruleSet['specifity'] = $this->calculateCSSSpecifity(
                     $selector
-                ) + $i;
+                ) + ($i/1000);
 
                 // add into global rules
                 $this->cssRules[] = $ruleSet;
