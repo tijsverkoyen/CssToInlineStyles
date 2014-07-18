@@ -251,7 +251,15 @@ class CssToInlineStyles
 
                     // add new properties into the list
                     foreach ($rule['properties'] as $key => $value) {
-                        $properties[$key] = $value;
+                        // If one of the rules is already set and is !important, don't apply it,
+                        // except if the new rule is also important.
+                        if (
+                            !isset($properties[$key])
+                            || stristr($properties[$key], '!important') === false
+                            || (is_string($value) && stristr($value, '!important') !== false)
+                        ) {
+                            $properties[$key] = $value;
+                        }
                     }
 
                     // build string
