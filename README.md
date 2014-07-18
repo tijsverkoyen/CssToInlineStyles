@@ -8,6 +8,14 @@
 
 PHP CssToInlineStyles is a class to convert HTML into HTML with inline styles.
 
+## Installation
+
+The recommended installation way is through [Composer](https://getcomposer.org).
+
+```bash
+$ composer require tijsverkoyen/css-to-inline-styles '~1.3'
+```
+
 ## Documentation
 
 The class is well documented inline. If you use a decent IDE you'll see that

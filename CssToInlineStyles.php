@@ -1,6 +1,9 @@
 <?php
 namespace TijsVerkoyen\CssToInlineStyles;
 
+use Symfony\Component\CssSelector\CssSelector;
+use Symfony\Component\CssSelector\Exception\ExceptionInterface;
+
 /**
  * CSS to Inline Styles class
  *
@@ -79,71 +82,6 @@ class CssToInlineStyles
     {
         if($html !== null) $this->setHTML($html);
         if($css !== null) $this->setCSS($css);
-    }
-
-    /**
-     * Convert a CSS-selector into an xPath-query
-     *
-     * @return string
-     * @param  string $selector The CSS-selector.
-     */
-    private function buildXPathQuery($selector)
-    {
-        // redefine
-        $selector = (string) $selector;
-
-        // the CSS selector
-        $cssSelector = array(
-            // E F, Matches any F element that is a descendant of an E element
-            '/(\w)\s+([\w\*])/',
-            // E > F, Matches any F element that is a child of an element E
-            '/(\w)\s*>\s*([\w\*])/',
-            // E:first-child, Matches element E when E is the first child of its parent
-            '/(\w):first-child/',
-            // E + F, Matches any F element immediately preceded by an element
-            '/(\w)\s*\+\s*(\w)/',
-            // E[foo], Matches any E element with the "foo" attribute set (whatever the value)
-            '/(\w)\[([\w\-]+)]/',
-            // E[foo="warning"], Matches any E element whose "foo" attribute value is exactly equal to "warning"
-            '/(\w)\[([\w\-]+)\=\"(.*)\"]/',
-            // div.warning, HTML only. The same as DIV[class~="warning"]
-            '/(\w+|\*)+\.([\w\-]+)+/',
-            // .warning, HTML only. The same as *[class~="warning"]
-            '/\.([\w\-]+)/',
-            // E#myid, Matches any E element with id-attribute equal to "myid"
-            '/(\w+)+\#([\w\-]+)/',
-            // #myid, Matches any element with id-attribute equal to "myid"
-            '/\#([\w\-]+)/'
-        );
-
-        // the xPath-equivalent
-        $xPathQuery = array(
-            // E F, Matches any F element that is a descendant of an E element
-            '\1//\2',
-            // E > F, Matches any F element that is a child of an element E
-            '\1/\2',
-            // E:first-child, Matches element E when E is the first child of its parent
-            '*[1]/self::\1',
-            // E + F, Matches any F element immediately preceded by an element
-            '\1/following-sibling::*[1]/self::\2',
-            // E[foo], Matches any E element with the "foo" attribute set (whatever the value)
-            '\1 [ @\2 ]',
-            // E[foo="warning"], Matches any E element whose "foo" attribute value is exactly equal to "warning"
-            '\1[ contains( concat( " ", @\2, " " ), concat( " ", "\3", " " ) ) ]',
-            // div.warning, HTML only. The same as DIV[class~="warning"]
-            '\1[ contains( concat( " ", @class, " " ), concat( " ", "\2", " " ) ) ]',
-            // .warning, HTML only. The same as *[class~="warning"]
-            '*[ contains( concat( " ", @class, " " ), concat( " ", "\1", " " ) ) ]',
-            // E#myid, Matches any E element with id-attribute equal to "myid"
-            '\1[ @id = "\2" ]',
-            // #myid, Matches any element with id-attribute equal to "myid"
-            '*[ @id = "\1" ]'
-        );
-
-        // return
-        $xPath = (string) '//' . preg_replace($cssSelector, $xPathQuery, $selector);
-
-        return str_replace('] *', ']//*', $xPath);
     }
 
     /**
@@ -247,11 +185,11 @@ class CssToInlineStyles
         if (!empty($this->cssRules)) {
             // loop rules
             foreach ($this->cssRules as $rule) {
-                // init var
-                $query = $this->buildXPathQuery($rule['selector']);
-
-                // validate query
-                if($query === false) continue;
+                try {
+                    $query = CssSelector::toXPath($rule['selector']);
+                } catch (ExceptionInterface $e) {
+                    continue;
+                }
 
                 // search elements
                 $elements = $xPath->query($query);
@@ -337,15 +275,8 @@ class CssToInlineStyles
             }
 
             // reapply original styles
-            $query = $this->buildXPathQuery(
-                '*[@data-css-to-inline-styles-original-styles]'
-            );
-
-            // validate query
-            if($query === false) return;
-
             // search elements
-            $elements = $xPath->query($query);
+            $elements = $xPath->query('//*[@data-css-to-inline-styles-original-styles]');
 
             // loop found elements
             foreach ($elements as $element) {
