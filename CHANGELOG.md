@@ -1,3 +1,7 @@
+# Changelog since 1.4.0
+* Skip `!important` attributes if needed, thx to [barryvdh](https://github.com/barryvdh),
+    for more information see the [Pull Request](https://github.com/tijsverkoyen/CssToInlineStyles/pull/58)
+
 # Changelog since 1.3.0
 
 * Use Xpath instead of regex, thx to [stof](https://github.com/stof),
