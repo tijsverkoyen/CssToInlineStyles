@@ -1,3 +1,8 @@
+# Changelog since 1.3.0
+
+* Use Xpath instead of regex, thx to [stof](https://github.com/stof),
+    for more information see the [Pull Request](https://github.com/tijsverkoyen/CssToInlineStyles/pull/52)
+
 # Changelog since 1.2.1
 
 * sortOnSpecifity is now working correctly, thx to [lifo101](https://github.com/lifo101),
