@@ -489,8 +489,11 @@ class CssToInlineStyles
                 // calculate specifity
                 $ruleSet['specifity'] = $this->calculateCSSSpecifity(
                     $selector
-                ) + $i;
+                );
 
+                // remember the order of appearance
+                $ruleSet['order'] = $i;
+                
                 // add into global rules
                 $this->cssRules[] = $ruleSet;
             }
@@ -646,9 +649,12 @@ class CssToInlineStyles
      */
     private static function sortOnSpecifity($e1, $e2)
     {
-        if ($e1['specifity'] == $e2['specifity']) {
-            return 0;
+        if ($e1['specifity'] !== $e2['specifity']) {
+            return ($e1['specifity'] < $e2['specifity']) ? -1 : 1;
+        } elseif ($e1['order'] !== $e2['order']) {
+            return ($e1['order'] < $e2['order']) ? -1 : 1;
         }
-        return ($e1['specifity'] < $e2['specifity']) ? -1 : 1;
+
+        return 0;
     }
 }
