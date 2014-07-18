@@ -1,11 +1,14 @@
 <?php
 namespace TijsVerkoyen\CssToInlineStyles;
 
+use Symfony\Component\CssSelector\CssSelector;
+use Symfony\Component\CssSelector\Exception\ExceptionInterface;
+
 /**
  * CSS to Inline Styles class
  *
  * @author		Tijs Verkoyen <php-css-to-inline-styles@verkoyen.eu>
- * @version		1.3.0
+ * @version		1.4.1
  * @copyright	Copyright (c), Tijs Verkoyen. All rights reserved.
  * @license		BSD License
  */
@@ -82,68 +85,36 @@ class CssToInlineStyles
     }
 
     /**
-     * Convert a CSS-selector into an xPath-query
+     * Calculate the specifity for the CSS-selector
      *
-     * @return string
-     * @param  string $selector The CSS-selector.
+     * @return int
+     * @param  string $selector The selector to calculate the specifity for.
      */
-    private function buildXPathQuery($selector)
+    private function calculateCSSSpecifity($selector)
     {
-        // redefine
-        $selector = (string) $selector;
+        // cleanup selector
+        $selector = str_replace(array('>', '+'), array(' > ', ' + '), $selector);
 
-        // the CSS selector
-        $cssSelector = array(
-            // E F, Matches any F element that is a descendant of an E element
-            '/(\w)\s+([\w\*])/',
-            // E > F, Matches any F element that is a child of an element E
-            '/(\w)\s*>\s*([\w\*])/',
-            // E:first-child, Matches element E when E is the first child of its parent
-            '/(\w):first-child/',
-            // E + F, Matches any F element immediately preceded by an element
-            '/(\w)\s*\+\s*(\w)/',
-            // E[foo], Matches any E element with the "foo" attribute set (whatever the value)
-            '/(\w)\[([\w\-]+)]/',
-            // E[foo="warning"], Matches any E element whose "foo" attribute value is exactly equal to "warning"
-            '/(\w)\[([\w\-]+)\=\"(.*)\"]/',
-            // div.warning, HTML only. The same as DIV[class~="warning"]
-            '/(\w+|\*)+\.([\w\-]+)+/',
-            // .warning, HTML only. The same as *[class~="warning"]
-            '/\.([\w\-]+)/',
-            // E#myid, Matches any E element with id-attribute equal to "myid"
-            '/(\w+)+\#([\w\-]+)/',
-            // #myid, Matches any element with id-attribute equal to "myid"
-            '/\#([\w\-]+)/'
-        );
+        // init var
+        $specifity = 0;
 
-        // the xPath-equivalent
-        $xPathQuery = array(
-            // E F, Matches any F element that is a descendant of an E element
-            '\1//\2',
-            // E > F, Matches any F element that is a child of an element E
-            '\1/\2',
-            // E:first-child, Matches element E when E is the first child of its parent
-            '*[1]/self::\1',
-            // E + F, Matches any F element immediately preceded by an element
-            '\1/following-sibling::*[1]/self::\2',
-            // E[foo], Matches any E element with the "foo" attribute set (whatever the value)
-            '\1 [ @\2 ]',
-            // E[foo="warning"], Matches any E element whose "foo" attribute value is exactly equal to "warning"
-            '\1[ contains( concat( " ", @\2, " " ), concat( " ", "\3", " " ) ) ]',
-            // div.warning, HTML only. The same as DIV[class~="warning"]
-            '\1[ contains( concat( " ", @class, " " ), concat( " ", "\2", " " ) ) ]',
-            // .warning, HTML only. The same as *[class~="warning"]
-            '*[ contains( concat( " ", @class, " " ), concat( " ", "\1", " " ) ) ]',
-            // E#myid, Matches any E element with id-attribute equal to "myid"
-            '\1[ @id = "\2" ]',
-            // #myid, Matches any element with id-attribute equal to "myid"
-            '*[ @id = "\1" ]'
-        );
+        // split the selector into chunks based on spaces
+        $chunks = explode(' ', $selector);
+
+        // loop chunks
+        foreach ($chunks as $chunk) {
+            // an ID is important, so give it a high specifity
+            if(strstr($chunk, '#') !== false) $specifity += 100;
+
+            // classes are more important than a tag, but less important then an ID
+            elseif(strstr($chunk, '.')) $specifity += 10;
+
+            // anything else isn't that important
+            else $specifity += 1;
+        }
 
         // return
-        $xPath = (string) '//' . preg_replace($cssSelector, $xPathQuery, $selector);
-
-        return str_replace('] *', ']//*', $xPath);
+        return $specifity;
     }
 
 
@@ -214,11 +185,11 @@ class CssToInlineStyles
         if (!empty($this->cssRules)) {
             // loop rules
             foreach ($this->cssRules as $rule) {
-                // init var
-                $query = $this->buildXPathQuery($rule['selector']);
-
-                // validate query
-                if($query === false) continue;
+                try {
+                    $query = CssSelector::toXPath($rule['selector']);
+                } catch (ExceptionInterface $e) {
+                    continue;
+                }
 
                 // search elements
                 $elements = $xPath->query($query);
@@ -280,7 +251,15 @@ class CssToInlineStyles
 
                     // add new properties into the list
                     foreach ($rule['properties'] as $key => $value) {
-                        $properties[$key] = $value;
+                        // If one of the rules is already set and is !important, don't apply it,
+                        // except if the new rule is also important.
+                        if (
+                            !isset($properties[$key])
+                            || stristr($properties[$key], '!important') === false
+                            || (is_string($value) && stristr($value, '!important') !== false)
+                        ) {
+                            $properties[$key] = $value;
+                        }
                     }
 
                     // build string
@@ -304,15 +283,8 @@ class CssToInlineStyles
             }
 
             // reapply original styles
-            $query = $this->buildXPathQuery(
-                '*[@data-css-to-inline-styles-original-styles]'
-            );
-
-            // validate query
-            if($query === false) return;
-
             // search elements
-            $elements = $xPath->query($query);
+            $elements = $xPath->query('//*[@data-css-to-inline-styles-original-styles]');
 
             // loop found elements
             foreach ($elements as $element) {
