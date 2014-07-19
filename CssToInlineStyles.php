@@ -648,7 +648,7 @@ class CssToInlineStyles
     private static function sortOnSpecificity($e1, $e2)
     {
         // Compare the specificity
-        $value = $e1['specificity']->compare($e2['specificity']);
+        $value = $e1['specificity']->compareTo($e2['specificity']);
         
         // if the specificity is the same, use the order in which the element appeared
         if ($value === 0) {

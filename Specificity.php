@@ -60,37 +60,57 @@ class Specificity{
     }
 
     /**
-     * Calculate the specificity based on a CSS Selector string
+     * Get the specificity values as an array
      *
+     * @return array
+     */
+    public function getValues()
+    {
+        return array($this->a, $this->b, $this->c);
+    }
+
+    /**
+     * Calculate the specificity based on a CSS Selector string,
+     * Based on the patterns from premailer/css_parser by Alex Dunae
+     * 
+     * @see https://github.com/premailer/css_parser/blob/master/lib/css_parser/regexps.rb
      * @param string $selector
      * @return static
      */
     public static function fromSelector($selector)
     {
-        // cleanup selector
-        $selector = str_replace(array('>', '+'), array(' > ', ' + '), $selector);
+        $pattern_a = "  \#";
+        $pattern_b = "  (\.[\w]+)                     # classes
+                        |
+                        \[(\w+)                       # attributes
+                        |
+                        (\:(                          # pseudo classes
+                          link|visited|active
+                          |hover|focus
+                          |lang
+                          |target
+                          |enabled|disabled|checked|indeterminate
+                          |root
+                          |nth-child|nth-last-child|nth-of-type|nth-last-of-type
+                          |first-child|last-child|first-of-type|last-of-type
+                          |only-child|only-of-type
+                          |empty|contains
+                        ))";
 
-        // create a new instance
-        $specificity = new static;
+        $pattern_c = "  ((^|[\s\+\>\~]+)[\w]+       # elements
+                        |
+                        \:{1,2}(                    # pseudo-elements
+                          after|before
+                          |first-letter|first-line
+                          |selection
+                        )
+                      )";
 
-        // split the selector into chunks based on spaces
-        $chunks = explode(' ', $selector);
+        preg_match_all("/{$pattern_a}/ix", $selector, $matches_a);
+        preg_match_all("/{$pattern_b}/ix", $selector, $matches_b);
+        preg_match_all("/{$pattern_c}/ix", $selector, $matches_c);
 
-        // loop chunks
-        foreach ($chunks as $chunk) {
-            // an ID is important, so give it a high specificity
-            if(strstr($chunk, '#') !== false) $specificity->increase(1,0,0);
-
-            // classes are more important than a tag, but less important then an ID
-            elseif(strstr($chunk, '.')) $specificity->increase(0,1,0);
-
-            // anything else isn't that important
-            else $specificity->increase(0,0,1);
-        }
-
-        // return
-        return $specificity;
-
+        return new static(count($matches_a[0]), count($matches_b[0]), count($matches_c[0]));
     }
 
     /**
@@ -99,7 +119,7 @@ class Specificity{
      * @param Specificity $specificity
      * @return int
      */
-    public function compare(Specificity $specificity)
+    public function compareTo(Specificity $specificity)
     {
         if ($this->a !== $specificity->a) {
             return $this->a - $specificity->a;
