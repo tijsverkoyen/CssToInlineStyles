@@ -106,11 +106,11 @@ class Specificity{
                         )
                       )";
 
-        preg_match_all("/{$pattern_a}/ix", $selector, $matches_a);
-        preg_match_all("/{$pattern_b}/ix", $selector, $matches_b);
-        preg_match_all("/{$pattern_c}/ix", $selector, $matches_c);
-
-        return new static(count($matches_a[0]), count($matches_b[0]), count($matches_c[0]));
+        return new static(
+            preg_match_all("/{$pattern_a}/ix", $selector, $matches),
+            preg_match_all("/{$pattern_b}/ix", $selector, $matches),
+            preg_match_all("/{$pattern_c}/ix", $selector, $matches)
+        );
     }
 
     /**
