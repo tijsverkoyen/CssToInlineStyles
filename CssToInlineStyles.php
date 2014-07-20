@@ -104,13 +104,15 @@ class CssToInlineStyles
         // loop chunks
         foreach ($chunks as $chunk) {
             // an ID is important, so give it a high specifity
-            if(strstr($chunk, '#') !== false) $specifity += 100;
-
+            if(strstr($chunk, '#') !== false) {
+                $specifity += 100;
             // classes are more important than a tag, but less important then an ID
-            elseif(strstr($chunk, '.')) $specifity += 10;
-
+            } elseif(strstr($chunk, '.')) {
+                $specifity += 10;
             // anything else isn't that important
-            else $specifity += 1;
+            } else {
+                $specifity += 1;
+            }
         }
 
         // return
