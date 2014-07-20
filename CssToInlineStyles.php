@@ -85,40 +85,6 @@ class CssToInlineStyles
     }
 
     /**
-     * Calculate the specifity for the CSS-selector
-     *
-     * @return int
-     * @param  string $selector The selector to calculate the specifity for.
-     */
-    private function calculateCSSSpecifity($selector)
-    {
-        // cleanup selector
-        $selector = str_replace(array('>', '+'), array(' > ', ' + '), $selector);
-
-        // init var
-        $specifity = 0;
-
-        // split the selector into chunks based on spaces
-        $chunks = explode(' ', $selector);
-
-        // loop chunks
-        foreach ($chunks as $chunk) {
-            // an ID is important, so give it a high specifity
-            if(strstr($chunk, '#') !== false) $specifity += 100;
-
-            // classes are more important than a tag, but less important then an ID
-            elseif(strstr($chunk, '.')) $specifity += 10;
-
-            // anything else isn't that important
-            else $specifity += 1;
-        }
-
-        // return
-        return $specifity;
-    }
-
-
-    /**
      * Cleanup the generated HTML
      *
      * @return string
