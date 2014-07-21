@@ -503,6 +503,10 @@ class CssToInlineStyles
 
         // sort based on specifity
         if (!empty($this->cssRules)) {
+            // compatibility for HHVM - https://github.com/facebook/hhvm/issues/1781
+            foreach ($this->cssRules as $index => $rule) {
+                $this->cssRules[$index]['originalIndex'] = $index;
+            }
             usort($this->cssRules, array(__CLASS__, 'sortOnSpecifity'));
         }
     }
@@ -649,7 +653,8 @@ class CssToInlineStyles
     private static function sortOnSpecifity($e1, $e2)
     {
         if ($e1['specifity'] == $e2['specifity']) {
-            return 0;
+            // compatibility for HHVM - https://github.com/facebook/hhvm/issues/1781
+            return ($e1['originalIndex'] > $e2['originalIndex']) ? -1 : 1;
         }
         return ($e1['specifity'] < $e2['specifity']) ? -1 : 1;
     }
