@@ -256,7 +256,7 @@ class CssToInlineStyles
                         if (
                             !isset($properties[$key])
                             || stristr($properties[$key], '!important') === false
-                            || (is_string($value) && stristr($value, '!important') !== false)
+                            || (stristr(implode('', $value), '!important') !== false)
                         ) {
                             $properties[$key] = $value;
                         }
