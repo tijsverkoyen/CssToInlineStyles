@@ -1,3 +1,6 @@
+# Changelog since 1.4.4
+* Made the class compliant with PSR4
+
 # Changelog since 1.4.3
 * Removed the .lock-file for real.
 
