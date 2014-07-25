@@ -1,3 +1,10 @@
+# Changelog since 1.5.0
+* Exclude vendor files from coverage, thx to [barryvdh](https://github.com/barryvdh),
+    for more information see the [Pull Request](https://github.com/tijsverkoyen/CssToInlineStyles/pull/67)
+* Add tests for Specificity and !important, thx to [barryvdh](https://github.com/barryvdh),
+    for more information see the [Pull Request](https://github.com/tijsverkoyen/CssToInlineStyles/pull/65)
+
+
 # Changelog since 1.4.4
 * Made the class compliant with PSR4
 
