@@ -1,8 +1,5 @@
 language: php
 
-before_script:
-  - composer install --dev --prefer-source
-
 php:
   - 5.3
   - 5.4
@@ -10,5 +7,8 @@ php:
   - 5.6
   - hhvm
 
-script:
-  - phpunit --coverage-text
+before_script:
+  - travis_retry composer self-update
+  - travis_retry composer install --prefer-source --no-interaction --dev
+
+script: vendor/bin/phpunit --verbose --coverage-text
