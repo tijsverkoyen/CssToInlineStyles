@@ -9,7 +9,8 @@ namespace TijsVerkoyen\CssToInlineStyles;
  * @see http://www.w3.org/TR/selectors/#specificity
  *
  */
-class Specificity{
+class Specificity
+{
 
     /**
      * The number of ID selectors in the selector
@@ -38,7 +39,7 @@ class Specificity{
      * @param int $b The number of class selectors, attributes selectors, and pseudo-classes in the selector
      * @param int $c The number of type selectors and pseudo-elements in the selector
      */
-    public function __construct($a=0, $b=0, $c=0)
+    public function __construct($a = 0, $b = 0, $c = 0)
     {
         $this->a = $a;
         $this->b = $b;
@@ -72,7 +73,7 @@ class Specificity{
     /**
      * Calculate the specificity based on a CSS Selector string,
      * Based on the patterns from premailer/css_parser by Alex Dunae
-     * 
+     *
      * @see https://github.com/premailer/css_parser/blob/master/lib/css_parser/regexps.rb
      * @param string $selector
      * @return static

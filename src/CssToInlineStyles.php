@@ -7,52 +7,52 @@ use Symfony\Component\CssSelector\Exception\ExceptionInterface;
 /**
  * CSS to Inline Styles class
  *
- * @author		Tijs Verkoyen <php-css-to-inline-styles@verkoyen.eu>
- * @version		1.4.3
- * @copyright	Copyright (c), Tijs Verkoyen. All rights reserved.
- * @license		BSD License
+ * @author         Tijs Verkoyen <php-css-to-inline-styles@verkoyen.eu>
+ * @version        1.4.3
+ * @copyright      Copyright (c), Tijs Verkoyen. All rights reserved.
+ * @license        BSD License
  */
 class CssToInlineStyles
 {
     /**
      * The CSS to use
      *
-     * @var	string
+     * @var    string
      */
     private $css;
 
     /**
      * The processed CSS rules
      *
-     * @var	array
+     * @var    array
      */
     private $cssRules;
 
     /**
      * Should the generated HTML be cleaned
      *
-     * @var	bool
+     * @var    bool
      */
     private $cleanup = false;
 
     /**
      * The encoding to use.
      *
-     * @var	string
+     * @var    string
      */
     private $encoding = 'UTF-8';
 
     /**
      * The HTML to process
      *
-     * @var	string
+     * @var    string
      */
     private $html;
 
     /**
      * Use inline-styles block as CSS
      *
-     * @var	bool
+     * @var    bool
      */
     private $useInlineStylesBlock = false;
 
@@ -75,13 +75,17 @@ class CssToInlineStyles
      * later.
      *
      * @return void
-     * @param  string[optional] $html The HTML to process.
-     * @param  string[optional] $css  The CSS to use.
+     * @param  string [optional] $html The HTML to process.
+     * @param  string [optional] $css  The CSS to use.
      */
     public function __construct($html = null, $css = null)
     {
-        if($html !== null) $this->setHTML($html);
-        if($css !== null) $this->setCSS($css);
+        if ($html !== null) {
+            $this->setHTML($html);
+        }
+        if ($css !== null) {
+            $this->setCSS($css);
+        }
     }
 
     /**
@@ -102,12 +106,11 @@ class CssToInlineStyles
         return $html;
     }
 
-
     /**
      * Converts the loaded HTML into an HTML-string with inline styles based on the loaded CSS
      *
      * @return string
-     * @param  bool[optional] $outputXHTML Should we output valid XHTML?
+     * @param  bool [optional] $outputXHTML Should we output valid XHTML?
      */
     public function convert($outputXHTML = false)
     {
@@ -115,7 +118,9 @@ class CssToInlineStyles
         $outputXHTML = (bool) $outputXHTML;
 
         // validate
-        if($this->html == null) throw new Exception('No HTML provided.');
+        if ($this->html == null) {
+            throw new Exception('No HTML provided.');
+        }
 
         // should we use inline style-block
         if ($this->useInlineStylesBlock) {
@@ -128,7 +133,9 @@ class CssToInlineStyles
             // any style-blocks found?
             if (!empty($matches[2])) {
                 // add
-                foreach($matches[2] as $match) $this->css .= trim($match) ."\n";
+                foreach ($matches[2] as $match) {
+                    $this->css .= trim($match) . "\n";
+                }
             }
         }
 
@@ -161,14 +168,17 @@ class CssToInlineStyles
                 $elements = $xPath->query($query);
 
                 // validate elements
-                if($elements === false) continue;
+                if ($elements === false) {
+                    continue;
+                }
 
                 // loop found elements
                 foreach ($elements as $element) {
                     // no styles stored?
                     if ($element->attributes->getNamedItem(
-                        'data-css-to-inline-styles-original-styles'
-                    ) == null) {
+                            'data-css-to-inline-styles-original-styles'
+                        ) == null
+                    ) {
                         // init var
                         $originalStyle = '';
                         if ($element->attributes->getNamedItem('style') !== null) {
@@ -202,13 +212,17 @@ class CssToInlineStyles
                         // loop properties
                         foreach ($definedProperties as $property) {
                             // validate property
-                            if($property == '') continue;
+                            if ($property == '') {
+                                continue;
+                            }
 
                             // split into chunks
                             $chunks = (array) explode(':', trim($property), 2);
 
                             // validate
-                            if(!isset($chunks[1])) continue;
+                            if (!isset($chunks[1])) {
+                                continue;
+                            }
 
                             // loop chunks
                             $properties[$chunks[0]] = trim($chunks[1]);
@@ -265,13 +279,17 @@ class CssToInlineStyles
 
                     foreach ($originalStyles as $property) {
                         // validate property
-                        if($property == '') continue;
+                        if ($property == '') {
+                            continue;
+                        }
 
                         // split into chunks
                         $chunks = (array) explode(':', trim($property), 2);
 
                         // validate
-                        if(!isset($chunks[1])) continue;
+                        if (!isset($chunks[1])) {
+                            continue;
+                        }
 
                         // loop chunks
                         $originalProperties[$chunks[0]] = trim($chunks[1]);
@@ -292,13 +310,17 @@ class CssToInlineStyles
                         // loop properties
                         foreach ($definedProperties as $property) {
                             // validate property
-                            if($property == '') continue;
+                            if ($property == '') {
+                                continue;
+                            }
 
                             // split into chunks
                             $chunks = (array) explode(':', trim($property), 2);
 
                             // validate
-                            if(!isset($chunks[1])) continue;
+                            if (!isset($chunks[1])) {
+                                continue;
+                            }
 
                             // loop chunks
                             $properties[$chunks[0]] = trim($chunks[1]);
@@ -324,9 +346,12 @@ class CssToInlineStyles
                     $propertiesString = implode(' ', $propertyChunks);
 
                     // set attribute
-                    if($propertiesString != '') $element->setAttribute(
-                        'style', $propertiesString
-                    );
+                    if ($propertiesString != '') {
+                        $element->setAttribute(
+                            'style',
+                            $propertiesString
+                        );
+                    }
                 }
 
                 // remove placeholder
@@ -355,16 +380,16 @@ class CssToInlineStyles
                 // remove the XML-header
                 $html = ltrim(substr($html, $endPosition + 1));
             }
-        }
-
-        // just regular HTML 4.01 as it should be used in newsletters
+        } // just regular HTML 4.01 as it should be used in newsletters
         else {
             // get the HTML
             $html = $document->saveHTML();
         }
 
         // cleanup the HTML if we need to
-        if($this->cleanup) $html = $this->cleanupHTML($html);
+        if ($this->cleanup) {
+            $html = $this->cleanupHTML($html);
+        }
 
         // strip original style tags if we need to
         if ($this->stripOriginalStyleTags) {
@@ -375,7 +400,6 @@ class CssToInlineStyles
         return $html;
     }
 
-
     /**
      * Get the encoding to use
      *
@@ -385,7 +409,6 @@ class CssToInlineStyles
     {
         return $this->encoding;
     }
-
 
     /**
      * Process the loaded CSS
@@ -425,7 +448,9 @@ class CssToInlineStyles
             $chunks = explode('{', $rule);
 
             // invalid rule?
-            if(!isset($chunks[1])) continue;
+            if (!isset($chunks[1])) {
+                continue;
+            }
 
             // set the selectors
             $selectors = trim($chunks[0]);
@@ -492,15 +517,18 @@ class CssToInlineStyles
             $chunks = (array) explode(':', $property, 2);
 
             // validate
-            if(!isset($chunks[1])) continue;
+            if (!isset($chunks[1])) {
+                continue;
+            }
 
             // cleanup
             $chunks[0] = trim($chunks[0]);
             $chunks[1] = trim($chunks[1]);
 
             // add to pairs array
-            if(!isset($pairs[$chunks[0]]) ||
-               !in_array($chunks[1], $pairs[$chunks[0]])) {
+            if (!isset($pairs[$chunks[0]]) ||
+                !in_array($chunks[1], $pairs[$chunks[0]])
+            ) {
                 $pairs[$chunks[0]][] = $chunks[1];
             }
         }
@@ -516,7 +544,7 @@ class CssToInlineStyles
      * Should the IDs and classes be removed?
      *
      * @return void
-     * @param  bool[optional] $on Should we enable cleanup?
+     * @param  bool [optional] $on Should we enable cleanup?
      */
     public function setCleanup($on = true)
     {
@@ -561,7 +589,7 @@ class CssToInlineStyles
      * If this is enabled the class will use the style-block in the HTML.
      *
      * @return void
-     * @param  bool[optional] $on Should we process inline styles?
+     * @param  bool [optional] $on Should we process inline styles?
      */
     public function setUseInlineStylesBlock($on = true)
     {
@@ -573,7 +601,7 @@ class CssToInlineStyles
      * If this is enabled the class will remove all style tags in the HTML.
      *
      * @return void
-     * @param  bool[optional] $on Should we process inline styles?
+     * @param  bool [optional] $on Should we process inline styles?
      */
     public function setStripOriginalStyleTags($on = true)
     {
@@ -586,7 +614,7 @@ class CssToInlineStyles
      * If this is enabled the media queries will be removed before inlining the rules
      *
      * @return void
-     * @param bool[optional] $on
+     * @param bool [optional] $on
      */
     public function setExcludeMediaQueries($on = true)
     {
