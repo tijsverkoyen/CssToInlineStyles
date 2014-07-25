@@ -104,13 +104,15 @@ class CssToInlineStyles
         // loop chunks
         foreach ($chunks as $chunk) {
             // an ID is important, so give it a high specifity
-            if(strstr($chunk, '#') !== false) $specifity += 100;
-
+            if(strstr($chunk, '#') !== false) {
+                $specifity += 100;
             // classes are more important than a tag, but less important then an ID
-            elseif(strstr($chunk, '.')) $specifity += 10;
-
+            } elseif(strstr($chunk, '.')) {
+                $specifity += 10;
             // anything else isn't that important
-            else $specifity += 1;
+            } else {
+                $specifity += 1;
+            }
         }
 
         // return
@@ -501,6 +503,10 @@ class CssToInlineStyles
 
         // sort based on specifity
         if (!empty($this->cssRules)) {
+            // compatibility for HHVM - https://github.com/facebook/hhvm/issues/1781
+            foreach ($this->cssRules as $index => $rule) {
+                $this->cssRules[$index]['originalIndex'] = $index;
+            }
             usort($this->cssRules, array(__CLASS__, 'sortOnSpecifity'));
         }
     }
@@ -647,7 +653,8 @@ class CssToInlineStyles
     private static function sortOnSpecifity($e1, $e2)
     {
         if ($e1['specifity'] == $e2['specifity']) {
-            return 0;
+            // compatibility for HHVM - https://github.com/facebook/hhvm/issues/1781
+            return ($e1['originalIndex'] > $e2['originalIndex']) ? -1 : 1;
         }
         return ($e1['specifity'] < $e2['specifity']) ? -1 : 1;
     }
