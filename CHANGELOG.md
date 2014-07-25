@@ -1,3 +1,6 @@
+# Changelog since 1.4.3
+* Removed the .lock-file for real.
+
 # Changelog since 1.4.2
 * Refactor specificity, thx to [barryvdh](https://github.com/barryvdh),
     for more information see the [Pull Request](https://github.com/tijsverkoyen/CssToInlineStyles/pull/59)
