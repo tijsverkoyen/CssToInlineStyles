@@ -14,16 +14,15 @@
          verbose="false">
          
   <testsuites>
-    <testsuite name="CssToInlineStyles Test">
-      <file>./tests/CssToInlineStyles.Test.php</file>
+    <testsuite name="CssToInlineStyles Tests">
+        <directory>./tests/</directory>
     </testsuite>
   </testsuites>
   
   <filter>
     <blacklist>
       <directory>./vendor</directory>
-      <directory>./doc</directory>
-      <directory>./report</directory>
+      <directory>./example</directory>
       <directory>./tests</directory>
     </blacklist>
   </filter>
