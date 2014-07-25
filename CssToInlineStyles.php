@@ -85,42 +85,6 @@ class CssToInlineStyles
     }
 
     /**
-     * Calculate the specifity for the CSS-selector
-     *
-     * @return int
-     * @param  string $selector The selector to calculate the specifity for.
-     */
-    private function calculateCSSSpecifity($selector)
-    {
-        // cleanup selector
-        $selector = str_replace(array('>', '+'), array(' > ', ' + '), $selector);
-
-        // init var
-        $specifity = 0;
-
-        // split the selector into chunks based on spaces
-        $chunks = explode(' ', $selector);
-
-        // loop chunks
-        foreach ($chunks as $chunk) {
-            // an ID is important, so give it a high specifity
-            if(strstr($chunk, '#') !== false) {
-                $specifity += 100;
-            // classes are more important than a tag, but less important then an ID
-            } elseif(strstr($chunk, '.')) {
-                $specifity += 10;
-            // anything else isn't that important
-            } else {
-                $specifity += 1;
-            }
-        }
-
-        // return
-        return $specifity;
-    }
-
-
-    /**
      * Cleanup the generated HTML
      *
      * @return string
@@ -488,10 +452,11 @@ class CssToInlineStyles
                     $cssProperties
                 );
 
-                // calculate specifity
-                $ruleSet['specifity'] = $this->calculateCSSSpecifity(
-                    $selector
-                ) + $i;
+                // calculate specificity
+                $ruleSet['specificity'] = Specificity::fromSelector($selector);
+
+                // remember the order in which the rules appear
+                $ruleSet['order'] = $i;
 
                 // add into global rules
                 $this->cssRules[] = $ruleSet;
@@ -501,13 +466,9 @@ class CssToInlineStyles
             $i++;
         }
 
-        // sort based on specifity
+        // sort based on specificity
         if (!empty($this->cssRules)) {
-            // compatibility for HHVM - https://github.com/facebook/hhvm/issues/1781
-            foreach ($this->cssRules as $index => $rule) {
-                $this->cssRules[$index]['originalIndex'] = $index;
-            }
-            usort($this->cssRules, array(__CLASS__, 'sortOnSpecifity'));
+            usort($this->cssRules, array(__CLASS__, 'sortOnSpecificity'));
         }
     }
 
@@ -644,18 +605,22 @@ class CssToInlineStyles
     }
 
     /**
-     * Sort an array on the specifity element
+     * Sort an array on the specificity element
      *
      * @return int
      * @param  array $e1 The first element.
      * @param  array $e2 The second element.
      */
-    private static function sortOnSpecifity($e1, $e2)
+    private static function sortOnSpecificity($e1, $e2)
     {
-        if ($e1['specifity'] == $e2['specifity']) {
-            // compatibility for HHVM - https://github.com/facebook/hhvm/issues/1781
-            return ($e1['originalIndex'] > $e2['originalIndex']) ? -1 : 1;
+        // Compare the specificity
+        $value = $e1['specificity']->compareTo($e2['specificity']);
+
+        // if the specificity is the same, use the order in which the element appeared
+        if ($value === 0) {
+            $value = $e1['order'] - $e2['order'];
         }
-        return ($e1['specifity'] < $e2['specifity']) ? -1 : 1;
+
+        return $value;
     }
 }
