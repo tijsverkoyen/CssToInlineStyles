@@ -1,3 +1,10 @@
+# Changelog since 1.4.1
+* Ignore the composer.lock-file as it doesn't make any sense
+* Tests. Massive thumbs up for [jbboehr](https://github.com/jbboehr),
+    for more information see the [Pull Request](https://github.com/tijsverkoyen/CssToInlineStyles/pull/61)
+* Tweak for the `!important` attributes-fix, thx to [barryvdh](https://github.com/barryvdh),
+    for more information see the [Pull Request](https://github.com/tijsverkoyen/CssToInlineStyles/pull/62)
+
 # Changelog since 1.4.0
 * Skip `!important` attributes if needed, thx to [barryvdh](https://github.com/barryvdh),
     for more information see the [Pull Request](https://github.com/tijsverkoyen/CssToInlineStyles/pull/58)
