@@ -1,3 +1,7 @@
+# Changelog since 1.4.2
+* Refactor specificity, thx to [barryvdh](https://github.com/barryvdh),
+    for more information see the [Pull Request](https://github.com/tijsverkoyen/CssToInlineStyles/pull/59)
+
 # Changelog since 1.4.1
 * Ignore the composer.lock-file as it doesn't make any sense
 * Tests. Massive thumbs up for [jbboehr](https://github.com/jbboehr),
