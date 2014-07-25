@@ -88,12 +88,15 @@ a {
   border: 1px solid red;
   padding: 10px;
   margin: 20px;
+  width: 10px !important; 
 }
 .one {
   padding: 15px;
+  width: 20px !important;
 }
 #ONE {
   margin: 10px;
+  width: 30px;
 }
 img {
   border: 2px solid green;
@@ -102,7 +105,7 @@ a img {
   border: none;
 }
 EOF;
-    $expected = '<a class="one" id="ONE" style="border: 1px solid red; margin: 10px; padding: 15px;"><img class="two" id="TWO" style="border: none;"></a>';
+    $expected = '<a class="one" id="ONE" style="border: 1px solid red; margin: 10px; padding: 15px; width: 20px !important;"><img class="two" id="TWO" style="border: none;"></a>';
     $this->runHTMLToCSS($html, $css, $expected);
   }
 
