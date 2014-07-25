@@ -1,10 +1,10 @@
 <?php
 
-namespace TijsVerkoyen\CssToInlineStyles\tests;
+namespace TijsVerkoyen\CssToInlineStyles\Tests;
 
 use \TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 
-class CssToInlineStyles_Test extends \PHPUnit_Framework_TestCase
+class CssToInlineStylesTest extends \PHPUnit_Framework_TestCase
 {
   protected $cssToInlineStyles;
 
