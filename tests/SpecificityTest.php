@@ -41,7 +41,7 @@ class SpecificityTest extends \PHPUnit_Framework_TestCase
             array(new Specificity(12, 11, 0), new Specificity(13, 0, 0), -1),
         );
     }
-    
+
     /** @dataProvider getSelectorData */
     public function testFromSelector($selector, $result)
     {
@@ -62,14 +62,14 @@ class SpecificityTest extends \PHPUnit_Framework_TestCase
             array("#x34y", array(1,0,0)),
         );
     }
-    
+
     /** @dataProvider getSkippedSelectorData */
     public function testSkippedFromSelector($selector, $result)
     {
         $this->markTestSkipped(
               'Skipping edge cases in CSS'
             );
-            
+
         $specificity = Specificity::fromSelector($selector);
         $this->assertEquals($result, $specificity->getValues());
     }

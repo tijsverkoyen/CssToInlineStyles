@@ -88,7 +88,7 @@ a {
   border: 1px solid red;
   padding: 10px;
   margin: 20px;
-  width: 10px !important; 
+  width: 10px !important;
 }
 .one {
   padding: 15px;
