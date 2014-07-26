@@ -361,6 +361,11 @@ class CssToInlineStyles
             }
         }
 
+        // strip original style tags if we need to
+        if ($this->stripOriginalStyleTags) {
+            $this->stripOriginalStyleTags($xPath);
+        }
+        
         // should we output XHTML?
         if ($outputXHTML) {
             // set formating
@@ -389,11 +394,6 @@ class CssToInlineStyles
         // cleanup the HTML if we need to
         if ($this->cleanup) {
             $html = $this->cleanupHTML($html);
-        }
-
-        // strip original style tags if we need to
-        if ($this->stripOriginalStyleTags) {
-            $html = $this->stripOriginalStyleTags($html);
         }
 
         // return
@@ -625,11 +625,25 @@ class CssToInlineStyles
      * Strip style tags into the generated HTML
      *
      * @return string
-     * @param  string $html The HTML to strip style tags.
+     * @param  \DOMXPath $xPath The DOMXPath for the entire document.
      */
-    private function stripOriginalStyleTags($html)
+    private function stripOriginalStyleTags(\DOMXPath $xPath)
     {
-        return preg_replace('|<style(.*)>(.*)</style>|isU', '', $html);
+        // Get all style tags
+        $nodes = $xPath->query('descendant-or-self::style');
+
+        foreach ($nodes as $node) {
+            if ($this->excludeMediaQueries) {
+                //Search for Media Queries
+                preg_match_all('/@media [^{]*{([^{}]|{[^{}]*})*}/', $node->nodeValue, $mqs);
+
+                // Replace the nodeValue with just the Media Queries
+                $node->nodeValue = implode("\n", $mqs[0]);
+            } else {
+                // Remove the entire style tag
+                $node->parentNode->removeChild($node);
+            }
+        }
     }
 
     /**
