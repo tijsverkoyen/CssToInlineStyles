@@ -68,7 +68,7 @@ class CssToInlineStyles
      *
      * @var bool
      */
-    private $excludeMediaQueries = false;
+    private $excludeMediaQueries = true;
 
     /**
      * Creates an instance, you could set the HTML and CSS here, or load it
