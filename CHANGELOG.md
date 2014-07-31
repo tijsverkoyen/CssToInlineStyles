@@ -1,4 +1,22 @@
+# Changelog since 1.5.1
+
+* Refactor removing style tags, thx to [barryvdh](https://github.com/barryvdh),
+    for more information see the [Pull Request](https://github.com/tijsverkoyen/CssToInlineStyles/pull/72)
+* Set excludeMediaQueries to true as default, thx to [barryvdh](https://github.com/barryvdh),
+    for more information see the [Pull Request](https://github.com/tijsverkoyen/CssToInlineStyles/pull/69)
+* Normalised eof and removed extra whitespace, thx to [GrahamCampbell](https://github.com/GrahamCampbell),
+    for more information see the [Pull Request](https://github.com/tijsverkoyen/CssToInlineStyles/pull/68)
+* Testing Improvements, thx to [GrahamCampbell](https://github.com/GrahamCampbell),
+    for more information see the [Pull Request](https://github.com/tijsverkoyen/CssToInlineStyles/pull/70)
+* Add note about charset, thx to [barryvdh](https://github.com/barryvdh),
+    for more information see the [Pull Request](https://github.com/tijsverkoyen/CssToInlineStyles/pull/73)
+* Deprecate encoding, thx to [barryvdh](https://github.com/barryvdh),
+    for more information see the [Pull Request](https://github.com/tijsverkoyen/CssToInlineStyles/pull/74)
+* Added a .gitattributes file, thx to [GrahamCampbell](https://github.com/GrahamCampbell),
+    for more information see the [Pull Request](https://github.com/tijsverkoyen/CssToInlineStyles/pull/71)
+
 # Changelog since 1.5.0
+
 * Exclude vendor files from coverage, thx to [barryvdh](https://github.com/barryvdh),
     for more information see the [Pull Request](https://github.com/tijsverkoyen/CssToInlineStyles/pull/67)
 * Add tests for Specificity and !important, thx to [barryvdh](https://github.com/barryvdh),
@@ -6,16 +24,20 @@
 
 
 # Changelog since 1.4.4
+
 * Made the class compliant with PSR4
 
 # Changelog since 1.4.3
+
 * Removed the .lock-file for real.
 
 # Changelog since 1.4.2
+
 * Refactor specificity, thx to [barryvdh](https://github.com/barryvdh),
     for more information see the [Pull Request](https://github.com/tijsverkoyen/CssToInlineStyles/pull/59)
 
 # Changelog since 1.4.1
+
 * Ignore the composer.lock-file as it doesn't make any sense
 * Tests. Massive thumbs up for [jbboehr](https://github.com/jbboehr),
     for more information see the [Pull Request](https://github.com/tijsverkoyen/CssToInlineStyles/pull/61)
@@ -23,6 +45,7 @@
     for more information see the [Pull Request](https://github.com/tijsverkoyen/CssToInlineStyles/pull/62)
 
 # Changelog since 1.4.0
+
 * Skip `!important` attributes if needed, thx to [barryvdh](https://github.com/barryvdh),
     for more information see the [Pull Request](https://github.com/tijsverkoyen/CssToInlineStyles/pull/58)
 
