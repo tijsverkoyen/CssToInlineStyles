@@ -567,6 +567,8 @@ class CssToInlineStyles
      *
      * @return void
      * @param  string $encoding The encoding to use.
+     * 
+     * @deprecated Doesn't have any effect
      */
     public function setEncoding($encoding)
     {
