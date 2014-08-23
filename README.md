@@ -18,10 +18,32 @@ The recommended installation way is through [Composer](https://getcomposer.org).
 $ composer require tijsverkoyen/css-to-inline-styles '~1.5'
 ```
 
+## Example
+
+    use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
+
+    // Convert HTML + CSS to HTML with inlined CSS
+    $cssToInlineStyles= new CssToInlineStyles();
+    $cssToInlineStyles->setHTML($html);
+    $cssToInlineStyles->setCSS($css);
+    $html = $cssToInlineStyles->convert();
+
+    // Or use inline-styles blocks from the HTML as CSS
+    $cssToInlineStyles = new CssToInlineStyles($html);
+    $cssToInlineStyles->setUseInlineStylesBlock(true);
+    $html = $cssToInlineStyles->convert();
+
+
 ## Documentation
 
-The class is well documented inline. If you use a decent IDE you'll see that
-each method is documented with PHPDoc.
+The following properties exists and have get/set methods available:
+
+Property | Default | Description
+-------|---------|------------
+cleanup|false|Should the generated HTML be cleaned?
+useInlineStylesBlock |false|Use inline-styles block as CSS.
+stripOriginalStyleTags |false|Strip original style tags.
+excludeMediaQueries |true|Exclude the media queries from the inlined styles.
 
 ## Known issues
 
