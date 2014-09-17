@@ -146,10 +146,13 @@ class CssToInlineStyles
         $document = new \DOMDocument('1.0', $this->getEncoding());
 
         // set error level
-        libxml_use_internal_errors(true);
+        $internalErrors = libxml_use_internal_errors(true);
 
         // load HTML
         $document->loadHTML($this->html);
+
+        // Restore error level
+        libxml_use_internal_errors($internalErrors);
 
         // create new XPath
         $xPath = new \DOMXPath($document);
@@ -365,7 +368,7 @@ class CssToInlineStyles
         if ($this->stripOriginalStyleTags) {
             $this->stripOriginalStyleTags($xPath);
         }
-        
+
         // should we output XHTML?
         if ($outputXHTML) {
             // set formating
@@ -567,7 +570,7 @@ class CssToInlineStyles
      *
      * @return void
      * @param  string $encoding The encoding to use.
-     * 
+     *
      * @deprecated Doesn't have any effect
      */
     public function setEncoding($encoding)
