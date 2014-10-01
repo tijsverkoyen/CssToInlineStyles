@@ -71,6 +71,13 @@ class CssToInlineStyles
     private $excludeMediaQueries = true;
 
     /**
+     * Exclude conditional inline-styles block
+     *
+     * @var bool
+     */
+    private $excludeConditionalInlineStylesBlock = true;
+
+    /**
      * Creates an instance, you could set the HTML and CSS here, or load it
      * later.
      *
@@ -126,6 +133,9 @@ class CssToInlineStyles
         if ($this->useInlineStylesBlock) {
             // init var
             $matches = array();
+
+            if ($this->excludeConditionalInlineStylesBlock)
+                $this->html = preg_replace('/<!--(.|\s)*?-->/', '', $this->html);
 
             // match the style blocks
             preg_match_all('|<style(.*)>(.*)</style>|isU', $this->html, $matches);
@@ -636,6 +646,17 @@ class CssToInlineStyles
     public function setExcludeMediaQueries($on = true)
     {
         $this->excludeMediaQueries = (bool) $on;
+    }
+
+    /**
+     * Set exclude conditional inline-styles block
+     *
+     * @return void
+     * @param bool [optional] $on
+     */
+    public function setExcludeConditionalInlineStylesBlock($on = true)
+    {
+        $this->excludeConditionalInlineStylesBlock = (bool) $on;
     }
 
     /**
