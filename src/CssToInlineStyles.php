@@ -10,7 +10,7 @@ use Symfony\Component\CssSelector\Exception\ExceptionInterface;
  * @author         Tijs Verkoyen <php-css-to-inline-styles@verkoyen.eu>
  * @version        1.5.2
  * @copyright      Copyright (c), Tijs Verkoyen. All rights reserved.
- * @license        BSD License
+ * @license        Revised BSD License
  */
 class CssToInlineStyles
 {
