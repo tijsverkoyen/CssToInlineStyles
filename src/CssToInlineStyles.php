@@ -71,6 +71,12 @@ class CssToInlineStyles
     private $excludeMediaQueries = true;
 
     /**
+     * Whether css was already processed and there's no need to do it again
+     * @var bool
+     */
+    private $isCssProcessed = false;
+
+    /**
      * Creates an instance, you could set the HTML and CSS here, or load it
      * later.
      *
@@ -140,7 +146,9 @@ class CssToInlineStyles
         }
 
         // process css
-        $this->processCSS();
+        if (!$this->isCssProcessed) {
+            $this->processCSS();
+        }
 
         // create new DOMDocument
         $document = new \DOMDocument('1.0', $this->getEncoding());
@@ -417,6 +425,8 @@ class CssToInlineStyles
      */
     private function processCSS()
     {
+        //reset current set of rules
+        $this->cssRules = array();
         // init vars
         $css = (string) $this->css;
 
@@ -495,6 +505,7 @@ class CssToInlineStyles
         if (!empty($this->cssRules)) {
             usort($this->cssRules, array(__CLASS__, 'sortOnSpecificity'));
         }
+        $this->isCssProcessed = true;
     }
 
     /**
@@ -560,6 +571,7 @@ class CssToInlineStyles
     public function setCSS($css)
     {
         $this->css = (string) $css;
+        $this->isCssProcessed = false;
     }
 
     /**

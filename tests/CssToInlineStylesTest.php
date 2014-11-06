@@ -169,6 +169,20 @@ EOF;
         $this->runHTMLToCSS($html, $css, $expected);
     }
 
+    public function testCssRulesResetDuringSecondLoad()
+    {
+        $html = "<p></p>";
+        $css = 'p { margin: 10px; }';
+        $expected = '<p style="margin: 10px;"></p>';
+
+        $this->runHTMLToCSS($html, $css, $expected);
+
+        $html = "<p></p>";
+        $css = 'p { padding: 10px; }';
+        $expected = '<p style="padding: 10px;"></p>';
+        $this->runHTMLToCSS($html, $css, $expected);
+    }
+
     private function runHTMLToCSS($html, $css, $expected, $asXHTML = false)
     {
         $cssToInlineStyles = $this->cssToInlineStyles;
