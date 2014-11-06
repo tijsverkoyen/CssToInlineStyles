@@ -122,7 +122,7 @@ class CssToInlineStyles
             throw new Exception('No HTML provided.');
         }
 
-        $cssRules = [];
+        $cssRules = array();
         // should we use inline style-block
         if ($this->useInlineStylesBlock) {
             // init var
