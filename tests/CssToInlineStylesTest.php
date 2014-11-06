@@ -6,6 +6,9 @@ use \TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 
 class CssToInlineStylesTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var CssToInlineStyles
+     */
     protected $cssToInlineStyles;
 
     public function setUp()
@@ -167,6 +170,44 @@ EOF;
 
         $this->cssToInlineStyles->setEncoding('ISO-8859-1');
         $this->runHTMLToCSS($html, $css, $expected);
+    }
+
+    public function testCssRulesResetDuringSecondLoad()
+    {
+        $html = "<p></p>";
+        $css = 'p { margin: 10px; }';
+        $expected = '<p style="margin: 10px;"></p>';
+
+        $this->runHTMLToCSS($html, $css, $expected);
+
+        $html = "<p></p>";
+        $css = 'p { padding: 10px; }';
+        $expected = '<p style="padding: 10px;"></p>';
+        $this->runHTMLToCSS($html, $css, $expected);
+    }
+
+    public function testCssRulesInlineResetDuringSecondLoad()
+    {
+        $html = "<p></p>";
+        $css = 'p { margin: 10px; }';
+        $expected = '<p style="margin: 10px;"></p>';
+
+        $this->runHTMLToCSS($html, $css, $expected);
+
+        $html = <<<HTML
+<style>
+    p {
+        padding: 10px;
+    }
+</style>
+<p></p>
+HTML;
+
+        $css = 'p { margin: 10px; }';
+
+        $this->runHTMLToCSS($html, $css, '<p style="margin: 10px;"></p>');
+        $this->cssToInlineStyles->setUseInlineStylesBlock(true);
+        $this->runHTMLToCSS('<p></p>', $css, '<p style="margin: 10px;"></p>');
     }
 
     private function runHTMLToCSS($html, $css, $expected, $asXHTML = false)

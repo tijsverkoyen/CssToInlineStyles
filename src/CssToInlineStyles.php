@@ -22,11 +22,11 @@ class CssToInlineStyles
     private $css;
 
     /**
-     * The processed CSS rules
+     * The processed CSS rules cache
      *
      * @var    array
      */
-    private $cssRules;
+    private $cssRulesCache = array();
 
     /**
      * Should the generated HTML be cleaned
@@ -122,6 +122,7 @@ class CssToInlineStyles
             throw new Exception('No HTML provided.');
         }
 
+        $cssRules = array();
         // should we use inline style-block
         if ($this->useInlineStylesBlock) {
             // init var
@@ -130,17 +131,27 @@ class CssToInlineStyles
             // match the style blocks
             preg_match_all('|<style(.*)>(.*)</style>|isU', $this->html, $matches);
 
+            $inlineCss = '';
             // any style-blocks found?
             if (!empty($matches[2])) {
                 // add
                 foreach ($matches[2] as $match) {
-                    $this->css .= trim($match) . "\n";
+                    $inlineCss .= trim($match) . "\n";
                 }
             }
+
+            $cssRules = $this->processCSS($inlineCss);
         }
 
         // process css
-        $this->processCSS();
+        if ($this->css) {
+            $cssRules = array_merge($cssRules, $this->processCSS($this->css));
+        }
+
+        // sort based on specificity
+        if (!empty($cssRules)) {
+            usort($cssRules, array(__CLASS__, 'sortOnSpecificity'));
+        }
 
         // create new DOMDocument
         $document = new \DOMDocument('1.0', $this->getEncoding());
@@ -155,9 +166,9 @@ class CssToInlineStyles
         $xPath = new \DOMXPath($document);
 
         // any rules?
-        if (!empty($this->cssRules)) {
+        if (!empty($cssRules)) {
             // loop rules
-            foreach ($this->cssRules as $rule) {
+            foreach ($cssRules as $rule) {
                 try {
                     $query = CssSelector::toXPath($rule['selector']);
                 } catch (ExceptionInterface $e) {
@@ -413,88 +424,94 @@ class CssToInlineStyles
     /**
      * Process the loaded CSS
      *
-     * @return void
+     * @param string $css
+     * @return array parsed css rules
      */
-    private function processCSS()
+    private function processCSS($css)
     {
-        // init vars
-        $css = (string) $this->css;
+        $hash = md5($css);
+        if (!isset($this->cssRulesCache[$hash])) {
+            //reset current set of rules
+            $cssRules = array();
+            // init vars
+            $css = (string) $css;
 
-        // remove newlines
-        $css = str_replace(array("\r", "\n"), '', $css);
+            // remove newlines
+            $css = str_replace(array("\r", "\n"), '', $css);
 
-        // replace double quotes by single quotes
-        $css = str_replace('"', '\'', $css);
+            // replace double quotes by single quotes
+            $css = str_replace('"', '\'', $css);
 
-        // remove comments
-        $css = preg_replace('|/\*.*?\*/|', '', $css);
+            // remove comments
+            $css = preg_replace('|/\*.*?\*/|', '', $css);
 
-        // remove spaces
-        $css = preg_replace('/\s\s+/', ' ', $css);
+            // remove spaces
+            $css = preg_replace('/\s\s+/', ' ', $css);
 
-        if ($this->excludeMediaQueries) {
-            $css = preg_replace('/@media [^{]*{([^{}]|{[^{}]*})*}/', '', $css);
-        }
-
-        // rules are splitted by }
-        $rules = (array) explode('}', $css);
-
-        // init var
-        $i = 1;
-
-        // loop rules
-        foreach ($rules as $rule) {
-            // split into chunks
-            $chunks = explode('{', $rule);
-
-            // invalid rule?
-            if (!isset($chunks[1])) {
-                continue;
+            if ($this->excludeMediaQueries) {
+                $css = preg_replace('/@media [^{]*{([^{}]|{[^{}]*})*}/', '', $css);
             }
 
-            // set the selectors
-            $selectors = trim($chunks[0]);
+            // rules are splitted by }
+            $rules = (array) explode('}', $css);
 
-            // get cssProperties
-            $cssProperties = trim($chunks[1]);
+            // init var
+            $i = 1;
 
-            // split multiple selectors
-            $selectors = (array) explode(',', $selectors);
+            // loop rules
+            foreach ($rules as $rule) {
+                // split into chunks
+                $chunks = explode('{', $rule);
 
-            // loop selectors
-            foreach ($selectors as $selector) {
-                // cleanup
-                $selector = trim($selector);
+                // invalid rule?
+                if (!isset($chunks[1])) {
+                    continue;
+                }
 
-                // build an array for each selector
-                $ruleSet = array();
+                // set the selectors
+                $selectors = trim($chunks[0]);
 
-                // store selector
-                $ruleSet['selector'] = $selector;
+                // get cssProperties
+                $cssProperties = trim($chunks[1]);
 
-                // process the properties
-                $ruleSet['properties'] = $this->processCSSProperties(
-                    $cssProperties
-                );
+                // split multiple selectors
+                $selectors = (array) explode(',', $selectors);
 
-                // calculate specificity
-                $ruleSet['specificity'] = Specificity::fromSelector($selector);
+                // loop selectors
+                foreach ($selectors as $selector) {
+                    // cleanup
+                    $selector = trim($selector);
 
-                // remember the order in which the rules appear
-                $ruleSet['order'] = $i;
+                    // build an array for each selector
+                    $ruleSet = array();
 
-                // add into global rules
-                $this->cssRules[] = $ruleSet;
+                    // store selector
+                    $ruleSet['selector'] = $selector;
+
+                    // process the properties
+                    $ruleSet['properties'] = $this->processCSSProperties(
+                        $cssProperties
+                    );
+
+                    // calculate specificity
+                    $ruleSet['specificity'] = Specificity::fromSelector($selector);
+
+                    // remember the order in which the rules appear
+                    $ruleSet['order'] = $i;
+
+                    // add into global rules
+                    $cssRules[] = $ruleSet;
+                }
+
+                // increment
+                $i++;
             }
 
-            // increment
-            $i++;
+            $this->cssRulesCache[$hash] = $cssRules;
         }
 
-        // sort based on specificity
-        if (!empty($this->cssRules)) {
-            usort($this->cssRules, array(__CLASS__, 'sortOnSpecificity'));
-        }
+
+        return $this->cssRulesCache[$hash];
     }
 
     /**
