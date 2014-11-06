@@ -207,7 +207,7 @@ HTML;
 
         $this->runHTMLToCSS($html, $css, '<p style="margin: 10px;"></p>');
         $this->cssToInlineStyles->setUseInlineStylesBlock(true);
-        $this->runHTMLToCSS($html, $css, '<p style="margin: 10px; padding: 10px;"></p>');
+        $this->runHTMLToCSS('<p></p>', $css, '<p style="margin: 10px;"></p>');
     }
 
     private function runHTMLToCSS($html, $css, $expected, $asXHTML = false)
