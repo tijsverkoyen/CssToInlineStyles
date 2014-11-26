@@ -169,6 +169,16 @@ EOF;
         $this->runHTMLToCSS($html, $css, $expected);
     }
 
+    public function testStripXmlHeader()
+    {
+    	$html = <<<EOF
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<p>test</p>
+EOF;
+    	$expected = '<p>test</p>';
+        $this->runHTMLToCSS($html, null, $expected, true);
+    }
+
     private function runHTMLToCSS($html, $css, $expected, $asXHTML = false)
     {
         $cssToInlineStyles = $this->cssToInlineStyles;
