@@ -1,3 +1,7 @@
+# Changelogs since 1.5.2
+
+* Make sure the XML header is removed.
+
 # Changelog since 1.5.1
 
 * Refactor removing style tags, thx to [barryvdh](https://github.com/barryvdh),
