@@ -210,8 +210,7 @@ class CssToInlineStyles
                         $definedStyles = (string) $stylesAttribute->value;
 
                         // split into properties
-                        $definedProperties = (array) explode(';', $definedStyles);
-
+                        $definedProperties = $this->splitIntoProperties($definedStyles);
                         // loop properties
                         foreach ($definedProperties as $property) {
                             // validate property
@@ -278,7 +277,7 @@ class CssToInlineStyles
 
                 if ($originalStyle != '') {
                     $originalProperties = array();
-                    $originalStyles = (array) explode(';', $originalStyle);
+                    $originalStyles = $this->splitIntoProperties($originalStyle);
 
                     foreach ($originalStyles as $property) {
                         // validate property
@@ -308,7 +307,7 @@ class CssToInlineStyles
                         $definedStyles = (string) $stylesAttribute->value;
 
                         // split into properties
-                        $definedProperties = (array) explode(';', $definedStyles);
+                        $definedProperties = $this->splitIntoProperties($definedStyles);
 
                         // loop properties
                         foreach ($definedProperties as $property) {
@@ -392,6 +391,28 @@ class CssToInlineStyles
 
         // return
         return $html;
+    }
+
+    /**
+     * Split a style string into an array of properties.
+     * The returned array can contain empty strings.
+     *
+     * @param string $styles ex: 'color:blue;font-size:12px;'
+     * @return array an array of strings containing css property ex: array('color:blue','font-size:12px')
+     */
+    private function splitIntoProperties($styles) {
+        $properties = (array) explode(';', $styles);
+
+        for ($i = 0; $i < count($properties); $i++) {
+            // If next property begins with base64,
+            // Then the ';' was part of this property (and we should not have split on it).
+            if (isset($properties[$i + 1]) && strpos($properties[$i + 1], 'base64,') === 0) {
+                $properties[$i] .= ';' . $properties[$i + 1];
+                $properties[$i + 1] = '';
+                $i += 1;
+            }
+        }
+        return $properties;
     }
 
     /**
@@ -500,7 +521,7 @@ class CssToInlineStyles
     private function processCSSProperties($propertyString)
     {
         // split into chunks
-        $properties = (array) explode(';', $propertyString);
+        $properties = $this->splitIntoProperties($propertyString);
 
         // init var
         $pairs = array();
