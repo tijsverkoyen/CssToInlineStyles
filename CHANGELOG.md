@@ -1,4 +1,13 @@
-# Changelogs since 1.5.2
+# Changelog since 1.5.3
+
+* Fix properties split on base64 encoded url content, thx to [tguyard](https://github.com/Giga-gg),
+    for more information see the [Pull Request](https://github.com/tijsverkoyen/CssToInlineStyles/pull/79)
+* Reset the xml error handling after usage, thx to [stof](https://github.com/stof),
+    for more information see the [Pull Request](https://github.com/tijsverkoyen/CssToInlineStyles/pull/80)
+* Remove version from require, thx to [barryvdh](https://github.com/barryvdh),
+    for more information see the [Pull Request](https://github.com/tijsverkoyen/CssToInlineStyles/pull/85)
+
+# Changelog since 1.5.2
 
 * Make sure the XML header is removed.
 
