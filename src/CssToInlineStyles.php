@@ -365,7 +365,7 @@ class CssToInlineStyles
         if ($this->stripOriginalStyleTags) {
             $this->stripOriginalStyleTags($xPath);
         }
-        
+
         // should we output XHTML?
         if ($outputXHTML) {
             // set formating
@@ -374,17 +374,8 @@ class CssToInlineStyles
             // get the HTML as XML
             $html = $document->saveXML(null, LIBXML_NOEMPTYTAG);
 
-            // get start of the XML-declaration
-            $startPosition = strpos($html, '<?xml');
-
-            // valid start position?
-            if ($startPosition !== false) {
-                // get end of the xml-declaration
-                $endPosition = strpos($html, '?>', $startPosition);
-
-                // remove the XML-header
-                $html = ltrim(substr($html, $endPosition + 1));
-            }
+            // remove the XML-header
+            $html = ltrim(preg_replace('/<?xml (.*)?>/', '', $html));
         } // just regular HTML 4.01 as it should be used in newsletters
         else {
             // get the HTML
@@ -567,7 +558,7 @@ class CssToInlineStyles
      *
      * @return void
      * @param  string $encoding The encoding to use.
-     * 
+     *
      * @deprecated Doesn't have any effect
      */
     public function setEncoding($encoding)

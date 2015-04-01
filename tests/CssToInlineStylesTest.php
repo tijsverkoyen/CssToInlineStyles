@@ -6,6 +6,9 @@ use \TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 
 class CssToInlineStylesTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var CssToInlineStyles
+     */
     protected $cssToInlineStyles;
 
     public function setUp()
@@ -167,6 +170,16 @@ EOF;
 
         $this->cssToInlineStyles->setEncoding('ISO-8859-1');
         $this->runHTMLToCSS($html, $css, $expected);
+    }
+
+    public function testXMLHeaderIsRemoved()
+    {
+        $html = '<html><body><p>Foo</p></body>';
+
+        $this->cssToInlineStyles->setHTML($html);
+        $this->cssToInlineStyles->setCSS('');
+
+        $this->assertNotContains('<?xml', $this->cssToInlineStyles->convert(true));
     }
 
     private function runHTMLToCSS($html, $css, $expected, $asXHTML = false)
