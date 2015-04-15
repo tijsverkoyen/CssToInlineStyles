@@ -175,11 +175,20 @@ EOF;
     public function testXMLHeaderIsRemoved()
     {
         $html = '<html><body><p>Foo</p></body>';
+        $expected = <<<EOF
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+  <body>
+    <p>Foo</p>
+  </body>
+</html>
 
+EOF;
         $this->cssToInlineStyles->setHTML($html);
         $this->cssToInlineStyles->setCSS('');
+        $actual = $this->cssToInlineStyles->convert(true);
 
-        $this->assertNotContains('<?xml', $this->cssToInlineStyles->convert(true));
+        $this->assertEquals($expected, $actual);
     }
 
     private function runHTMLToCSS($html, $css, $expected, $asXHTML = false)
