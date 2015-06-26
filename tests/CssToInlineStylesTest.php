@@ -3,6 +3,7 @@
 namespace TijsVerkoyen\CssToInlineStyles\tests;
 
 use \TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
+use voku\helper\UTF8;
 
 class CssToInlineStylesTest extends \PHPUnit_Framework_TestCase
 {
@@ -60,7 +61,7 @@ EOF;
         $this->cssToInlineStyles->setUseInlineStylesBlock();
         $this->cssToInlineStyles->setHTML($html);
         $actual = $this->findAndSaveNode($this->cssToInlineStyles->convert(), '//a');
-        $this->assertEquals($expected, $actual);
+        self::assertEquals($expected, $actual);
     }
 
     public function testStripOriginalStyleTags()
@@ -78,9 +79,9 @@ EOF;
         $this->cssToInlineStyles->setStripOriginalStyleTags();
         $this->cssToInlineStyles->setHTML($html);
         $actual = $this->findAndSaveNode($this->cssToInlineStyles->convert(), '//a');
-        $this->assertEquals($expected, $actual);
+        self::assertEquals($expected, $actual);
 
-        $this->assertNull($this->findAndSaveNode($actual, '//style'));
+        self::assertNull($this->findAndSaveNode($actual, '//style'));
     }
 
     public function testSpecificity()
@@ -134,7 +135,7 @@ EOF;
         $this->cssToInlineStyles->setCSS($css);
         $actual = $this->cssToInlineStyles->convert(true);
 
-        $this->assertContains('<img></img>', $actual);
+        self::assertContains('<img></img>', $actual);
     }
 
     public function testCleanup()
@@ -162,14 +163,36 @@ EOF;
         $this->runHTMLToCSS($html, $css, $expected);
     }
 
-    public function testEncoding()
+    public function testEncodingIso()
     {
-        $html = "<p>" . html_entity_decode('&rsquo;', 0, 'UTF-8') . "</p>";
+        $testString = UTF8::file_get_contents(__DIR__ . '/test1Latin.txt');
+        self::assertContains('Iñtërnâtiônàlizætiøn', $testString);
+
+        $html = '<p>' . $testString . '</p>';
         $css = '';
-        $expected = '<p>' . chr(0xc3) . chr(0xa2) . chr(0xc2) . chr(0x80) . chr(0xc2) . chr(0x99) . '</p>';
+        $expected = '';
 
         $this->cssToInlineStyles->setEncoding('ISO-8859-1');
-        $this->runHTMLToCSS($html, $css, $expected);
+        $result = $this->runHTMLToCSS($html, $css, $expected);
+
+        self::assertContains('<p>Hírek', $result);
+        self::assertContains('Iñtërnâtiônàlizætiøn', $result);
+    }
+
+    public function testEncodingUtf8()
+    {
+        $testString = UTF8::file_get_contents(__DIR__ . '/test1Utf8.txt');
+        self::assertContains('Iñtërnâtiônàlizætiøn', $testString);
+
+        $html = '<p>' . $testString . '</p>';
+        $css = '';
+        $expected = '';
+
+        $this->cssToInlineStyles->setEncoding('UTF-8');
+        $result = $this->runHTMLToCSS($html, $css, $expected);
+
+        self::assertContains('<p>Hírek', $result);
+        self::assertContains('Iñtërnâtiônàlizætiøn', $result);
     }
 
     public function testXMLHeaderIsRemoved()
@@ -179,9 +202,18 @@ EOF;
         $this->cssToInlineStyles->setHTML($html);
         $this->cssToInlineStyles->setCSS('');
 
-        $this->assertNotContains('<?xml', $this->cssToInlineStyles->convert(true));
+        self::assertNotContains('<?xml', $this->cssToInlineStyles->convert(true));
     }
 
+    /**
+     * @param            $html
+     * @param            $css
+     * @param            $expected
+     * @param bool|false $asXHTML
+     *
+     * @return string
+     * @throws \TijsVerkoyen\CssToInlineStyles\Exception
+     */
     private function runHTMLToCSS($html, $css, $expected, $asXHTML = false)
     {
         $cssToInlineStyles = $this->cssToInlineStyles;
@@ -189,7 +221,12 @@ EOF;
         $cssToInlineStyles->setCSS($css);
         $output = $cssToInlineStyles->convert($asXHTML);
         $actual = $this->stripBody($output, $asXHTML);
-        $this->assertEquals($expected, $actual);
+
+        if ($expected) {
+            self::assertEquals($expected, $actual);
+        }
+
+        return $actual;
     }
 
     private function stripBody($html, $asXHTML = false)
