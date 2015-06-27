@@ -38,6 +38,79 @@ class CssToInlineStylesTest extends \PHPUnit_Framework_TestCase
         $this->runHTMLToCSS($html, $css, $expected);
     }
 
+    public function testMediaQueryDisabledByDefault()
+    {
+        $html = '<html><body><style>@media (max-width: 600px) { .test { display: none; } } h1 { color : "red" }</style><div class="test"><h1>foo</h1><h1>foo2</h1></div></body></html';
+        $css = '';
+        $expected = '<style>@media (max-width: 600px) { .test { display: none; } } h1 { color : "red" }</style>
+<div class="test">
+<h1 style="color: \'red\';">foo</h1>
+<h1 style="color: \'red\';">foo2</h1>
+</div>';
+        $this->cssToInlineStyles->setUseInlineStylesBlock(true);
+        $this->runHTMLToCSS($html, $css, $expected);
+    }
+
+    public function testMediaQueryDisabled()
+    {
+        $html = '<html><body><style>@media (max-width: 600px) { .test { display: none; } } h1 { color : "red" }</style><div class="test"><h1>foo</h1><h1>foo2</h1></div></body></html';
+        $css = '';
+        $expected = '<style>@media (max-width: 600px) { .test { display: none; } } h1 { color : "red" }</style>
+<div class="test">
+<h1 style="color: \'red\';">foo</h1>
+<h1 style="color: \'red\';">foo2</h1>
+</div>';
+        $this->cssToInlineStyles->setUseInlineStylesBlock(true);
+        $this->cssToInlineStyles->setStripOriginalStyleTags(false);
+        $this->cssToInlineStyles->setExcludeMediaQueries(true);
+        $this->runHTMLToCSS($html, $css, $expected);
+    }
+
+    public function testMediaQuery()
+    {
+        $html = '<html><body><style>@media (max-width: 600px) { .test { display: none; } } h1 { color : "red" }</style><div class="test"><h1>foo</h1><h1>foo2</h1></div></body></html';
+        $css = '';
+        $expected = '<div class="test">
+<h1 style="color: \'red\';">foo</h1>
+<h1 style="color: \'red\';">foo2</h1>
+</div>';
+        $this->cssToInlineStyles->setUseInlineStylesBlock(true);
+        $this->cssToInlineStyles->setStripOriginalStyleTags(true);
+        $this->cssToInlineStyles->setExcludeMediaQueries(false);
+        $this->runHTMLToCSS($html, $css, $expected);
+    }
+
+    public function testMediaQueryV2()
+    {
+        $html = '<html><body><style>@media (max-width: 600px) { .test { display: none; } } h1 { color : "red" }</style><div class="test"><h1>foo</h1><h1>foo2</h1></div></body></html';
+        $css = '';
+        $expected = '<style>@media (max-width: 600px) { .test { display: none; } }</style>
+<div class="test">
+<h1 style="color: \'red\';">foo</h1>
+<h1 style="color: \'red\';">foo2</h1>
+</div>';
+        $this->cssToInlineStyles->setUseInlineStylesBlock(true);
+        $this->cssToInlineStyles->setStripOriginalStyleTags(true);
+        $this->cssToInlineStyles->setExcludeMediaQueries(true);
+        $this->runHTMLToCSS($html, $css, $expected);
+    }
+
+    public function testMediaQueryV3()
+    {
+        $html = '<html><body><style>@media (max-width: 600px) { .test { display: none; } } @media (max-width: 500px) { .test { top: 1rem; } } h1 { color : "red" }</style><div class="test"><h1>foo</h1><h1>foo2</h1></div></body></html';
+        $css = '';
+        $expected = '<style>@media (max-width: 600px) { .test { display: none; } }
+@media (max-width: 500px) { .test { top: 1rem; } }</style>
+<div class="test">
+<h1 style="color: \'red\';">foo</h1>
+<h1 style="color: \'red\';">foo2</h1>
+</div>';
+        $this->cssToInlineStyles->setUseInlineStylesBlock(true);
+        $this->cssToInlineStyles->setStripOriginalStyleTags(true);
+        $this->cssToInlineStyles->setExcludeMediaQueries(true);
+        $this->runHTMLToCSS($html, $css, $expected);
+    }
+
     public function testSimpleIdSelector()
     {
         $html = '<img id="IMG1">';
@@ -58,7 +131,7 @@ class CssToInlineStylesTest extends \PHPUnit_Framework_TestCase
 <a></a>
 EOF;
         $expected = '<a style="margin: 0; padding: 10px;"></a>';
-        $this->cssToInlineStyles->setUseInlineStylesBlock();
+        $this->cssToInlineStyles->setUseInlineStylesBlock(true);
         $this->cssToInlineStyles->setHTML($html);
         $actual = $this->findAndSaveNode($this->cssToInlineStyles->convert(), '//a');
         $this->assertEquals($expected, $actual);
@@ -231,6 +304,14 @@ EOF;
         return $actual;
     }
 
+    /**
+     * stripe html-body
+     *
+     * @param string $html
+     * @param bool   $asXHTML
+     *
+     * @return string
+     */
     private function stripBody($html, $asXHTML = false)
     {
         $dom = new \DOMDocument();
@@ -254,6 +335,14 @@ EOF;
         return $result;
     }
 
+    /**
+     * find and save node
+     *
+     * @param string $html
+     * @param string $query
+     *
+     * @return null|string
+     */
     private function findAndSaveNode($html, $query)
     {
         $dom = new \DOMDocument();

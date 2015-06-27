@@ -69,6 +69,7 @@ class CssToInlineStyles
 
     /**
      * Exclude the media queries from the inlined styles
+     * and keep media queries for styles blocks
      *
      * @var bool
      */
@@ -467,9 +468,8 @@ class CssToInlineStyles
         // remove spaces
         $css = preg_replace('/\s\s+/', ' ', $css);
 
-        if ($this->excludeMediaQueries) {
-            $css = preg_replace('/@media [^{]*{([^{}]|{[^{}]*})*}/', '', $css);
-        }
+        // remove css media queries
+        $css = $this->stripeMediaQueries($css);
 
         // rules are splitted by }
         $rules = (array)explode('}', $css);
@@ -655,7 +655,9 @@ class CssToInlineStyles
     /**
      * Set exclude media queries
      *
-     * If this is enabled the media queries will be removed before inlining the rules
+     * If this is enabled the media queries will be removed before inlining the rules.
+     *
+     * WARNING: If you use inline styles block "<style>" the this option will keep the media queries.
      *
      * @return void
      *
@@ -678,8 +680,8 @@ class CssToInlineStyles
         // Get all style tags
         $nodes = $xPath->query('descendant-or-self::style');
         foreach ($nodes as $node) {
-            if ($this->excludeMediaQueries) {
-                //Search for Media Queries
+            if ($this->excludeMediaQueries === true) {
+                // Search for Media Queries
                 preg_match_all('/@media [^{]*{([^{}]|{[^{}]*})*}/', $node->nodeValue, $mqs);
                 // Replace the nodeValue with just the Media Queries
                 $node->nodeValue = implode("\n", $mqs[0]);
@@ -709,6 +711,21 @@ class CssToInlineStyles
         }
 
         return $value;
+    }
+
+    /**
+     * remove css media queries from the string
+     *
+     * @param string $css
+     *
+     * @return string
+     */
+    private function stripeMediaQueries($css) {
+        if ($this->excludeMediaQueries === true) {
+            $css = preg_replace('/@media [^{]*{([^{}]|{[^{}]*})*}/', '', $css);
+        }
+
+        return (string)$css;
     }
 
 }
