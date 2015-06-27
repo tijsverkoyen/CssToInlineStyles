@@ -61,7 +61,7 @@ EOF;
         $this->cssToInlineStyles->setUseInlineStylesBlock();
         $this->cssToInlineStyles->setHTML($html);
         $actual = $this->findAndSaveNode($this->cssToInlineStyles->convert(), '//a');
-        self::assertEquals($expected, $actual);
+        $this->assertEquals($expected, $actual);
     }
 
     public function testStripOriginalStyleTags()
@@ -79,9 +79,9 @@ EOF;
         $this->cssToInlineStyles->setStripOriginalStyleTags();
         $this->cssToInlineStyles->setHTML($html);
         $actual = $this->findAndSaveNode($this->cssToInlineStyles->convert(), '//a');
-        self::assertEquals($expected, $actual);
+        $this->assertEquals($expected, $actual);
 
-        self::assertNull($this->findAndSaveNode($actual, '//style'));
+        $this->assertNull($this->findAndSaveNode($actual, '//style'));
     }
 
     public function testSpecificity()
@@ -135,7 +135,7 @@ EOF;
         $this->cssToInlineStyles->setCSS($css);
         $actual = $this->cssToInlineStyles->convert(true);
 
-        self::assertContains('<img></img>', $actual);
+        $this->assertContains('<img></img>', $actual);
     }
 
     public function testCleanup()
@@ -166,7 +166,7 @@ EOF;
     public function testEncodingIso()
     {
         $testString = UTF8::file_get_contents(__DIR__ . '/test1Latin.txt');
-        self::assertContains('Iñtërnâtiônàlizætiøn', $testString);
+        $this->assertContains('Iñtërnâtiônàlizætiøn', $testString);
 
         $html = '<p>' . $testString . '</p>';
         $css = '';
@@ -175,14 +175,14 @@ EOF;
         $this->cssToInlineStyles->setEncoding('ISO-8859-1');
         $result = $this->runHTMLToCSS($html, $css, $expected);
 
-        self::assertContains('<p>Hírek', $result);
-        self::assertContains('Iñtërnâtiônàlizætiøn', $result);
+        $this->assertContains('<p>Hírek', $result);
+        $this->assertContains('Iñtërnâtiônàlizætiøn', $result);
     }
 
     public function testEncodingUtf8()
     {
         $testString = UTF8::file_get_contents(__DIR__ . '/test1Utf8.txt');
-        self::assertContains('Iñtërnâtiônàlizætiøn', $testString);
+        $this->assertContains('Iñtërnâtiônàlizætiøn', $testString);
 
         $html = '<p>' . $testString . '</p>';
         $css = '';
@@ -191,8 +191,8 @@ EOF;
         $this->cssToInlineStyles->setEncoding('UTF-8');
         $result = $this->runHTMLToCSS($html, $css, $expected);
 
-        self::assertContains('<p>Hírek', $result);
-        self::assertContains('Iñtërnâtiônàlizætiøn', $result);
+        $this->assertContains('<p>Hírek', $result);
+        $this->assertContains('Iñtërnâtiônàlizætiøn', $result);
     }
 
     public function testXMLHeaderIsRemoved()
@@ -202,14 +202,16 @@ EOF;
         $this->cssToInlineStyles->setHTML($html);
         $this->cssToInlineStyles->setCSS('');
 
-        self::assertNotContains('<?xml', $this->cssToInlineStyles->convert(true));
+        $this->assertNotContains('<?xml', $this->cssToInlineStyles->convert(true));
     }
 
     /**
-     * @param            $html
-     * @param            $css
-     * @param            $expected
-     * @param bool|false $asXHTML
+     * run html-to-css (and test it, if we set the "expected"-variable)
+     *
+     * @param string $html
+     * @param string $css
+     * @param string $expected
+     * @param bool   $asXHTML
      *
      * @return string
      * @throws \TijsVerkoyen\CssToInlineStyles\Exception
@@ -223,7 +225,7 @@ EOF;
         $actual = $this->stripBody($output, $asXHTML);
 
         if ($expected) {
-            self::assertEquals($expected, $actual);
+            $this->assertEquals($expected, $actual);
         }
 
         return $actual;

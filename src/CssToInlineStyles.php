@@ -93,48 +93,25 @@ class CssToInlineStyles
     }
 
     /**
-     * Set HTML to process
+     * Cleanup the generated HTML
      *
-     * @return void
+     * @return string
      *
-     * @param  string $html The HTML to process.
+     * @param  string $html The HTML to cleanup.
      */
-    public function setHTML($html)
+    private function cleanupHTML($html)
     {
-        $this->html = (string)$html;
-    }
+        // strip style definitions if the have the "cleanup" css-class
+        $html = preg_replace('/<style[^>]+class="cleanup"[^>]*>.*<\/style>/Usi', ' ', $html);
 
-    /**
-     * Set CSS to use
-     *
-     * @return void
-     *
-     * @param  string $css The CSS to use.
-     */
-    public function setCSS($css)
-    {
-        $this->css = (string)$css;
-    }
+        // remove classes
+        $html = preg_replace('/(?:\s)+class="(?:[^"]*)"(?:\s)*/U', ' ', $html);
 
-    /**
-     * Sort an array on the specificity element
-     *
-     * @return int
-     *
-     * @param Specificity[] $e1 The first element.
-     * @param Specificity[] $e2 The second element.
-     */
-    private static function sortOnSpecificity($e1, $e2)
-    {
-        // Compare the specificity
-        $value = $e1['specificity']->compareTo($e2['specificity']);
+        // remove IDs
+        $html = preg_replace('/(?:\s)+id="(?:[^"]*)"(?:\s)*/U', ' ', $html);
 
-        // if the specificity is the same, use the order in which the element appeared
-        if ($value === 0) {
-            $value = $e1['order'] - $e2['order'];
-        }
-
-        return $value;
+        // return
+        return $html;
     }
 
     /**
@@ -202,16 +179,19 @@ class CssToInlineStyles
         $xPath = new \DOMXPath($document);
 
         // any rules?
-        if (0 !== count($this->cssRules)) {
+        if (!empty($this->cssRules)) {
             // loop rules
             foreach ($this->cssRules as $rule) {
 
                 try {
                     $query = CssSelector::toXPath($rule['selector']);
-                }
-                catch (ExceptionInterface $e) {
+                } catch (ExceptionInterface $e) {
                     continue;
                 }
+
+                /**
+                 * @var $element \DOMElement
+                 */
 
                 // search elements
                 $elements = $xPath->query($query);
@@ -222,7 +202,6 @@ class CssToInlineStyles
                 }
 
                 // loop found elements
-                /* @var $element \DOMElement */
                 foreach ($elements as $element) {
                     // no styles stored?
                     if ($element->attributes->getNamedItem('data-css-to-inline-styles-original-styles') == null) {
@@ -231,7 +210,6 @@ class CssToInlineStyles
                         $originalStyle = '';
 
                         if ($element->attributes->getNamedItem('style') !== null) {
-                            /** @noinspection PhpUndefinedFieldInspection */
                             $originalStyle = $element->attributes->getNamedItem('style')->value;
                         }
 
@@ -251,7 +229,6 @@ class CssToInlineStyles
                     // any styles defined before?
                     if ($stylesAttribute !== null) {
                         // get value for the styles attribute
-                        /** @noinspection PhpUndefinedFieldInspection */
                         $definedStyles = (string)$stylesAttribute->value;
 
                         // split into properties
@@ -319,7 +296,6 @@ class CssToInlineStyles
             // loop found elements
             foreach ($elements as $element) {
                 // get the original styles
-                /** @noinspection PhpUndefinedFieldInspection */
                 $originalStyle = $element->attributes->getNamedItem('data-css-to-inline-styles-original-styles')->value;
 
                 if ($originalStyle != '') {
@@ -351,7 +327,6 @@ class CssToInlineStyles
                     // any styles defined before?
                     if ($stylesAttribute !== null) {
                         // get value for the styles attribute
-                        /** @noinspection PhpUndefinedFieldInspection */
                         $definedStyles = (string)$stylesAttribute->value;
 
                         // split into properties
@@ -437,6 +412,40 @@ class CssToInlineStyles
     }
 
     /**
+     * Split a style string into an array of properties.
+     * The returned array can contain empty strings.
+     *
+     * @param string $styles ex: 'color:blue;font-size:12px;'
+     *
+     * @return array an array of strings containing css property ex: array('color:blue','font-size:12px')
+     */
+    private function splitIntoProperties($styles)
+    {
+        $properties = (array)explode(';', $styles);
+        for ($i = 0; $i < count($properties); $i++) {
+            // If next property begins with base64,
+            // Then the ';' was part of this property (and we should not have split on it).
+            if (isset($properties[$i + 1]) && UTF8::strpos($properties[$i + 1], 'base64,') === 0) {
+                $properties[$i] .= ';' . $properties[$i + 1];
+                $properties[$i + 1] = '';
+                ++$i;
+            }
+        }
+
+        return $properties;
+    }
+
+    /**
+     * Get the encoding to use
+     *
+     * @return string
+     */
+    private function getEncoding()
+    {
+        return $this->encoding;
+    }
+
+    /**
      * Process the loaded CSS
      *
      * @return void
@@ -446,20 +455,11 @@ class CssToInlineStyles
         // init vars
         $css = (string)$this->css;
 
-        // remove newlines && replace double quotes by single quotes
-        $css = str_replace(
-            array(
-                "\r",
-                "\n",
-                '"',
-            ),
-            array(
-                "",
-                "",
-                '\'',
-            ),
-            $css
-        );
+        // remove newlines
+        $css = str_replace(array("\r", "\n"), '', $css);
+
+        // replace double quotes by single quotes
+        $css = str_replace('"', '\'', $css);
 
         // remove comments
         $css = preg_replace('|/\*.*?\*/|', '', $css);
@@ -526,7 +526,7 @@ class CssToInlineStyles
         }
 
         // sort based on specificity
-        if (0 !== count($this->cssRules)) {
+        if (!empty($this->cssRules)) {
             usort($this->cssRules, array(__CLASS__, 'sortOnSpecificity'));
         }
     }
@@ -577,87 +577,6 @@ class CssToInlineStyles
     }
 
     /**
-     * Split a style string into an array of properties.
-     * The returned array can contain empty strings.
-     *
-     * @param string $styles ex: 'color:blue;font-size:12px;'
-     *
-     * @return array an array of strings containing css property ex: array('color:blue','font-size:12px')
-     */
-    private function splitIntoProperties($styles)
-    {
-        $properties = (array)explode(';', $styles);
-        /** @noinspection CallableInLoopTerminationConditionInspection */
-        for ($i = 0; $i < count($properties); $i++) {
-            // If next property begins with base64,
-            // Then the ';' was part of this property (and we should not have split on it).
-            if (isset($properties[$i + 1]) && UTF8::strpos($properties[$i + 1], 'base64,') === 0) {
-                $properties[$i] .= ';' . $properties[$i + 1];
-                $properties[$i + 1] = '';
-                ++$i;
-            }
-        }
-
-        return $properties;
-    }
-
-    /**
-     * Get the encoding to use
-     *
-     * @return string
-     */
-    private function getEncoding()
-    {
-        return $this->encoding;
-    }
-
-    /**
-     * Cleanup the generated HTML
-     *
-     * @return string
-     *
-     * @param  string $html The HTML to cleanup.
-     */
-    private function cleanupHTML($html)
-    {
-        // strip style definitions if the have the "cleanup" css-class
-        $html = preg_replace('/<style[^>]+class="cleanup"[^>]*>.*<\/style>/Usi', ' ', $html);
-
-        // remove classes
-        $html = preg_replace('/(?:\s)+class="(?:[^"]*)"(?:\s)*/U', ' ', $html);
-
-        // remove IDs
-        $html = preg_replace('/(?:\s)+id="(?:[^"]*)"(?:\s)*/U', ' ', $html);
-
-        // return
-        return $html;
-    }
-
-    /**
-     * Strip style tags into the generated HTML
-     *
-     * @return string
-     *
-     * @param  \DOMXPath $xPath The DOMXPath for the entire document.
-     */
-    private function stripOriginalStyleTags(\DOMXPath $xPath)
-    {
-        // Get all style tags
-        $nodes = $xPath->query('descendant-or-self::style');
-        foreach ($nodes as $node) {
-            if ($this->excludeMediaQueries) {
-                //Search for Media Queries
-                preg_match_all('/@media [^{]*{([^{}]|{[^{}]*})*}/', $node->nodeValue, $mqs);
-                // Replace the nodeValue with just the Media Queries
-                $node->nodeValue = implode("\n", $mqs[0]);
-            } else {
-                // Remove the entire style tag
-                $node->parentNode->removeChild($node);
-            }
-        }
-    }
-
-    /**
      * Should the IDs and classes be removed?
      *
      * @return void
@@ -667,6 +586,18 @@ class CssToInlineStyles
     public function setCleanup($on = true)
     {
         $this->cleanup = (bool)$on;
+    }
+
+    /**
+     * Set CSS to use
+     *
+     * @return void
+     *
+     * @param  string $css The CSS to use.
+     */
+    public function setCSS($css)
+    {
+        $this->css = (string)$css;
     }
 
     /**
@@ -681,6 +612,18 @@ class CssToInlineStyles
     public function setEncoding($encoding)
     {
         $this->encoding = (string)$encoding;
+    }
+
+    /**
+     * Set HTML to process
+     *
+     * @return void
+     *
+     * @param  string $html The HTML to process.
+     */
+    public function setHTML($html)
+    {
+        $this->html = (string)$html;
     }
 
     /**
@@ -721,6 +664,51 @@ class CssToInlineStyles
     public function setExcludeMediaQueries($on = true)
     {
         $this->excludeMediaQueries = (bool)$on;
+    }
+
+    /**
+     * Strip style tags into the generated HTML
+     *
+     * @param  \DOMXPath $xPath The DOMXPath for the entire document.
+     *
+     * @return string
+     */
+    private function stripOriginalStyleTags(\DOMXPath $xPath)
+    {
+        // Get all style tags
+        $nodes = $xPath->query('descendant-or-self::style');
+        foreach ($nodes as $node) {
+            if ($this->excludeMediaQueries) {
+                //Search for Media Queries
+                preg_match_all('/@media [^{]*{([^{}]|{[^{}]*})*}/', $node->nodeValue, $mqs);
+                // Replace the nodeValue with just the Media Queries
+                $node->nodeValue = implode("\n", $mqs[0]);
+            } else {
+                // Remove the entire style tag
+                $node->parentNode->removeChild($node);
+            }
+        }
+    }
+
+    /**
+     * Sort an array on the specificity element
+     *
+     * @return int
+     *
+     * @param Specificity[] $e1 The first element.
+     * @param Specificity[] $e2 The second element.
+     */
+    private static function sortOnSpecificity($e1, $e2)
+    {
+        // Compare the specificity
+        $value = $e1['specificity']->compareTo($e2['specificity']);
+
+        // if the specificity is the same, use the order in which the element appeared
+        if ($value === 0) {
+            $value = $e1['order'] - $e2['order'];
+        }
+
+        return $value;
     }
 
 }
