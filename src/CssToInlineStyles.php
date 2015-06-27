@@ -76,6 +76,13 @@ class CssToInlineStyles
     private $excludeMediaQueries = true;
 
     /**
+     * css media queries regular expression
+     *
+     * @var string
+     */
+    private $cssMediaQueriesRegEx = '/@media [^{]*{([^{}]|{[^{}]*})*}/';
+
+    /**
      * Creates an instance, you could set the HTML and CSS here, or load it
      * later.
      *
@@ -682,7 +689,7 @@ class CssToInlineStyles
         foreach ($nodes as $node) {
             if ($this->excludeMediaQueries === true) {
                 // Search for Media Queries
-                preg_match_all('/@media [^{]*{([^{}]|{[^{}]*})*}/', $node->nodeValue, $mqs);
+                preg_match_all($this->cssMediaQueriesRegEx, $node->nodeValue, $mqs);
                 // Replace the nodeValue with just the Media Queries
                 $node->nodeValue = implode("\n", $mqs[0]);
             } else {
@@ -722,7 +729,7 @@ class CssToInlineStyles
      */
     private function stripeMediaQueries($css) {
         if ($this->excludeMediaQueries === true) {
-            $css = preg_replace('/@media [^{]*{([^{}]|{[^{}]*})*}/', '', $css);
+            $css = preg_replace($this->cssMediaQueriesRegEx, '', $css);
         }
 
         return (string)$css;
