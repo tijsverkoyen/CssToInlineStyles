@@ -162,26 +162,7 @@ class CssToInlineStyles
         $this->processCSS();
 
         // create new DOMDocument
-        $document = new \DOMDocument();
-
-        // set error level
-        $internalErrors = libxml_use_internal_errors(true);
-
-        // load HTML
-        $document->loadHTML('<?xml encoding="' . $this->getEncoding() . '">' . $this->html);
-
-        // remove the "xml-encoding" hack
-        foreach ($document->childNodes as $item) {
-            if ($item->nodeType == XML_PI_NODE) {
-                $document->removeChild($item);
-            }
-        }
-
-        // set encoding
-        $document->encoding = $this->getEncoding();
-
-        // restore error level
-        libxml_use_internal_errors($internalErrors);
+        $document = $this->createDOMDocument();
 
         // create new XPath
         $xPath = new \DOMXPath($document);
@@ -417,6 +398,46 @@ class CssToInlineStyles
 
         // return
         return $html;
+    }
+
+    /**
+     * create DOMDocument from HTML
+     *
+     * @return \DOMDocument
+     */
+    private function createDOMDocument()
+    {
+        // create new DOMDocument
+        $document = new \DOMDocument('1.0', $this->getEncoding());
+
+        // DOMDocument settings
+        $document->preserveWhiteSpace = false;
+        $document->formatOutput = true;
+
+        // set error level
+        $internalErrors = libxml_use_internal_errors(true);
+
+        // load HTML
+        //
+        // with UTF-8 hack: http://php.net/manual/en/domdocument.loadhtml.php#95251
+        //
+        $document->loadHTML('<?xml encoding="' . $this->getEncoding() . '">' . $this->html);
+
+        // remove the "xml-encoding" hack
+        foreach ($document->childNodes as $child) {
+            if ($child->nodeType == XML_PI_NODE) {
+                $document->removeChild($child);
+                break;
+            }
+        }
+
+        // set encoding
+        $document->encoding = $this->getEncoding();
+
+        // restore error level
+        libxml_use_internal_errors($internalErrors);
+
+        return $document;
     }
 
     /**
