@@ -68,8 +68,14 @@ class CssToInlineStyles
     private $stripOriginalStyleTags = false;
 
     /**
-     * Exclude the media queries from the inlined styles
-     * and keep media queries for styles blocks
+     * Exclude conditional inline-style blocks e.g.: <!--[if gte mso 9]><![endif]-->
+     *
+     * @var bool
+     */
+    private $excludeConditionalInlineStylesBlock = true;
+
+    /**
+     * Exclude media queries from "$this->css" and keep media queries for inline-styles blocks
      *
      * @var bool
      */
@@ -86,8 +92,8 @@ class CssToInlineStyles
      * Creates an instance, you could set the HTML and CSS here, or load it
      * later.
      *
-     * @param  null|string $html [optional] The HTML to process.
-     * @param  null|string $css  [optional] The CSS to use.
+     * @param  null|string $html The HTML to process.
+     * @param  null|string $css  The CSS to use.
      */
     public function __construct($html = null, $css = null)
     {
@@ -120,7 +126,7 @@ class CssToInlineStyles
      *
      * @return string
      *
-     * @param  bool [optional] $outputXHTML Should we output valid XHTML?
+     * @param  bool $outputXHTML Should we output valid XHTML?
      *
      * @throws Exception
      */
@@ -138,6 +144,10 @@ class CssToInlineStyles
         if ($this->useInlineStylesBlock) {
             // init var
             $matches = array();
+
+            if ($this->excludeConditionalInlineStylesBlock === true) {
+                $this->html = preg_replace('/<!--(.|\s)*?-->/', '', $this->html);
+            }
 
             // match the style blocks
             preg_match_all('|<style(.*)>(.*)</style>|isU', $this->html, $matches);
@@ -468,8 +478,6 @@ class CssToInlineStyles
 
     /**
      * Process the loaded CSS
-     *
-     * @return void
      */
     private function processCSS()
     {
@@ -489,7 +497,9 @@ class CssToInlineStyles
         $css = preg_replace('/\s\s+/', ' ', $css);
 
         // remove css media queries
-        $css = $this->stripeMediaQueries($css);
+        if ($this->excludeMediaQueries === true) {
+            $css = $this->stripeMediaQueries($css);
+        }
 
         // rules are splitted by }
         $rules = (array)explode('}', $css);
@@ -599,9 +609,7 @@ class CssToInlineStyles
     /**
      * Should the IDs and classes be removed?
      *
-     * @return void
-     *
-     * @param  bool [optional] $on Should we enable cleanup?
+     * @param  bool $on Should we enable cleanup?
      */
     public function setCleanup($on = true)
     {
@@ -610,8 +618,6 @@ class CssToInlineStyles
 
     /**
      * Set CSS to use
-     *
-     * @return void
      *
      * @param  string $css The CSS to use.
      */
@@ -622,8 +628,6 @@ class CssToInlineStyles
 
     /**
      * Set the encoding to use with the DOMDocument
-     *
-     * @return void
      *
      * @param  string $encoding The encoding to use.
      *
@@ -637,8 +641,6 @@ class CssToInlineStyles
     /**
      * Set HTML to process
      *
-     * @return void
-     *
      * @param  string $html The HTML to process.
      */
     public function setHTML($html)
@@ -651,9 +653,7 @@ class CssToInlineStyles
      * Set use of inline styles block
      * If this is enabled the class will use the style-block in the HTML.
      *
-     * @return void
-     *
-     * @param  bool [optional] $on Should we process inline styles?
+     * @param  bool $on Should we process inline styles?
      */
     public function setUseInlineStylesBlock($on = true)
     {
@@ -664,9 +664,7 @@ class CssToInlineStyles
      * Set strip original style tags
      * If this is enabled the class will remove all style tags in the HTML.
      *
-     * @return void
-     *
-     * @param  bool [optional] $on Should we process inline styles?
+     * @param  bool $on Should we process inline styles?
      */
     public function setStripOriginalStyleTags($on = true)
     {
@@ -680,13 +678,21 @@ class CssToInlineStyles
      *
      * WARNING: If you use inline styles block "<style>" the this option will keep the media queries.
      *
-     * @return void
-     *
-     * @param bool [optional] $on
+     * @param bool $on
      */
     public function setExcludeMediaQueries($on = true)
     {
         $this->excludeMediaQueries = (bool)$on;
+    }
+
+    /**
+     * Set exclude conditional inline-styles block
+     *
+     * @param bool $on
+     */
+    public function setExcludeConditionalInlineStylesBlock($on = true)
+    {
+        $this->excludeConditionalInlineStylesBlock = (bool) $on;
     }
 
     /**
@@ -742,11 +748,7 @@ class CssToInlineStyles
      * @return string
      */
     private function stripeMediaQueries($css) {
-        if ($this->excludeMediaQueries === true) {
-            $css = preg_replace($this->cssMediaQueriesRegEx, '', $css);
-        }
-
-        return (string)$css;
+        return (string)preg_replace($this->cssMediaQueriesRegEx, '', $css);
     }
 
 }

@@ -73,6 +73,7 @@ class CssToInlineStylesTest extends \PHPUnit_Framework_TestCase
         $expected = UTF8::file_get_contents(__DIR__ . '/test2Html_result.html');
 
         $cssToInlineStyles = $this->cssToInlineStyles;
+        $cssToInlineStyles->setExcludeConditionalInlineStylesBlock(false);
         $cssToInlineStyles->setUseInlineStylesBlock(true);
         $cssToInlineStyles->setStripOriginalStyleTags(true);
         $cssToInlineStyles->setExcludeMediaQueries(true);
