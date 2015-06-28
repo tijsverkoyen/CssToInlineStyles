@@ -66,6 +66,22 @@ class CssToInlineStylesTest extends \PHPUnit_Framework_TestCase
         $this->runHTMLToCSS($html, $css, $expected);
     }
 
+    public function testKeepMediaQuery()
+    {
+        $html = UTF8::file_get_contents(__DIR__ . '/test2Html.html');
+        $css = UTF8::file_get_contents(__DIR__ . '/test2Css.css');
+        $expected = UTF8::file_get_contents(__DIR__ . '/test2Html_result.html');
+
+        $cssToInlineStyles = $this->cssToInlineStyles;
+        $cssToInlineStyles->setUseInlineStylesBlock(true);
+        $cssToInlineStyles->setStripOriginalStyleTags(true);
+        $cssToInlineStyles->setExcludeMediaQueries(true);
+        $cssToInlineStyles->setHTML($html);
+        $cssToInlineStyles->setCSS($css);
+        $actual = $cssToInlineStyles->convert();
+        $this->assertEquals($expected, $actual);
+    }
+
     public function testMediaQuery()
     {
         $html = '<html><body><style>@media (max-width: 600px) { .test { display: none; } } h1 { color : "red" }</style><div class="test"><h1>foo</h1><h1>foo2</h1></div></body></html';

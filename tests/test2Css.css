@@ -1,0 +1,179 @@
+@media only screen and (max-width: 599px) {
+  table.body {
+    position: relative;
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  table.body table,table.body tbody {
+    position: relative;
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+  }
+
+  table.body img {
+    width: 100% !important;
+    height: auto !important;
+  }
+
+  table.body .section {
+    text-align: center !important;
+  }
+
+  table.body .section .sect-content-container {
+    width: 90% !important;
+  }
+
+  table.body .section .sect-content-container .image,table.body .section .sect-content-container .sect-content,table.body .section .sect-content-container .sect-side {
+    position: relative;
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+  }
+
+  table.body .section .image {
+    text-align: center !important;
+  }
+
+  table.body .section .image center {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  table.body .section .image img {
+    width: auto !important;
+    margin: 0 auto;
+  }
+
+  table.body .col-spacer {
+    display: none !important;
+  }
+
+  table.body .sect-hort-spacer {
+    width: 5% !important;
+  }
+
+  table.body .content-divider {
+    width: 80px !important;
+  }
+
+  table.body .content-divider .divider-spacer-top {
+    height: 10px !important;
+  }
+
+  table.body .content-divider .divider-hr {
+    width: 80px !important;
+    height: 20px !important;
+  }
+
+  table.body .sect-2col .content-center tr,table.body .sect-2col .content-center td {
+    position: relative;
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+  }
+
+  table.body .sect-2col .content-center .content-divider {
+    width: 80px !important;
+  }
+
+  table.body .sect-2col .content-center .content-divider .divider-spacer-top {
+    height: 10px !important;
+  }
+
+  table.body .sect-2col .content-center .content-divider .divider-hr {
+    width: 80px !important;
+    height: 20px !important;
+  }
+
+  table.body .sect-2col .content-center .col-spacer {
+    display: block !important;
+    height: 30px !important;
+  }
+
+  table.body .sect-2col .sect-hort-spacer {
+    display: none !important;
+  }
+
+
+  table.body .sect-2col .sect-content-container {
+    position: relative;
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+  }
+
+  table.body .sect-2col .sect-content-container .sect-content {
+    text-align: center !important;
+    width: 240px !important;
+    margin: 0 auto !important;
+  }
+
+  table.body .sect-2col-hero .image {
+    text-align: left !important;
+    padding-bottom: 18px !important;
+  }
+
+  table.body .sect-2col-hero .image img {
+    margin: 0 !important;
+  }
+
+  table.body .sect-sideimage .sect-side {
+    padding-bottom: 0 !important;
+  }
+
+  table.body .sect-sideimage .sect-side .image {
+    padding-bottom: 18px !important;
+  }
+
+  table.body .sect-sidebar .col-spacer {
+    width: 100% !important;
+    height: 30px !important;
+    display: block !important;
+  }
+
+  table.body .sect-sidebar .sect-content-container .sect-content {
+    width: 340px !important;
+  }
+
+  table.body .socialbar-container .socialbar-spacer {
+    height: 24px !important;
+  }
+
+  table.body .socialbar-container .socialbar-icons img {
+    width: 32px !important;
+    height: 32px !important;
+  }
+
+  table.body .header_logo img {
+    width: auto !important;
+  }
+
+  table.body .header_logo.alternate img {
+    width: 50% !important;
+  }
+
+  table.body .footer-address .sect-content-container {
+    width: 90% !important;
+  }
+
+  table.body .footer-legal .sect-content-container {
+    width: 90% !important;
+  }
+
+  table.body .footer-legal img {
+    width: 1px !important;
+    height: 1px !important;
+  }
+}
+
+table { border: 1px solid red; }
