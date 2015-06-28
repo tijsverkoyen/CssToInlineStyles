@@ -236,6 +236,20 @@ EOF;
         $this->runHTMLToCSS($html, $css, $expected);
     }
 
+    public function testBoilerplateEmail()
+    {
+      $html = UTF8::file_get_contents(__DIR__ . '/test1Html.html');
+      $css = '';
+      $expected = UTF8::file_get_contents(__DIR__ . '/test1Html_result.html');
+
+      $cssToInlineStyles = $this->cssToInlineStyles;
+      $cssToInlineStyles->setUseInlineStylesBlock(true);
+      $cssToInlineStyles->setHTML($html);
+      $cssToInlineStyles->setCSS($css);
+      $actual = $cssToInlineStyles->convert();
+      $this->assertEquals($expected, $actual);
+    }
+
     public function testEncodingIso()
     {
         $testString = UTF8::file_get_contents(__DIR__ . '/test1Latin.txt');
