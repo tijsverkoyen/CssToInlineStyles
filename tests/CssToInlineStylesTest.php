@@ -229,11 +229,52 @@ EOF;
 
     public function testCleanup()
     {
-        $html = '<div id="id" class="className"></div>';
+        $html = '<div id="id" class="className"> id="foo" class="bar" </div>';
         $css = ' #id { display: inline; } .className { margin-right: 10px; }';
-        $expected = '<div style="margin-right: 10px; display: inline;"></div>';
+        $expected = '<div style="margin-right: 10px; display: inline;"> id="foo" class="bar" </div>';
         $this->cssToInlineStyles->setCleanup();
         $this->runHTMLToCSS($html, $css, $expected);
+    }
+
+    public function testCleanupWithoutStyleTagCleanup()
+    {
+        $html = '<style>div { top: 1em; }</style><style>div { left: 1em; }</style><div id="id" class="className"> id="foo" class="bar" </div>';
+        $css = ' #id { display: inline; } .className { margin-right: 10px; }';
+        $expected = '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+<style>div { top: 1em; }</style>
+<style>div { left: 1em; }</style>
+</head>
+<body><div style="top: 1em; left: 1em; margin-right: 10px; display: inline;"> id="foo" class="bar" </div></body>
+</html>
+';
+        $this->cssToInlineStyles->setUseInlineStylesBlock(true);
+        $this->cssToInlineStyles->setStripOriginalStyleTags(false);
+        $this->cssToInlineStyles->setCleanup(true);
+        $this->cssToInlineStyles->setHTML($html);
+        $this->cssToInlineStyles->setCSS($css);
+        $actual = $this->cssToInlineStyles->convert();
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testCleanupWithStyleTagCleanup()
+    {
+        $html = '<style class="cleanup">div { top: 1em; }</style><style>.cleanup { top: 1em; } div { left: 1em; }</style><div id="id" class="className"> id="foo" class="bar" </div>';
+        $css = ' #id { display: inline; } .className { margin-right: 10px; }';
+        $expected = '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head><style>.cleanup { top: 1em; } div { left: 1em; }</style></head>
+<body><div style="left: 1em; margin-right: 10px; display: inline;"> id="foo" class="bar" </div></body>
+</html>
+';
+        $this->cssToInlineStyles->setUseInlineStylesBlock(true);
+        $this->cssToInlineStyles->setStripOriginalStyleTags(false);
+        $this->cssToInlineStyles->setCleanup(true);
+        $this->cssToInlineStyles->setHTML($html);
+        $this->cssToInlineStyles->setCSS($css);
+        $actual = $this->cssToInlineStyles->convert();
+        $this->assertEquals($expected, $actual);
     }
 
     public function testEqualSpecificity()

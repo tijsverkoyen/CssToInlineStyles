@@ -101,25 +101,18 @@ class CssToInlineStyles
     }
 
     /**
-     * Cleanup the generated HTML
+     * Remove id and class attributes.
+     *
+     * @param  \DOMXPath $xPath The DOMXPath for the entire document.
      *
      * @return string
-     *
-     * @param  string $html The HTML to cleanup.
      */
-    private function cleanupHTML($html)
+    private function cleanupHTML(\DOMXPath $xPath)
     {
-        // strip style definitions if the have the "cleanup" css-class
-        $html = preg_replace('/<style[^>]+class="cleanup"[^>]*>.*<\/style>/Usi', ' ', $html);
-
-        // remove classes
-        $html = preg_replace('/(?:\s)+class="(?:[^"]*)"(?:\s)*/U', ' ', $html);
-
-        // remove IDs
-        $html = preg_replace('/(?:\s)+id="(?:[^"]*)"(?:\s)*/U', ' ', $html);
-
-        // return
-        return $html;
+        $nodes = $xPath->query('//@class | //@id');
+        foreach ($nodes as $node) {
+            $node->ownerElement->removeAttributeNode($node);
+        }
     }
 
     /**
@@ -371,12 +364,17 @@ class CssToInlineStyles
         }
 
         // strip original style tags if we need to
-        if ($this->stripOriginalStyleTags) {
+        if ($this->stripOriginalStyleTags === true) {
             $this->stripOriginalStyleTags($xPath);
         }
 
+        // cleanup the HTML if we need to
+        if ($this->cleanup === true) {
+          $this->cleanupHTML($xPath);
+        }
+
         // should we output XHTML?
-        if ($outputXHTML) {
+        if ($outputXHTML === true) {
             // set formatting
             $document->formatOutput = true;
 
@@ -389,11 +387,6 @@ class CssToInlineStyles
         else {
             // get the HTML
             $html = $document->saveHTML();
-        }
-
-        // cleanup the HTML if we need to
-        if ($this->cleanup) {
-            $html = $this->cleanupHTML($html);
         }
 
         // return
@@ -427,7 +420,6 @@ class CssToInlineStyles
         foreach ($document->childNodes as $child) {
             if ($child->nodeType == XML_PI_NODE) {
                 $document->removeChild($child);
-                break;
             }
         }
 
@@ -651,7 +643,8 @@ class CssToInlineStyles
      */
     public function setHTML($html)
     {
-        $this->html = (string)$html;
+        // strip style definitions, if we use css-class "cleanup" on a style-element
+        $this->html = (string)preg_replace('/<style[^>]+class="cleanup"[^>]*>.*<\/style>/Usi', ' ', $html);
     }
 
     /**
