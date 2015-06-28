@@ -349,6 +349,22 @@ EOF;
         $this->assertNotContains('<?xml', $this->cssToInlineStyles->convert(true));
     }
 
+    public function testXMLHeaderIsRemovedv2()
+    {
+        $html = '<html><body><p>Foo</p></body>';
+        $expected = '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+  <body>
+    <p>Foo</p>
+  </body>
+</html>
+';
+        $this->cssToInlineStyles->setHTML($html);
+        $this->cssToInlineStyles->setCSS('');
+        $actual = $this->cssToInlineStyles->convert(true);
+        $this->assertEquals($expected, $actual);
+    }
+
     /**
      * run html-to-css (and test it, if we set the "expected"-variable)
      *
