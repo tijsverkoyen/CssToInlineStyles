@@ -68,7 +68,7 @@ class CssToInlineStyles
     private $stripOriginalStyleTags = false;
 
     /**
-     * Exclude conditional inline-style blocks e.g.: <!--[if gte mso 9]><![endif]-->
+     * Exclude conditional inline-style blocks
      *
      * @var bool
      */
@@ -146,7 +146,7 @@ class CssToInlineStyles
             $matches = array();
 
             if ($this->excludeConditionalInlineStylesBlock === true) {
-                $this->html = preg_replace('/<!--(.|\s)*?-->/', '', $this->html);
+                $this->html = preg_replace('/<!--(\n\ |.)*<style(.|\s)*?-->/', '', $this->html);
             }
 
             // match the style blocks
@@ -686,7 +686,7 @@ class CssToInlineStyles
     }
 
     /**
-     * Set exclude conditional inline-styles block
+     * Set exclude conditional inline-style blocks e.g.: <!--[if gte mso 9]><style>.foo { bar } </style><![endif]-->
      *
      * @param bool $on
      */
