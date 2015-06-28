@@ -40,7 +40,7 @@ class CssToInlineStylesTest extends \PHPUnit_Framework_TestCase
 
     public function testMediaQueryDisabledByDefault()
     {
-        $html = '<html><body><style>@media (max-width: 600px) { .test { display: none; } } h1 { color : "red" }</style><div class="test"><h1>foo</h1><h1>foo2</h1></div></body></html';
+        $html = '<html><body><style>@media (max-width: 600px) { .test { display: none; } } h1 { color : "red" }</style><div class="test"><h1>foo</h1><h1>foo2</h1></div></body></html>';
         $css = '';
         $expected = '<style>@media (max-width: 600px) { .test { display: none; } } h1 { color : "red" }</style>
 <div class="test">
@@ -53,7 +53,7 @@ class CssToInlineStylesTest extends \PHPUnit_Framework_TestCase
 
     public function testMediaQueryDisabled()
     {
-        $html = '<html><body><style>@media (max-width: 600px) { .test { display: none; } } h1 { color : "red" }</style><div class="test"><h1>foo</h1><h1>foo2</h1></div></body></html';
+        $html = '<html><body><style>@media (max-width: 600px) { .test { display: none; } } h1 { color : "red" }</style><div class="test"><h1>foo</h1><h1>foo2</h1></div></body></html>';
         $css = '';
         $expected = '<style>@media (max-width: 600px) { .test { display: none; } } h1 { color : "red" }</style>
 <div class="test">
@@ -85,7 +85,7 @@ class CssToInlineStylesTest extends \PHPUnit_Framework_TestCase
 
     public function testMediaQuery()
     {
-        $html = '<html><body><style>@media (max-width: 600px) { .test { display: none; } } h1 { color : "red" }</style><div class="test"><h1>foo</h1><h1>foo2</h1></div></body></html';
+        $html = '<html><body><style>@media (max-width: 600px) { .test { display: none; } } h1 { color : "red" }</style><div class="test"><h1>foo</h1><h1>foo2</h1></div></body></html>';
         $css = '';
         $expected = '<div class="test">
 <h1 style="color: \'red\';">foo</h1>
@@ -99,7 +99,7 @@ class CssToInlineStylesTest extends \PHPUnit_Framework_TestCase
 
     public function testMediaQueryV2()
     {
-        $html = '<html><body><style>@media (max-width: 600px) { .test { display: none; } } h1 { color : "red" }</style><div class="test"><h1>foo</h1><h1>foo2</h1></div></body></html';
+        $html = '<html><body><style>@media (max-width: 600px) { .test { display: none; } } h1 { color : "red" }</style><div class="test"><h1>foo</h1><h1>foo2</h1></div></body></html>';
         $css = '';
         $expected = '<style>@media (max-width: 600px) { .test { display: none; } }</style>
 <div class="test">
@@ -114,7 +114,7 @@ class CssToInlineStylesTest extends \PHPUnit_Framework_TestCase
 
     public function testMediaQueryV3()
     {
-        $html = '<html><body><style>@media (max-width: 600px) { .test { display: none; } } @media (max-width: 500px) { .test { top: 1rem; } } h1 { color : "red" }</style><div class="test"><h1>foo</h1><h1>foo2</h1></div></body></html';
+        $html = '<html><body><style>@media (max-width: 600px) { .test { display: none; } } @media (max-width: 500px) { .test { top: 1rem; } } h1 { color : "red" }</style><div class="test"><h1>foo</h1><h1>foo2</h1></div></body></html>';
         $css = '';
         $expected = '<style>@media (max-width: 600px) { .test { display: none; } }
 @media (max-width: 500px) { .test { top: 1rem; } }</style>
@@ -368,7 +368,7 @@ EOF;
 
     public function testBug83()
     {
-        $html = '<html><body><style>div { width: 200px; _width: 222px; width: 222px; }</style><div class="test"><h1>foo</h1><h1>foo2</h1></div></body></html';
+        $html = '<html><body><style>div { width: 200px; _width: 222px; width: 222px; }</style><div class="test"><h1>foo</h1><h1>foo2</h1></div></body></html>';
         $css = '';
         $expected = '<style></style>
 <div class="test" style="_width: 222px; width: 200px; width: 222px;">
@@ -384,7 +384,7 @@ EOF;
     public function testBug92()
     {
         $html = '<html><body><style>@media (max-width: 600px) { .test { display: none; } } h1 { color : "red" } .bg {
-background-image: url(\'data:image/jpg;base64,/9j/4QAYRXhpZgAASUkqAAgAA//Z\'); } </style><div class="test"><h1>foo</h1><h1>foo2</h1><table class="bg"></table></div></body></html';
+background-image: url(\'data:image/jpg;base64,/9j/4QAYRXhpZgAASUkqAAgAA//Z\'); } </style><div class="test"><h1>foo</h1><h1>foo2</h1><table class="bg"></table></div></body></html>';
         $css = '';
         $expected = '<style>@media (max-width: 600px) { .test { display: none; } }</style>
 <div class="test">
@@ -392,6 +392,17 @@ background-image: url(\'data:image/jpg;base64,/9j/4QAYRXhpZgAASUkqAAgAA//Z\'); }
 <h1 style="color: \'red\';">foo2</h1>
 <table class="bg" style="background-image: url(\'data:image/jpg;base64,/9j/4QAYRXhpZgAASUkqAAgAA//Z\');"></table>
 </div>';
+        $this->cssToInlineStyles->setUseInlineStylesBlock(true);
+        $this->cssToInlineStyles->setStripOriginalStyleTags(true);
+        $this->cssToInlineStyles->setExcludeMediaQueries(true);
+        $this->runHTMLToCSS($html, $css, $expected);
+    }
+
+    public function testBug99()
+    {
+        $html = '<p>This is a test heading with various things such as <strong>bold</strong>, <span style="text-decoration: underline;"><strong>bold-underline</strong></span><strong></strong>, <em>italics</em>, and various other cool things.</p><p>Штампы гіст Эйн тэст!</p>';
+        $css = 'p { color: "red" }';
+        $expected = '<p style="color: \'red\';">This is a test heading with various things such as <strong>bold</strong>, <span style="text-decoration: underline;"><strong>bold-underline</strong></span><strong></strong>, <em>italics</em>, and various other cool things.</p><p style="color: \'red\';">Штампы гіст Эйн тэст!</p>';
         $this->cssToInlineStyles->setUseInlineStylesBlock(true);
         $this->cssToInlineStyles->setStripOriginalStyleTags(true);
         $this->cssToInlineStyles->setExcludeMediaQueries(true);
