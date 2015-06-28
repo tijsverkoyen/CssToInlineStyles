@@ -366,6 +366,23 @@ EOF;
         $this->assertEquals($expected, $actual);
     }
 
+    public function testBug92()
+    {
+        $html = '<html><body><style>@media (max-width: 600px) { .test { display: none; } } h1 { color : "red" } .bg {
+background-image: url(\'data:image/jpg;base64,/9j/4QAYRXhpZgAASUkqAAgAA//Z\'); } </style><div class="test"><h1>foo</h1><h1>foo2</h1><table class="bg"></table></div></body></html';
+        $css = '';
+        $expected = '<style>@media (max-width: 600px) { .test { display: none; } }</style>
+<div class="test">
+<h1 style="color: \'red\';">foo</h1>
+<h1 style="color: \'red\';">foo2</h1>
+<table class="bg" style="background-image: url(\'data:image/jpg;base64,/9j/4QAYRXhpZgAASUkqAAgAA//Z\');"></table>
+</div>';
+        $this->cssToInlineStyles->setUseInlineStylesBlock(true);
+        $this->cssToInlineStyles->setStripOriginalStyleTags(true);
+        $this->cssToInlineStyles->setExcludeMediaQueries(true);
+        $this->runHTMLToCSS($html, $css, $expected);
+    }
+
     /**
      * run html-to-css (and test it, if we set the "expected"-variable)
      *
