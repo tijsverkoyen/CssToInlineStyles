@@ -392,7 +392,7 @@ class CssToInlineStyles
             $html = $document->saveXML(null, LIBXML_NOEMPTYTAG);
 
             // remove the XML-header
-            $html = UTF8::ltrim(preg_replace('/<\?xml.*?>/', '', $html));
+            $html = UTF8::ltrim(preg_replace('/<\?xml.*\?>/', '', $html));
         } // just regular HTML 4.01 as it should be used in newsletters
         else {
             // get the HTML
