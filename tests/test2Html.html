@@ -1,0 +1,261 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Email title or subject</title>
+
+  <style type="text/css">
+
+    /* reset */
+    #outlook a {padding:0;} /* Force Outlook to provide a "view in browser" menu link. */
+    .ExternalClass {width:100%;} /* Force Hotmail to display emails at full width */
+    .ExternalClass, .ExternalClass p, .ExternalClass span, .ExternalClass font, .ExternalClass td, .ExternalClass div {line-height: 100%;} /* Forces Hotmail to display normal line spacing.  More on that: http://www.emailonacid.com/forum/viewthread/43/ */
+    p {margin: 0; padding: 0; font-size: 0px; line-height: 0px;} /* squash Exact Target injected paragraphs */
+    table td {border-collapse: collapse;} /* Outlook 07, 10 padding issue fix */
+    table {border-collapse: collapse; mso-table-lspace:0pt; mso-table-rspace:0pt; } /* remove spacing around Outlook 07, 10 tables */
+
+    /* bring inline */
+    img {display: block; outline: none; text-decoration: none; -ms-interpolation-mode: bicubic;}
+    a img {border: none;}
+    a {text-decoration: none; color: #000001;} /* text link */
+    a.phone {text-decoration: none; color: #000001 !important; pointer-events: auto; cursor: default;} /* phone link, use as wrapper on phone numbers */
+    span {font-size: 13px; line-height: 17px; font-family: monospace; color: #000001;}
+
+    @media only screen and (max-width: 599px) {
+      table.body {
+        position: relative;
+        display: block !important;
+        width: 100% !important;
+        height: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+      }
+
+      table.body table,table.body tbody {
+        position: relative;
+        display: block !important;
+        width: 100% !important;
+        height: 100% !important;
+        max-width: 100% !important;
+      }
+
+      table.body img {
+        width: 100% !important;
+        height: auto !important;
+      }
+
+      table.body .section {
+        text-align: center !important;
+      }
+
+      table.body .section .sect-content-container {
+        width: 90% !important;
+      }
+
+      table.body .section .sect-content-container .image,table.body .section .sect-content-container .sect-content,table.body .section .sect-content-container .sect-side {
+        position: relative;
+        display: block !important;
+        width: 100% !important;
+        height: 100% !important;
+        max-width: 100% !important;
+      }
+
+      table.body .section .image {
+        text-align: center !important;
+      }
+
+      table.body .section .image center {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+
+      table.body .section .image img {
+        width: auto !important;
+        margin: 0 auto;
+      }
+
+      table.body .col-spacer {
+        display: none !important;
+      }
+
+      table.body .sect-hort-spacer {
+        width: 5% !important;
+      }
+
+      table.body .content-divider {
+        width: 80px !important;
+      }
+
+      table.body .content-divider .divider-spacer-top {
+        height: 10px !important;
+      }
+
+      table.body .content-divider .divider-hr {
+        width: 80px !important;
+        height: 20px !important;
+      }
+
+      table.body .sect-2col .content-center tr,table.body .sect-2col .content-center td {
+        position: relative;
+        display: block !important;
+        width: 100% !important;
+        height: 100% !important;
+        max-width: 100% !important;
+      }
+
+      table.body .sect-2col .content-center .content-divider {
+        width: 80px !important;
+      }
+
+      table.body .sect-2col .content-center .content-divider .divider-spacer-top {
+        height: 10px !important;
+      }
+
+      table.body .sect-2col .content-center .content-divider .divider-hr {
+        width: 80px !important;
+        height: 20px !important;
+      }
+
+      table.body .sect-2col .content-center .col-spacer {
+        display: block !important;
+        height: 30px !important;
+      }
+
+      table.body .sect-2col .sect-hort-spacer {
+        display: none !important;
+      }
+
+
+      table.body .sect-2col .sect-content-container {
+        position: relative;
+        display: block !important;
+        width: 100% !important;
+        height: 100% !important;
+        max-width: 100% !important;
+      }
+
+      table.body .sect-2col .sect-content-container .sect-content {
+        text-align: center !important;
+        width: 240px !important;
+        margin: 0 auto !important;
+      }
+
+      table.body .sect-2col-hero .image {
+        text-align: left !important;
+        padding-bottom: 18px !important;
+      }
+
+      table.body .sect-2col-hero .image img {
+        margin: 0 !important;
+      }
+
+      table.body .sect-sideimage .sect-side {
+        padding-bottom: 0 !important;
+      }
+
+      table.body .sect-sideimage .sect-side .image {
+        padding-bottom: 18px !important;
+      }
+
+      table.body .sect-sidebar .col-spacer {
+        width: 100% !important;
+        height: 30px !important;
+        display: block !important;
+      }
+
+      table.body .sect-sidebar .sect-content-container .sect-content {
+        width: 340px !important;
+      }
+
+      table.body .socialbar-container .socialbar-spacer {
+        height: 24px !important;
+      }
+
+      table.body .socialbar-container .socialbar-icons img {
+        width: 32px !important;
+        height: 32px !important;
+      }
+
+      table.body .header_logo img {
+        width: auto !important;
+      }
+
+      table.body .header_logo.alternate img {
+        width: 50% !important;
+      }
+
+      table.body .footer-address .sect-content-container {
+        width: 90% !important;
+      }
+
+      table.body .footer-legal .sect-content-container {
+        width: 90% !important;
+      }
+
+      table.body .footer-legal img {
+        width: 1px !important;
+        height: 1px !important;
+      }
+    }
+
+  </style>
+  <!--[if gte mso 9]>
+  <style>
+    /* Target Outlook 2007 and 2010 */
+  </style>
+  <![endif]-->
+</head>
+<body style="width:100%; margin:0; padding:0; -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%;">
+
+<!-- body wrapper -->
+<table cellpadding="0" cellspacing="0" border="0" style="margin:0; padding:0; width:100%; line-height: 100% !important;">
+  <tr>
+    <td valign="top">
+      <!-- edge wrapper -->
+      <table cellpadding="0" cellspacing="0" border="0" align="center" width="600" style="background: #efefef;">
+        <tr>
+          <td valign="top">
+            <!-- content wrapper -->
+            <table cellpadding="0" cellspacing="0" border="0" align="center" width="560" style="background: #cfcfcf;">
+              <tr>
+                <td valign="top" style="vertical-align: top;">
+                  <!-- ///////////////////////////////////////////////////// -->
+
+                  <table cellpadding="0" cellspacing="0" border="0" align="center">
+                    <tr>
+                      <td valign="top" style="vertical-align: top;">
+                        <span style="">text</span>
+                      </td>
+                    </tr>
+                  </table>
+                  <table cellpadding="0" cellspacing="0" border="0" align="center">
+                    <tr>
+                      <td valign="top" style="vertical-align: top;">
+                        <img src="full path to image" alt="alt text" title="title text" width="50" height="50" style="width: 50px; height: 50px;"/>
+                      </td>
+                    </tr>
+                  </table>
+                  <table cellpadding="0" cellspacing="0" border="0" align="center">
+                    <tr height="30">
+                      <td valign="top" style="vertical-align: top; background: #efefef;" width="600" >
+                      </td>
+                    </tr>
+                  </table>
+
+                  <!-- //////////// -->
+                </td>
+              </tr>
+            </table>
+            <!-- / content wrapper -->
+          </td>
+        </tr>
+      </table>
+      <!-- / edge wrapper -->
+    </td>
+  </tr>
+</table>
+<!-- / page wrapper -->
+</body>
+</html>

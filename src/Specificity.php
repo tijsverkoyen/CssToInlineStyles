@@ -75,7 +75,9 @@ class Specificity
      * Based on the patterns from premailer/css_parser by Alex Dunae
      *
      * @see https://github.com/premailer/css_parser/blob/master/lib/css_parser/regexps.rb
+     *
      * @param string $selector
+     *
      * @return static
      */
     public static function fromSelector($selector)
@@ -118,6 +120,7 @@ class Specificity
      * Returns <0 when $specificity is greater, 0 when equal, >0 when smaller
      *
      * @param Specificity $specificity
+     *
      * @return int
      */
     public function compareTo(Specificity $specificity)
