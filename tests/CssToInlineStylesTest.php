@@ -366,6 +366,21 @@ EOF;
         $this->assertEquals($expected, $actual);
     }
 
+    public function testBug83()
+    {
+        $html = '<html><body><style>div { width: 200px; _width: 222px; width: 222px; }</style><div class="test"><h1>foo</h1><h1>foo2</h1></div></body></html';
+        $css = '';
+        $expected = '<style></style>
+<div class="test" style="_width: 222px; width: 200px; width: 222px;">
+<h1>foo</h1>
+<h1>foo2</h1>
+</div>';
+        $this->cssToInlineStyles->setUseInlineStylesBlock(true);
+        $this->cssToInlineStyles->setStripOriginalStyleTags(true);
+        $this->cssToInlineStyles->setExcludeMediaQueries(true);
+        $this->runHTMLToCSS($html, $css, $expected);
+    }
+
     public function testBug92()
     {
         $html = '<html><body><style>@media (max-width: 600px) { .test { display: none; } } h1 { color : "red" } .bg {
