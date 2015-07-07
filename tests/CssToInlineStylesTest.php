@@ -139,9 +139,9 @@ EOF;
 
     public function testCleanup()
     {
-        $html = '<div id="id" class="className"></div>';
+        $html = '<div id="id" class="className"> id="foo" class="bar" </div>';
         $css = ' #id { display: inline; } .className { margin-right: 10px; }';
-        $expected = '<div style="margin-right: 10px; display: inline;"></div>';
+        $expected = '<div style="margin-right: 10px; display: inline;"> id="foo" class="bar" </div>';
         $this->cssToInlineStyles->setCleanup();
         $this->runHTMLToCSS($html, $css, $expected);
     }

@@ -89,21 +89,18 @@ class CssToInlineStyles
     }
 
     /**
-     * Cleanup the generated HTML
+     * Remove id and class attributes.
      *
      * @return string
-     * @param  string $html The HTML to cleanup.
+     * @param  \DOMXPath $xPath The DOMXPath for the entire document.
      */
-    private function cleanupHTML($html)
+    private function cleanupHTML(\DOMXPath $xPath)
     {
-        // remove classes
-        $html = preg_replace('/(\s)+class="(.*)"(\s)*/U', ' ', $html);
+        $nodes = $xPath->query('//@class | //@id');
 
-        // remove IDs
-        $html = preg_replace('/(\s)+id="(.*)"(\s)*/U', ' ', $html);
-
-        // return
-        return $html;
+        foreach ($nodes as $node) {
+            $node->ownerElement->removeAttributeNode($node);
+        }
     }
 
     /**
@@ -368,6 +365,11 @@ class CssToInlineStyles
             $this->stripOriginalStyleTags($xPath);
         }
 
+        // cleanup the HTML if we need to
+        if ($this->cleanup) {
+            $this->cleanupHTML($xPath);
+        }
+
         // should we output XHTML?
         if ($outputXHTML) {
             // set formating
@@ -382,11 +384,6 @@ class CssToInlineStyles
         else {
             // get the HTML
             $html = $document->saveHTML();
-        }
-
-        // cleanup the HTML if we need to
-        if ($this->cleanup) {
-            $html = $this->cleanupHTML($html);
         }
 
         // return
