@@ -22,13 +22,6 @@ class CssToInlineStyles
     private $css;
 
     /**
-     * The processed CSS rules
-     *
-     * @var    array
-     */
-    private $cssRules;
-
-    /**
      * Should the generated HTML be cleaned
      *
      * @var    bool
@@ -137,7 +130,7 @@ class CssToInlineStyles
         }
 
         // process css
-        $this->processCSS();
+        $cssRules = $this->processCSS();
 
         // create new DOMDocument
         $document = new \DOMDocument('1.0', $this->getEncoding());
@@ -155,9 +148,9 @@ class CssToInlineStyles
         $xPath = new \DOMXPath($document);
 
         // any rules?
-        if (!empty($this->cssRules)) {
+        if (!empty($cssRules)) {
             // loop rules
-            foreach ($this->cssRules as $rule) {
+            foreach ($cssRules as $rule) {
                 try {
                     $query = CssSelector::toXPath($rule['selector']);
                 } catch (ExceptionInterface $e) {
@@ -425,12 +418,13 @@ class CssToInlineStyles
     /**
      * Process the loaded CSS
      *
-     * @return void
+     * @return array
      */
     private function processCSS()
     {
         // init vars
         $css = (string) $this->css;
+        $cssRules = array();
 
         // remove newlines
         $css = str_replace(array("\r", "\n"), '', $css);
@@ -496,7 +490,7 @@ class CssToInlineStyles
                 $ruleSet['order'] = $i;
 
                 // add into global rules
-                $this->cssRules[] = $ruleSet;
+                $cssRules[] = $ruleSet;
             }
 
             // increment
@@ -504,9 +498,11 @@ class CssToInlineStyles
         }
 
         // sort based on specificity
-        if (!empty($this->cssRules)) {
-            usort($this->cssRules, array(__CLASS__, 'sortOnSpecificity'));
+        if (!empty($cssRules)) {
+            usort($cssRules, array(__CLASS__, 'sortOnSpecificity'));
         }
+
+        return $cssRules;
     }
 
     /**
