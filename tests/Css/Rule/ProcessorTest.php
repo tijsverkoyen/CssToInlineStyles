@@ -42,4 +42,25 @@ EOF;
         $this->assertEquals('block', $rules[0]->getProperties()[1]->getValue());
         $this->assertEquals(1, $rules[0]->getOrder());
     }
+
+    public function testMaintainOrderOfProperties()
+    {
+        $css = <<<EOF
+            div {
+                width: 200px;
+                _width: 211px;
+            }
+EOF;
+        $rules = $this->processor->convertToObjects($css, 1);
+
+        $this->assertCount(1, $rules);
+        $this->assertInstanceOf('TijsVerkoyen\CssToInlineStyles\Css\Rule\Rule', $rules[0]);
+        $this->assertEquals('div', $rules[0]->getSelector());
+        $this->assertCount(2, $rules[0]->getProperties());
+        $this->assertEquals('width', $rules[0]->getProperties()[0]->getName());
+        $this->assertEquals('200px', $rules[0]->getProperties()[0]->getValue());
+        $this->assertEquals('_width', $rules[0]->getProperties()[1]->getName());
+        $this->assertEquals('211px', $rules[0]->getProperties()[1]->getValue());
+        $this->assertEquals(1, $rules[0]->getOrder());
+    }
 }
