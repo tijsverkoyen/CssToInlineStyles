@@ -1,3 +1,14 @@
+# Changelog since 1.5.4
+
+The 2.0 version is a major overhaul, which is *not* backwards compatible.
+
+* From now on you can re-use the class for multiple mails.
+* A lot less complicated options, as in: no more options at all.
+* More separate classes which handle their own (tested) methods.
+* A lot more tests
+
+The reason why I did this was to made the class more usable.
+
 # Changelog since 1.5.3
 
 * Fix properties split on base64 encoded url content, thx to [tguyard](https://github.com/Giga-gg),

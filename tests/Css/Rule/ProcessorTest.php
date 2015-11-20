@@ -1,0 +1,45 @@
+<?php
+
+namespace TijsVerkoyen\CssToInlineStyles\Tests\Css\Rule;
+
+use TijsVerkoyen\CssToInlineStyles\Css\Rule\Processor;
+
+class ProcessorTest extends \PHPUnit_Framework_TestCase
+{
+    /**
+     * @var Processor
+     */
+    protected $processor;
+
+    public function setUp()
+    {
+        $this->processor = new Processor();
+    }
+
+    public function tearDown()
+    {
+        $this->processor = null;
+    }
+
+    public function testMostBasicRule()
+    {
+        $css = <<<EOF
+            a {
+                padding: 5px;
+                display: block;
+            }
+EOF;
+
+        $rules = $this->processor->convertToObjects($css, 1);
+
+        $this->assertCount(1, $rules);
+        $this->assertInstanceOf('TijsVerkoyen\CssToInlineStyles\Css\Rule\Rule', $rules[0]);
+        $this->assertEquals('a', $rules[0]->getSelector());
+        $this->assertCount(2, $rules[0]->getProperties());
+        $this->assertEquals('padding', $rules[0]->getProperties()[0]->getName());
+        $this->assertEquals('5px', $rules[0]->getProperties()[0]->getValue());
+        $this->assertEquals('display', $rules[0]->getProperties()[1]->getName());
+        $this->assertEquals('block', $rules[0]->getProperties()[1]->getValue());
+        $this->assertEquals(1, $rules[0]->getOrder());
+    }
+}
