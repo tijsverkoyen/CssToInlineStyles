@@ -1,6 +1,8 @@
 # CssToInlineStyles class
 
-[![Build Status](https://travis-ci.org/tijsverkoyen/CssToInlineStyles.svg?branch=master)](https://travis-ci.org/tijsverkoyen/CssToInlineStyles)
+[![Build Status](https://travis-ci.org/tijsverkoyen/CssToInlineStyles.svg?branch=master)](https://travis-ci.org/tijsverkoyen/CssToInlineStyles) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/tijsverkoyen/CssToInlineStyles/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/tijsverkoyen/CssToInlineStyles/?branch=master) [![Code Coverage](https://scrutinizer-ci.com/g/tijsverkoyen/CssToInlineStyles/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/tijsverkoyen/CssToInlineStyles/?branch=master) [![SensioLabsInsight](https://insight.sensiolabs.com/projects/5c0ce94f-de6d-403e-9e0a-431268deb75c/mini.png)](https://insight.sensiolabs.com/projects/5c0ce94f-de6d-403e-9e0a-431268deb75c)
+
+## Installation
 
 > CssToInlineStyles is a class that enables you to convert HTML-pages/files into
 > HTML-pages/files with inline styles. This is very usefull when you're sending
