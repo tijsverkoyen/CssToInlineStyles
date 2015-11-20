@@ -16,8 +16,9 @@ class Processor
 
         $properties = (array) explode(';', $propertiesString);
         $keysToRemove = array();
+        $numberOfProperties = count($properties);
 
-        for ($i = 0; $i < count($properties); $i++) {
+        for ($i = 0; $i < $numberOfProperties; $i++) {
             $properties[$i] = trim($properties[$i]);
 
             // if the new property begins with base64 it is part of the current property

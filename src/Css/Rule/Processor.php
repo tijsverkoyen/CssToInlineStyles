@@ -61,8 +61,6 @@ class Processor
         foreach ($selectors as $selector) {
             $selector = trim($selector);
 
-//                $ruleSet['specificity'] = Specificity::fromSelector($selector);
-
             $rules[] = new Rule(
                 $selector,
                 $propertiesProcessor->convertArrayToObjects($properties),
