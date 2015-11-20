@@ -17,4 +17,8 @@ before_script:
   - composer install --prefer-source  --no-interaction --no-scripts
 
 script:
-  - bin/phpunit --verbose --coverage-text
+  - vendor/bin/phpunit --verbose --coverage-clover=coverage.clover
+
+after_success:
+  - if [[ "$TRAVIS_PHP_VERSION" != "hhvm" ]] && [[ "$TRAVIS_PHP_VERSION" != "nightly" ]]; then wget https://scrutinizer-ci.com/ocular.phar; fi
+  - if [[ "$TRAVIS_PHP_VERSION" != "hhvm" ]] && [[ "$TRAVIS_PHP_VERSION" != "nightly" ]]; then php ocular.phar code-coverage:upload --format=php-clover coverage.clover; fi
