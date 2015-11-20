@@ -68,4 +68,22 @@ EOF;
         $this->assertEquals('red', $rules[0]->getProperties()[0]->getValue());
         $this->assertEquals(1, $rules[0]->getOrder());
     }
+
+    public function testMakeSureMediaQueriesAreRemoved()
+    {
+        $css = '@media tv and (min-width: 700px) and (orientation: landscape) {.foo {display: none;}}';
+        $this->assertEmpty($this->processor->getRules($css));
+
+        $css = '@media (min-width: 700px), handheld and (orientation: landscape) {.foo {display: none;}}';
+        $this->assertEmpty($this->processor->getRules($css));
+
+        $css = '@media not screen and (color), print and (color)';
+        $this->assertEmpty($this->processor->getRules($css));
+
+        $css = '@media screen and (min-aspect-ratio: 1/1) {.foo {display: none;}}';
+        $this->assertEmpty($this->processor->getRules($css));
+
+        $css = '@media screen and (device-aspect-ratio: 16/9), screen and (device-aspect-ratio: 16/10) {.foo {display: none;}}';
+        $this->assertEmpty($this->processor->getRules($css));
+    }
 }
