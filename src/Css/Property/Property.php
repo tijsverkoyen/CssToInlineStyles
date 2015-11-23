@@ -53,7 +53,7 @@ final class Property
      */
     public function isImportant()
     {
-        return (stristr($this->value, '!important') !== false);
+        return (stripos($this->value, '!important') !== false);
     }
 
     /**
