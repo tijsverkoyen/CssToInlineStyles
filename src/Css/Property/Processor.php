@@ -90,6 +90,11 @@ class Processor
         $objects = array();
 
         foreach ($properties as $property) {
+            $object = $this->convertToObject($property);
+            if ($object === null) {
+                continue;
+            }
+
             $objects[] = $this->convertToObject($property);
         }
 
