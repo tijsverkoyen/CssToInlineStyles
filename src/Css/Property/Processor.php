@@ -63,13 +63,20 @@ class Processor
      */
     public function convertToObject($property)
     {
-        $chunks = (array) explode(':', $property, 2);
-
-        if (!isset($chunks[1]) || $chunks[1] == '') {
+        if (stripos($property, ':') === false) {
             return null;
         }
 
-        return new Property(trim($chunks[0]), trim($chunks[1]));
+        list($name, $value) = explode(':', $property, 2);
+
+        $name = trim($name);
+        $value = trim($value);
+
+        if ($value === '') {
+            return null;
+        }
+
+        return new Property($name, $value);
     }
 
     /**

@@ -71,4 +71,10 @@ EOF;
             $this->processor->buildPropertiesString($properties)
         );
     }
+
+    public function testFaultyProperties()
+    {
+        $this->assertNull($this->processor->convertToObject('foo'));
+        $this->assertNull($this->processor->convertToObject('foo:'));
+    }
 }
