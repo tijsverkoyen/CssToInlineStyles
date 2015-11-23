@@ -97,17 +97,17 @@ class Processor
      * Sort an array on the specificity element
      *
      * @return int
-     * @param  array $e1 The first element.
-     * @param  array $e2 The second element.
+     * @param  Rule $e1 The first element.
+     * @param  Rule $e2 The second element.
      */
-    private static function sortOnSpecificity($e1, $e2)
+    private static function sortOnSpecificity(Rule $e1, Rule $e2)
     {
-        // Compare the specificity
-        $value = $e1['specificity']->compareTo($e2['specificity']);
+        $e1Specificity = ($e1->getSpecificity());
+        $value = $e1Specificity->compareTo($e2->getSpecificity());
 
         // if the specificity is the same, use the order in which the element appeared
         if ($value === 0) {
-            $value = $e1['order'] - $e2['order'];
+            $value = $e1->getOrder() - $e2->getOrder();
         }
 
         return $value;
