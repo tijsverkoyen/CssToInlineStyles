@@ -95,7 +95,7 @@ class Processor
                 continue;
             }
 
-            $objects[] = $this->convertToObject($property);
+            $objects[] = $object;
         }
 
         return $objects;
