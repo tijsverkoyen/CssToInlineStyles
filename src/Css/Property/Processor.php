@@ -41,7 +41,7 @@ class Processor
      * @param $string
      * @return mixed|string
      */
-    protected function cleanup($string)
+    private function cleanup($string)
     {
         $string = str_replace(array("\r", "\n"), '', $string);
         $string = str_replace(array("\t"), ' ', $string);
@@ -83,7 +83,7 @@ class Processor
      * Convert an array of property-strings into objects
      *
      * @param array $properties
-     * @return array
+     * @return Property[]
      */
     public function convertArrayToObjects(array $properties)
     {

@@ -2,6 +2,8 @@
 
 namespace TijsVerkoyen\CssToInlineStyles\Css\Rule;
 
+use TijsVerkoyen\CssToInlineStyles\Css\Specificity\Specificity;
+
 final class Rule
 {
     /**
@@ -14,6 +16,9 @@ final class Rule
      */
     private $properties;
 
+    /**
+     * @var Specificity
+     */
     private $specificity;
 
     /**
@@ -23,12 +28,13 @@ final class Rule
 
     /**
      * Rule constructor.
-     * @param string $selector
-     * @param array  $properties
-     * @param        $specificity
-     * @param int    $order
+     *
+     * @param string      $selector
+     * @param array       $properties
+     * @param Specificity $specificity
+     * @param int         $order
      */
-    public function __construct($selector, array $properties, $specificity, $order)
+    public function __construct($selector, array $properties, Specificity $specificity, $order)
     {
         $this->selector = $selector;
         $this->properties = $properties;
@@ -59,7 +65,7 @@ final class Rule
     /**
      * Get specificity
      *
-     * @return mixed
+     * @return Specificity
      */
     public function getSpecificity()
     {

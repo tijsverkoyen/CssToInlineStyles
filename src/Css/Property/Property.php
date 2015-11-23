@@ -2,7 +2,7 @@
 
 namespace TijsVerkoyen\CssToInlineStyles\Css\Property;
 
-class Property
+final class Property
 {
     /**
      * @var string

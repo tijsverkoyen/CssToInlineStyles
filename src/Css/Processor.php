@@ -22,10 +22,10 @@ class Processor
     }
 
     /**
-     * @param $css
-     * @return mixed|string
+     * @param string $css
+     * @return string
      */
-    protected function doCleanup($css)
+    private function doCleanup($css)
     {
         // remove media queries
         $css = preg_replace('/@media [^{]*{([^{}]|{[^{}]*})*}/', '', $css);
