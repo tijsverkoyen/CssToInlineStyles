@@ -89,13 +89,13 @@ class CssToInlineStylesTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             '<!DOCTYPE html><html><body><p style="color: red;">foo</p></body></html>',
-            $this->stripAllStuff(
+            $this->stripAllWhitespaces(
                 $this->cssToInlineStyles->convert($html, $css)
             )
         );
     }
 
-    private function stripAllStuff($content)
+    private function stripAllWhitespaces($content)
     {
         $content = str_replace(
             array("\n", "\t"),
