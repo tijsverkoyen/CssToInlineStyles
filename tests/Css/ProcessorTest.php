@@ -86,4 +86,49 @@ EOF;
         $css = '@media screen and (device-aspect-ratio: 16/9), screen and (device-aspect-ratio: 16/10) {.foo {display: none;}}';
         $this->assertEmpty($this->processor->getRules($css));
     }
+
+    public function testSimpleStyleTagsInHtml()
+    {
+        $expected = 'p { color: #F00; }' . "\n";
+        $this->assertEquals(
+            $expected,
+            $this->processor->getCssFromStyleTags(
+<<<EOF
+    <html>
+    <head>
+    <style>
+        p { color: #F00; }
+    </style>
+    </head>
+    <body>
+        <p>foo</p>
+    </body>
+    </html>
+EOF
+        ));
+    }
+
+    public function testMultipleStyleTagsInHtml()
+    {
+        $expected = 'p { color: #F00; }' . "\n" . "p { color: #0F0; }";
+        $this->assertEquals(
+            $expected,
+            $this->processor->getCssFromStyleTags(
+                <<<EOF
+                    <html>
+    <head>
+    <style>
+        p { color: #F00; }
+    </style>
+    </head>
+    <body>
+    <style>
+        p { color: #0F0; }
+    </style>
+        <p>foo</p>
+    </body>
+    </html>
+EOF
+            ));
+    }
 }
