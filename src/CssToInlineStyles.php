@@ -9,10 +9,34 @@ use TijsVerkoyen\CssToInlineStyles\Css\Rule\Rule;
 
 class CssToInlineStyles
 {
-    public function convert($html, $css)
+    /**
+     * Will inline the $css into the given $html
+     *
+     * Remark: if the html contains <style>-tags those will be used, the rules
+     * in $css will be appended.
+     *
+     * @param string $html
+     * @param string $css
+     * @return string
+     */
+    public function convert($html, $css = null)
     {
         $document = $this->createDomDocumentFromHtml($html);
-        $rules = (new Processor())->getRules($css);
+        $processor = new Processor();
+
+        // get all styles from the style-tags
+        $rules = $processor->getRules(
+            $processor->getCssFromStyleTags($html)
+        );
+
+        if ($css !== null) {
+            // add the provided styles
+            $rules = array_merge(
+                $rules,
+                $processor->getRules($css)
+            );
+        }
+
         $document = $this->inline($document, $rules);
 
         return $this->getHtmlFromDocument($document);

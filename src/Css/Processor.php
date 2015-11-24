@@ -22,6 +22,27 @@ class Processor
     }
 
     /**
+     * Get the CSS from the style-tags in the given HTML-string
+     *
+     * @param string $html
+     * @return string
+     */
+    public function getCssFromStyleTags($html)
+    {
+        $css = '';
+        $matches = array();
+        preg_match_all('|<style(.*)>(.*)</style>|isU', $html, $matches);
+
+        if (!empty($matches[2])) {
+            foreach ($matches[2] as $match) {
+                $css .= trim($match) . "\n";
+            }
+        }
+
+        return $css;
+    }
+
+    /**
      * @param string $css
      * @return string
      */
