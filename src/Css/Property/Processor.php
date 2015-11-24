@@ -63,7 +63,7 @@ class Processor
      */
     public function convertToObject($property)
     {
-        if (stripos($property, ':') === false) {
+        if (strpos($property, ':') === false) {
             return null;
         }
 
