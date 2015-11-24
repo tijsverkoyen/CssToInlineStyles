@@ -93,42 +93,44 @@ EOF;
         $this->assertEquals(
             $expected,
             $this->processor->getCssFromStyleTags(
-<<<EOF
-    <html>
+                <<<EOF
+                    <html>
     <head>
-    <style>
-        p { color: #F00; }
-    </style>
+        <style>
+            p { color: #F00; }
+        </style>
     </head>
     <body>
         <p>foo</p>
     </body>
     </html>
 EOF
-        ));
+            )
+        );
     }
 
     public function testMultipleStyleTagsInHtml()
     {
-        $expected = 'p { color: #F00; }' . "\n" . "p { color: #0F0; }";
+        $expected = 'p { color: #F00; }' . "\n" . 'p { color: #0F0; }' . "\n";
         $this->assertEquals(
             $expected,
             $this->processor->getCssFromStyleTags(
                 <<<EOF
                     <html>
     <head>
-    <style>
-        p { color: #F00; }
-    </style>
+        <style>
+            p { color: #F00; }
+        </style>
     </head>
     <body>
-    <style>
-        p { color: #0F0; }
-    </style>
+        <style>
+            p { color: #0F0; }
+        </style>
         <p>foo</p>
     </body>
     </html>
 EOF
-            ));
+            )
+        );
     }
 }
