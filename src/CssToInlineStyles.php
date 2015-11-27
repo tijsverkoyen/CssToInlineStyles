@@ -3,6 +3,7 @@
 namespace TijsVerkoyen\CssToInlineStyles;
 
 use Symfony\Component\CssSelector\CssSelector;
+use Symfony\Component\CssSelector\Exception\SyntaxErrorException;
 use TijsVerkoyen\CssToInlineStyles\Css\Processor;
 use TijsVerkoyen\CssToInlineStyles\Css\Property\Processor as PropertyProcessor;
 use TijsVerkoyen\CssToInlineStyles\Css\Rule\Rule;
@@ -30,13 +31,8 @@ class CssToInlineStyles
         );
 
         if ($css !== null) {
-            // add the provided styles
-            $rules = array_merge(
-                $rules,
-                $processor->getRules($css)
-            );
+            $rules = $processor->getRules($css, $rules);
         }
-
         $document = $this->inline($document, $rules);
 
         return $this->getHtmlFromDocument($document);
@@ -135,9 +131,13 @@ class CssToInlineStyles
         foreach ($rules as $rule) {
             /** @var Rule $rule */
 
-            $elements = $xPath->query(
-                CssSelector::toXPath($rule->getSelector())
-            );
+            try {
+                $expression = CssSelector::toXPath($rule->getSelector());
+            } catch(SyntaxErrorException $e) {
+                continue;
+            }
+
+            $elements = $xPath->query($expression);
 
             if ($elements === false) {
                 continue;

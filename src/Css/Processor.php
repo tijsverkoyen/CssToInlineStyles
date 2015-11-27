@@ -10,15 +10,15 @@ class Processor
      * Get the rules from a given CSS-string
      *
      * @param string $css
+     * @param array  $existingRules
      * @return Rule[]
      */
-    public function getRules($css)
+    public function getRules($css, $existingRules = array())
     {
         $css = $this->doCleanup($css);
         $rulesProcessor = new RuleProcessor();
         $rules = $rulesProcessor->splitIntoSeparateRules($css);
-
-        return $rulesProcessor->convertArrayToObjects($rules);
+        return $rulesProcessor->convertArrayToObjects($rules, $existingRules);
     }
 
     /**

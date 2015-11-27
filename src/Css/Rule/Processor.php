@@ -76,18 +76,12 @@ class Processor
      * @param array $rules
      * @return Rule[]
      */
-    public function convertArrayToObjects(array $rules)
+    public function convertArrayToObjects(array $rules, array $objects = array())
     {
-        $objects = array();
-
         $order = 1;
         foreach ($rules as $rule) {
             $objects = array_merge($objects, $this->convertToObjects($rule, $order));
             $order++;
-        }
-
-        if (!empty($objects)) {
-            usort($objects, array(__CLASS__, 'sortOnSpecificity'));
         }
 
         return $objects;
