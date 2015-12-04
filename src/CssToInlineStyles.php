@@ -156,7 +156,7 @@ class CssToInlineStyles
             // loop rules
             foreach ($cssRules as $rule) {
                 try {
-                    if (class_exists(CssSelectorConverter::class)) {
+                    if (class_exists("Symfony\\Component\\CssSelector\\CssSelectorConverter")) {
                         // Symfony >= 2.8
                         $cssSelector = new CssSelectorConverter();
                         $query = $cssSelector->toXPath($rule['selector']);
