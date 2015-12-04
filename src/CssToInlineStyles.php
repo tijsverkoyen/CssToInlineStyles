@@ -1,7 +1,11 @@
 <?php
 namespace TijsVerkoyen\CssToInlineStyles;
 
+// SF < 2.8
 use Symfony\Component\CssSelector\CssSelector;
+// SF >= 2.8
+use Symfony\Component\CssSelector\CssSelectorConverter;
+
 use Symfony\Component\CssSelector\Exception\ExceptionInterface;
 
 /**
@@ -152,7 +156,14 @@ class CssToInlineStyles
             // loop rules
             foreach ($cssRules as $rule) {
                 try {
-                    $query = CssSelector::toXPath($rule['selector']);
+                    if (class_exists(CssSelectorConverter::class)) {
+                        // Symfony >= 2.8
+                        $cssSelector = new CssSelectorConverter();
+                        $query = $cssSelector->toXPath($rule['selector']);
+                    } else {
+                        // Symfony < 2.8
+                        $query = CssSelector::toXPath($rule['selector']);
+                    }
                 } catch (ExceptionInterface $e) {
                     continue;
                 }
