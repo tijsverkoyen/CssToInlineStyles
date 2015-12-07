@@ -1,9 +1,6 @@
 <?php
 namespace TijsVerkoyen\CssToInlineStyles;
 
-use Symfony\Component\CssSelector\CssSelector;
-use Symfony\Component\CssSelector\Exception\ExceptionInterface;
-
 /**
  * CSS to Inline Styles class
  *
@@ -158,9 +155,11 @@ class CssToInlineStyles
         if (!empty($this->cssRules)) {
             // loop rules
             foreach ($this->cssRules as $rule) {
-                try {
-                    $query = CssSelector::toXPath($rule['selector']);
-                } catch (ExceptionInterface $e) {
+                
+                $selector = new Selector($rule['selector']);
+                $query = $selector->toXPath();
+                
+                if (is_null($query)) {
                     continue;
                 }
 
