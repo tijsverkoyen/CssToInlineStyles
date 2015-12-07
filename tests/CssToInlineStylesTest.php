@@ -191,6 +191,46 @@ EOF;
         $this->assertEquals($expected, $actual);
     }
 
+    /**
+     * Parsing html with different media queries
+     *
+     * @dataProvider getMediaQueries
+     */
+    public function testMediaQueries($html)
+    {
+        $expected = '<div class="foo"></div>';
+        $this->cssToInlineStyles->setUseInlineStylesBlock(true);
+        $this->cssToInlineStyles->setHTML($html);
+        $this->runHTMLToCSS($html, '', $expected);
+    }
+
+    /**
+     * @return array
+     */
+    public function getMediaQueries()
+    {
+        return [
+            [
+                '<html><head><style>@media (max-width: 600px) {.foo {margin: 0;}}</style></head><body><div class="foo"></div></body></html>',
+            ],
+            [
+                '<html><head><style>@media tv and (min-width: 700px) and (orientation: landscape) {.foo {display: none;}}</style></head><body><div class="foo"></div></body></html>'
+            ],
+            [
+                '<html><head><style>@media (min-width: 700px), handheld and (orientation: landscape) {.foo {display: none;}}</style></head><body><div class="foo"></div></body></html>'
+            ],
+            [
+                '<html><head><style>@media not screen and (color), print and (color)</style></head><body><div class="foo"></div></body></html>'
+            ],
+            [
+                '<html><head><style>@media screen and (min-aspect-ratio: 1/1) {.foo {display: none;}}</style></head><body><div class="foo"></div></body></html>'
+            ],
+            [
+                '<html><head><style>@media screen and (device-aspect-ratio: 16/9), screen and (device-aspect-ratio: 16/10) {.foo {display: none;}}</style></head><body><div class="foo"></div></body></html>'
+            ]
+        ];
+    }
+
     private function runHTMLToCSS($html, $css, $expected, $asXHTML = false)
     {
         $cssToInlineStyles = $this->cssToInlineStyles;

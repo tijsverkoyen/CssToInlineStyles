@@ -438,7 +438,7 @@ class CssToInlineStyles
         $css = preg_replace('/\s\s+/', ' ', $css);
 
         if ($this->excludeMediaQueries) {
-            $css = preg_replace('/@media [^{]*{([^{}]|{[^{}]*})*}/', '', $css);
+            $css = preg_replace('/@media.+?\}[^\}]*?\}/', '', $css);
         }
 
         // rules are splitted by }
@@ -644,7 +644,7 @@ class CssToInlineStyles
         foreach ($nodes as $node) {
             if ($this->excludeMediaQueries) {
                 //Search for Media Queries
-                preg_match_all('/@media [^{]*{([^{}]|{[^{}]*})*}/', $node->nodeValue, $mqs);
+                preg_match_all('/@media.+?\}[^\}]*?\}/', $node->nodeValue, $mqs);
 
                 // Replace the nodeValue with just the Media Queries
                 $node->nodeValue = implode("\n", $mqs[0]);
