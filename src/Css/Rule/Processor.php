@@ -21,8 +21,8 @@ class Processor
     }
 
     /**
-     * @param $string
-     * @return mixed|string
+     * @param string $string
+     * @return string
      */
     private function cleanup($string)
     {
