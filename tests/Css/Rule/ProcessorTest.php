@@ -2,6 +2,7 @@
 
 namespace TijsVerkoyen\CssToInlineStyles\Tests\Css\Rule;
 
+use Symfony\Component\CssSelector\Node\Specificity;
 use TijsVerkoyen\CssToInlineStyles\Css\Rule\Processor;
 
 class ProcessorTest extends \PHPUnit_Framework_TestCase
@@ -62,5 +63,29 @@ EOF;
         $this->assertEquals('_width', $rules[0]->getProperties()[1]->getName());
         $this->assertEquals('211px', $rules[0]->getProperties()[1]->getValue());
         $this->assertEquals(1, $rules[0]->getOrder());
+    }
+
+    public function testSingleIdSelector()
+    {
+        $this->assertEquals(
+            new Specificity(1, 0, 0),
+            $this->processor->calculateSpecificityBasedOnASelector('#foo')
+        );
+    }
+
+    public function testSingleClassSelector()
+    {
+        $this->assertEquals(
+            new Specificity(0, 1, 0),
+            $this->processor->calculateSpecificityBasedOnASelector('.foo')
+        );
+    }
+
+    public function testSingleElementSelector()
+    {
+        $this->assertEquals(
+            new Specificity(0, 0, 1),
+            $this->processor->calculateSpecificityBasedOnASelector('a')
+        );
     }
 }

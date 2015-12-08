@@ -4,7 +4,7 @@ namespace TijsVerkoyen\CssToInlineStyles\Tests\Css\Rule;
 
 use TijsVerkoyen\CssToInlineStyles\Css\Property\Property;
 use TijsVerkoyen\CssToInlineStyles\Css\Rule\Rule;
-use TijsVerkoyen\CssToInlineStyles\Css\Specificity\Specificity;
+use Symfony\Component\CssSelector\Node\Specificity;
 
 class PropertyTest extends \PHPUnit_Framework_TestCase
 {

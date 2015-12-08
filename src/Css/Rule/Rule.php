@@ -2,7 +2,7 @@
 
 namespace TijsVerkoyen\CssToInlineStyles\Css\Rule;
 
-use TijsVerkoyen\CssToInlineStyles\Css\Specificity\Specificity;
+use Symfony\Component\CssSelector\Node\Specificity;
 
 final class Rule
 {

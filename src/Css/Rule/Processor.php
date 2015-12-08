@@ -2,8 +2,8 @@
 
 namespace TijsVerkoyen\CssToInlineStyles\Css\Rule;
 
+use Symfony\Component\CssSelector\Node\Specificity;
 use \TijsVerkoyen\CssToInlineStyles\Css\Property\Processor as PropertyProcessor;
-use TijsVerkoyen\CssToInlineStyles\Css\Specificity\Specificity;
 
 class Processor
 {
@@ -60,7 +60,7 @@ class Processor
 
         foreach ($selectors as $selector) {
             $selector = trim($selector);
-            $specificity = Specificity::fromSelector($selector);
+            $specificity = $this->calculateSpecificityBasedOnASelector($selector);
 
             $rules[] = new Rule(
                 $selector,
@@ -71,6 +71,50 @@ class Processor
         }
 
         return $rules;
+    }
+
+    /**
+     * Calculate the specificity based on a CSS Selector string,
+     * Based on the patterns from premailer/css_parser by Alex Dunae
+     *
+     * @see https://github.com/premailer/css_parser/blob/master/lib/css_parser/regexps.rb
+     * @param string $selector
+     * @return Specificity
+     */
+    public function calculateSpecificityBasedOnASelector($selector)
+    {
+        $idSelectorsPattern = "  \#";
+        $classAttributesPseudoClassesSelectorsPattern = "  (\.[\w]+)                     # classes
+                        |
+                        \[(\w+)                       # attributes
+                        |
+                        (\:(                          # pseudo classes
+                          link|visited|active
+                          |hover|focus
+                          |lang
+                          |target
+                          |enabled|disabled|checked|indeterminate
+                          |root
+                          |nth-child|nth-last-child|nth-of-type|nth-last-of-type
+                          |first-child|last-child|first-of-type|last-of-type
+                          |only-child|only-of-type
+                          |empty|contains
+                        ))";
+
+        $typePseudoElementsSelectorPattern = "  ((^|[\s\+\>\~]+)[\w]+       # elements
+                        |
+                        \:{1,2}(                    # pseudo-elements
+                          after|before
+                          |first-letter|first-line
+                          |selection
+                        )
+                      )";
+
+        return new Specificity(
+            preg_match_all("/{$idSelectorsPattern}/ix", $selector, $matches),
+            preg_match_all("/{$classAttributesPseudoClassesSelectorsPattern}/ix", $selector, $matches),
+            preg_match_all("/{$typePseudoElementsSelectorPattern}/ix", $selector, $matches)
+        );
     }
 
     /**
