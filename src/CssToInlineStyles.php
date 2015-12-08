@@ -42,7 +42,7 @@ class CssToInlineStyles
     /**
      * Inle the given properties on an given DOMElement
      *
-     * @param \DOMElement $element
+     * @param \DOMElement             $element
      * @param Css\Property\Property[] $properties
      * @return \DOMElement
      */
@@ -207,8 +207,7 @@ class CssToInlineStyles
 
                 if (
                     ($existingProperty->isImportant() && $property->isImportant()) &&
-                    ($property->getOriginalSpecificity()->getValue() >=
-                        $existingProperty->getOriginalSpecificity()->getValue())
+                    ($existingProperty->getOriginalSpecificity()->compareTo($property->getOriginalSpecificity()) <= 0)
                 ) {
                     // if both the properties are important we should use the specificity
                     $cssProperties[$property->getName()] = $property;
@@ -217,10 +216,9 @@ class CssToInlineStyles
                     $cssProperties[$property->getName()] = $property;
                 } elseif (
                     !$existingProperty->isImportant() &&
-                    ($property->getOriginalSpecificity()->getValue() >=
-                        $existingProperty->getOriginalSpecificity()->getValue())
+                    ($existingProperty->getOriginalSpecificity()->compareTo($property->getOriginalSpecificity()) <= 0)
                 ) {
-                    // if the existing propert is not important we should check the specificity
+                    // if the existing property is not important we should check the specificity
                     $cssProperties[$property->getName()] = $property;
                 }
             } else {

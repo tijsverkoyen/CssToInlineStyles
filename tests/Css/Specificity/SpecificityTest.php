@@ -6,19 +6,6 @@ use TijsVerkoyen\CssToInlineStyles\Css\Specificity\Specificity;
 
 class PropertyTest extends \PHPUnit_Framework_TestCase
 {
-    public function testIncreaseMethodShouldIncreaseAllWithOne()
-    {
-        $instance = new Specificity(0, 0, 0);
-        $instance = $instance->plus(
-            new Specificity(1, 1, 1)
-        );
-
-        $this->assertEquals(
-            111,
-            $instance->getValue()
-        );
-    }
-
     public function testIdBeforeClass()
     {
         $idInstance = new Specificity(1, 0, 0);
@@ -55,24 +42,24 @@ class PropertyTest extends \PHPUnit_Framework_TestCase
     public function testSingleIdSelector()
     {
         $this->assertEquals(
-            100,
-            Specificity::fromSelector('#foo')->getValue()
+            new Specificity(1, 0, 0),
+            Specificity::fromSelector('#foo')
         );
     }
 
     public function testSingleClassSelector()
     {
         $this->assertEquals(
-            10,
-            Specificity::fromSelector('.foo')->getValue()
+            new Specificity(0, 1, 0),
+            Specificity::fromSelector('.foo')
         );
     }
 
     public function testSingleElementSelector()
     {
         $this->assertEquals(
-            1,
-            Specificity::fromSelector('a')->getValue()
+            new Specificity(0, 0, 1),
+            Specificity::fromSelector('a')
         );
     }
 }
