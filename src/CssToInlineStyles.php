@@ -126,8 +126,8 @@ class CssToInlineStyles
     }
 
     /**
-     * @param \DOMDocument $document
-     * @param array        $rules
+     * @param \DOMDocument    $document
+     * @param Css\Rule\Rule[] $rules
      * @return \DOMDocument
      */
     protected function inline(\DOMDocument $document, array $rules)
@@ -174,8 +174,8 @@ class CssToInlineStyles
     /**
      * Store the calculated values in a temporary data-attribute
      *
-     * @param \DOMElement $element
-     * @param Property[]  $properties
+     * @param \DOMElement             $element
+     * @param Css\Property\Property[] $properties
      * @return \DOMElement
      */
     private function calculatePropertiesToBeApplied(
