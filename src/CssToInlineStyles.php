@@ -4,7 +4,7 @@ namespace TijsVerkoyen\CssToInlineStyles;
 
 use Symfony\Component\CssSelector\CssSelector;
 use Symfony\Component\CssSelector\CssSelectorConverter;
-use Symfony\Component\CssSelector\Exception\ParseException;
+use Symfony\Component\CssSelector\Exception\ExceptionInterface;
 use TijsVerkoyen\CssToInlineStyles\Css\Processor;
 use TijsVerkoyen\CssToInlineStyles\Css\Property\Processor as PropertyProcessor;
 use TijsVerkoyen\CssToInlineStyles\Css\Rule\Rule;
@@ -146,7 +146,7 @@ class CssToInlineStyles
                 } else {
                     $expression = CssSelector::toXPath($rule->getSelector());
                 }
-            } catch (ParseException $e) {
+            } catch (ExceptionInterface $e) {
                 continue;
             }
 
