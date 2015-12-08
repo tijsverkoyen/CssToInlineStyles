@@ -18,6 +18,7 @@ class Processor
         $css = $this->doCleanup($css);
         $rulesProcessor = new RuleProcessor();
         $rules = $rulesProcessor->splitIntoSeparateRules($css);
+
         return $rulesProcessor->convertArrayToObjects($rules, $existingRules);
     }
 

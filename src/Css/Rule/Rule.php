@@ -30,7 +30,7 @@ final class Rule
      * Rule constructor.
      *
      * @param string      $selector
-     * @param Property[]       $properties
+     * @param Property[]  $properties
      * @param Specificity $specificity
      * @param int         $order
      */
