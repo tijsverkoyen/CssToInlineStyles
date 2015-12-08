@@ -3,6 +3,7 @@
 namespace TijsVerkoyen\CssToInlineStyles;
 
 use Symfony\Component\CssSelector\CssSelector;
+use Symfony\Component\CssSelector\CssSelectorConverter;
 use Symfony\Component\CssSelector\Exception\SyntaxErrorException;
 use TijsVerkoyen\CssToInlineStyles\Css\Processor;
 use TijsVerkoyen\CssToInlineStyles\Css\Property\Processor as PropertyProcessor;
@@ -138,9 +139,13 @@ class CssToInlineStyles
 
         $xPath = new \DOMXPath($document);
         foreach ($rules as $rule) {
-            /** @var Rule $rule */
             try {
-                $expression = CssSelector::toXPath($rule->getSelector());
+                if (class_exists('Symfony\Component\CssSelector\CssSelectorConverter')) {
+                    $converter = new CssSelectorConverter();
+                    $expression = $converter->toXPath($rule->getSelector());
+                } else {
+                    $expression = CssSelector::toXPath($rule->getSelector());
+                }
             } catch (SyntaxErrorException $e) {
                 continue;
             }
