@@ -21,5 +21,10 @@
     "psr-4": {
       "TijsVerkoyen\\CssToInlineStyles\\": "src"
     }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "2.0.x-dev"
+    }
   }
 }
