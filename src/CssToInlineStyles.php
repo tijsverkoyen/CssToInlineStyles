@@ -96,10 +96,13 @@ class CssToInlineStyles
     /**
      * Converts the loaded HTML into an HTML-string with inline styles based on the loaded CSS
      *
+     *
+     * @param bool $outputXHTML [optional] $outputXHTML Should we output valid XHTML?
+     * @param int $libXMLOptions Since PHP 5.4.0 and Libxml 2.6.0, you may also use the options parameter to specify additional Libxml parameters
      * @return string
-     * @param  bool [optional] $outputXHTML Should we output valid XHTML?
+     * @throws Exception
      */
-    public function convert($outputXHTML = false)
+    public function convert($outputXHTML = false , $libXMLOptions = 0)
     {
         // redefine
         $outputXHTML = (bool) $outputXHTML;
@@ -136,7 +139,7 @@ class CssToInlineStyles
         $internalErrors = libxml_use_internal_errors(true);
 
         // load HTML
-        $document->loadHTML($this->html);
+        $document->loadHTML($this->html, $libXMLOptions);
 
         // Restore error level
         libxml_use_internal_errors($internalErrors);
