@@ -121,13 +121,19 @@ class CssToInlineStylesTest extends \PHPUnit_Framework_TestCase
     public function testInlineStylesBlock()
     {
         $html = <<<EOF
-<style type="text/css">
-  a {
-    padding: 10px;
-    margin: 0;
-  }
-</style>
-<a></a>
+<html>
+<head>
+    <style type="text/css">
+      a {
+        padding: 10px;
+        margin: 0;
+      }
+    </style>
+</head>
+<body>
+    <a></a>
+</body>
+</html>
 EOF;
         $expected = '<a style="padding: 10px; margin: 0;"></a>';
 
@@ -171,12 +177,7 @@ EOF;
 <a class="one" id="ONE" style="padding: 100px; border: 1px solid red; margin: 10px; width: 20px !important;">
   <img class="two" id="TWO" style="border: none;"></img></a>
 EOF;
-        $this->assertEquals(
-            $expected,
-            $this->getBodyContent(
-                $this->cssToInlineStyles->convert($html, $css)
-            )
-        );
+        $this->assertCorrectConversion($expected, $html, $css);
     }
 
     public function testEqualSpecificity()
