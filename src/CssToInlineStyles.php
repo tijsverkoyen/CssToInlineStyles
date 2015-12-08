@@ -208,7 +208,7 @@ class CssToInlineStyles
                 if (
                     ($existingProperty->isImportant() && $property->isImportant()) &&
                     ($property->getOriginalSpecificity()->getValue() >=
-                     $existingProperty->getOriginalSpecificity()->getValue())
+                        $existingProperty->getOriginalSpecificity()->getValue())
                 ) {
                     // if both the properties are important we should use the specificity
                     $cssProperties[$property->getName()] = $property;
@@ -218,7 +218,7 @@ class CssToInlineStyles
                 } elseif (
                     !$existingProperty->isImportant() &&
                     ($property->getOriginalSpecificity()->getValue() >=
-                     $existingProperty->getOriginalSpecificity()->getValue())
+                        $existingProperty->getOriginalSpecificity()->getValue())
                 ) {
                     // if the existing propert is not important we should check the specificity
                     $cssProperties[$property->getName()] = $property;
