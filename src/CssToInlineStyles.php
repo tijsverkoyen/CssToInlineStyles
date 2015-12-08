@@ -42,7 +42,7 @@ class CssToInlineStyles
     /**
      * Inle the given properties on an given DOMElement
      *
-     * @param \DOMElement             $element
+     * @param \DOMElement $element
      * @param Css\Property\Property[] $properties
      * @return \DOMElement
      */
@@ -178,7 +178,7 @@ class CssToInlineStyles
      * @param Property[]  $properties
      * @return \DOMElement
      */
-    protected function calculatePropertiesToBeApplied(
+    private function calculatePropertiesToBeApplied(
         \DOMElement $element,
         array $properties
     ) {

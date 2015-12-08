@@ -97,7 +97,7 @@ class Processor
      */
     private static function sortOnSpecificity(Rule $e1, Rule $e2)
     {
-        $e1Specificity = ($e1->getSpecificity());
+        $e1Specificity = $e1->getSpecificity();
         $value = $e1Specificity->compareTo($e2->getSpecificity());
 
         // if the specificity is the same, use the order in which the element appeared
