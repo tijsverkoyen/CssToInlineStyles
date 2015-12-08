@@ -8,12 +8,14 @@ class PropertyTest extends \PHPUnit_Framework_TestCase
 {
     public function testIncreaseMethodShouldIncreaseAllWithOne()
     {
-        $instance = new Specificity();
-        $instance->increase(1, 1, 1);
+        $instance = new Specificity(0, 0, 0);
+        $instance = $instance->plus(
+            new Specificity(1, 1, 1)
+        );
 
         $this->assertEquals(
-            array(1, 1, 1),
-            $instance->getValues()
+            111,
+            $instance->getValue()
         );
     }
 
@@ -53,24 +55,24 @@ class PropertyTest extends \PHPUnit_Framework_TestCase
     public function testSingleIdSelector()
     {
         $this->assertEquals(
-            array(1, 0, 0),
-            Specificity::fromSelector('#foo')->getValues()
+            100,
+            Specificity::fromSelector('#foo')->getValue()
         );
     }
 
     public function testSingleClassSelector()
     {
         $this->assertEquals(
-            array(0, 1, 0),
-            Specificity::fromSelector('.foo')->getValues()
+            10,
+            Specificity::fromSelector('.foo')->getValue()
         );
     }
 
     public function testSingleElementSelector()
     {
         $this->assertEquals(
-            array(0, 0, 1),
-            Specificity::fromSelector('a')->getValues()
+            1,
+            Specificity::fromSelector('a')->getValue()
         );
     }
 }

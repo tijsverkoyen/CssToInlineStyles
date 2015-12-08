@@ -33,16 +33,17 @@ class CssToInlineStyles
         if ($css !== null) {
             $rules = $processor->getRules($css, $rules);
         }
+
         $document = $this->inline($document, $rules);
 
         return $this->getHtmlFromDocument($document);
     }
 
     /**
-     * Inline the given properties on a DOMElement
+     * Inle the given properties on an given DOMElement
      *
-     * @param \DOMElement $element
-     * @param array       $properties
+     * @param \DOMElement             $element
+     * @param Css\Property\Property[] $properties
      * @return \DOMElement
      */
     public function inlineCssOnElement(\DOMElement $element, array $properties)
@@ -51,37 +52,45 @@ class CssToInlineStyles
             return $element;
         }
 
-        $propertyProcessor = new PropertyProcessor();
         $cssProperties = array();
-        $currentStyles = $element->attributes->getNamedItem('style');
+        $inlineProperties = $this->getInlineStyles($element);
 
-        if ($currentStyles !== null) {
-            $currentProperties = $propertyProcessor->convertArrayToObjects(
-                $propertyProcessor->splitIntoSeparateProperties($currentStyles->value)
-            );
-
-            foreach ($currentProperties as $property) {
+        if (!empty($inlineProperties)) {
+            foreach ($inlineProperties as $property) {
                 $cssProperties[$property->getName()] = $property;
             }
         }
 
         foreach ($properties as $property) {
-            if (isset($cssProperties[$property->getName()])) {
-                // only overrule it if the the not-inline-style property is important
-                if ($property->isImportant()) {
-                    $cssProperties[$property->getName()] = $property;
-                }
-            } else {
+            if (!isset($cssProperties[$property->getName()])) {
                 $cssProperties[$property->getName()] = $property;
             }
         }
 
-        $element->setAttribute(
-            'style',
-            $propertyProcessor->buildPropertiesString(array_values($cssProperties))
-        );
+        $rules = array();
+        foreach ($cssProperties as $property) {
+            $rules[] = $property->toString();
+        }
+        $element->setAttribute('style', implode(' ', $rules));
 
         return $element;
+    }
+
+    /**
+     * Get the current inline styles for a given DOMElement
+     *
+     * @param \DOMElement $element
+     * @return Css\Property\Property[]
+     */
+    public function getInlineStyles(\DOMElement $element)
+    {
+        $processor = new PropertyProcessor();
+
+        return $processor->convertArrayToObjects(
+            $processor->splitIntoSeparateProperties(
+                $element->getAttribute('style')
+            )
+        );
     }
 
     /**
@@ -130,10 +139,9 @@ class CssToInlineStyles
         $xPath = new \DOMXPath($document);
         foreach ($rules as $rule) {
             /** @var Rule $rule */
-
             try {
                 $expression = CssSelector::toXPath($rule->getSelector());
-            } catch(SyntaxErrorException $e) {
+            } catch (SyntaxErrorException $e) {
                 continue;
             }
 
@@ -144,10 +152,91 @@ class CssToInlineStyles
             }
 
             foreach ($elements as $element) {
-                $this->inlineCssOnElement($element, $rule->getProperties());
+                $this->calculatePropertiesToBeApplied($element, $rule->getProperties());
+            }
+        }
+
+        $elements = $xPath->query('//*[@data-css-to-inline-styles]');
+
+        foreach ($elements as $element) {
+            $propertiesToBeApplied = $element->attributes->getNamedItem('data-css-to-inline-styles');
+            $element->removeAttribute('data-css-to-inline-styles');
+
+            if ($propertiesToBeApplied !== null) {
+                $properties = unserialize(base64_decode($propertiesToBeApplied->value));
+                $this->inlineCssOnElement($element, $properties);
             }
         }
 
         return $document;
+    }
+
+    /**
+     * Store the calculated values in a temporary data-attribute
+     *
+     * @param \DOMElement $element
+     * @param Property[]  $properties
+     * @return \DOMElement
+     */
+    protected function calculatePropertiesToBeApplied(
+        \DOMElement $element,
+        array $properties
+    ) {
+        if (empty($properties)) {
+            return $element;
+        }
+
+        $cssProperties = array();
+        $currentStyles = $element->attributes->getNamedItem('data-css-to-inline-styles');
+
+        if ($currentStyles !== null) {
+            $currentProperties = unserialize(
+                base64_decode(
+                    $currentStyles->value
+                )
+            );
+
+            foreach ($currentProperties as $property) {
+                $cssProperties[$property->getName()] = $property;
+            }
+        }
+
+        foreach ($properties as $property) {
+            if (isset($cssProperties[$property->getName()])) {
+                $existingProperty = $cssProperties[$property->getName()];
+
+                if (
+                    ($existingProperty->isImportant() && $property->isImportant()) &&
+                    ($property->getOriginalSpecificity()->getValue() >=
+                     $existingProperty->getOriginalSpecificity()->getValue())
+                ) {
+                    // if both the properties are important we should use the specificity
+                    $cssProperties[$property->getName()] = $property;
+                } elseif (!$existingProperty->isImportant() && $property->isImportant()) {
+                    // if the existing property is not important but the new one is, it should be overruled
+                    $cssProperties[$property->getName()] = $property;
+                } elseif (
+                    !$existingProperty->isImportant() &&
+                    ($property->getOriginalSpecificity()->getValue() >=
+                     $existingProperty->getOriginalSpecificity()->getValue())
+                ) {
+                    // if the existing propert is not important we should check the specificity
+                    $cssProperties[$property->getName()] = $property;
+                }
+            } else {
+                $cssProperties[$property->getName()] = $property;
+            }
+        }
+
+        $element->setAttribute(
+            'data-css-to-inline-styles',
+            base64_encode(
+                serialize(
+                    array_values($cssProperties)
+                )
+            )
+        );
+
+        return $element;
     }
 }

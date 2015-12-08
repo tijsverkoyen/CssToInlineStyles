@@ -42,10 +42,10 @@ class Processor
      * Convert a rule-string into an object
      *
      * @param string $rule
-     * @param int    $orginalOrder
+     * @param int    $originalOrder
      * @return array
      */
-    public function convertToObjects($rule, $orginalOrder)
+    public function convertToObjects($rule, $originalOrder)
     {
         $rule = $this->cleanup($rule);
 
@@ -60,12 +60,13 @@ class Processor
 
         foreach ($selectors as $selector) {
             $selector = trim($selector);
+            $specificity = Specificity::fromSelector($selector);
 
             $rules[] = new Rule(
                 $selector,
-                $propertiesProcessor->convertArrayToObjects($properties),
-                Specificity::fromSelector($selector),
-                $orginalOrder
+                $propertiesProcessor->convertArrayToObjects($properties, $specificity),
+                $specificity,
+                $originalOrder
             );
         }
 

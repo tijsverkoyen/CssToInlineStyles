@@ -4,72 +4,82 @@ namespace TijsVerkoyen\CssToInlineStyles\Css\Specificity;
 
 class Specificity
 {
+    const A_FACTOR = 100;
+    const B_FACTOR = 10;
+    const C_FACTOR = 1;
+
     /**
-     * The number of ID selectors in the selector
-     *
      * @var int
      */
-    private $numberOfIdSelectors;
+    private $a;
 
     /**
-     *
-     * The number of class selectors, attributes selectors, and pseudo-classes in the selector
-     *
      * @var int
      */
-    private $numberOfClassAttributesPseudoClassSelectors;
+    private $b;
 
     /**
-     * The number of type selectors and pseudo-elements in the selector
-     *
      * @var int
      */
-    private $numberOfTypePseudoElementSelectors;
+    private $c;
 
     /**
-     * @param int $numberOfIdSelectors                         The number of ID selectors in the selector
-     * @param int $numberOfClassAttributesPseudoClassSelectors The number of class selectors, attributes selectors, and pseudo-classes in the selector
-     * @param int $numberOfTypePseudoElementSelectors          The number of type selectors and pseudo-elements in the selector
-     */
-    public function __construct(
-        $numberOfIdSelectors = 0,
-        $numberOfClassAttributesPseudoClassSelectors = 0,
-        $numberOfTypePseudoElementSelectors = 0
-    ) {
-        $this->numberOfIdSelectors = $numberOfIdSelectors;
-        $this->numberOfClassAttributesPseudoClassSelectors = $numberOfClassAttributesPseudoClassSelectors;
-        $this->numberOfTypePseudoElementSelectors = $numberOfTypePseudoElementSelectors;
-    }
-
-    /**
-     * Increase the current specificity by adding the three values
+     * Constructor.
      *
-     * @param int $numberOfIdSelectors                         The number of ID selectors in the selector
-     * @param int $numberOfClassAttributesPseudoClassSelectors The number of class selectors, attributes selectors, and pseudo-classes in the selector
-     * @param int $numberOfTypePseudoElementSelectors          The number of type selectors and pseudo-elements in the selector
+     * @param int $a
+     * @param int $b
+     * @param int $c
      */
-    public function increase(
-        $numberOfIdSelectors,
-        $numberOfClassAttributesPseudoClassSelectors,
-        $numberOfTypePseudoElementSelectors
-    ) {
-        $this->numberOfIdSelectors += $numberOfIdSelectors;
-        $this->numberOfClassAttributesPseudoClassSelectors += $numberOfClassAttributesPseudoClassSelectors;
-        $this->numberOfTypePseudoElementSelectors += $numberOfTypePseudoElementSelectors;
-    }
-
-    /**
-     * Get the specificity values as an array
-     *
-     * @return array
-     */
-    public function getValues()
+    public function __construct($a, $b, $c)
     {
-        return array(
-            $this->numberOfIdSelectors,
-            $this->numberOfClassAttributesPseudoClassSelectors,
-            $this->numberOfTypePseudoElementSelectors
-        );
+        $this->a = $a;
+        $this->b = $b;
+        $this->c = $c;
+    }
+
+    /**
+     * @param Specificity $specificity
+     *
+     * @return Specificity
+     */
+    public function plus(Specificity $specificity)
+    {
+        return new self($this->a + $specificity->a, $this->b + $specificity->b, $this->c + $specificity->c);
+    }
+
+    /**
+     * Returns global specificity value.
+     *
+     * @return int
+     */
+    public function getValue()
+    {
+        return $this->a * self::A_FACTOR + $this->b * self::B_FACTOR + $this->c * self::C_FACTOR;
+    }
+
+    /**
+     * Returns -1 if the object specificity is lower than the argument,
+     * 0 if they are equal, and 1 if the argument is lower.
+     *
+     * @param Specificity $specificity
+     *
+     * @return int
+     */
+    public function compareTo(Specificity $specificity)
+    {
+        if ($this->a !== $specificity->a) {
+            return $this->a > $specificity->a ? 1 : -1;
+        }
+
+        if ($this->b !== $specificity->b) {
+            return $this->b > $specificity->b ? 1 : -1;
+        }
+
+        if ($this->c !== $specificity->c) {
+            return $this->c > $specificity->c ? 1 : -1;
+        }
+
+        return 0;
     }
 
     /**
@@ -114,22 +124,5 @@ class Specificity
             preg_match_all("/{$classAttributesPseudoClassesSelectorsPattern}/ix", $selector, $matches),
             preg_match_all("/{$typePseudoElementsSelectorPattern}/ix", $selector, $matches)
         );
-    }
-
-    /**
-     * Returns <0 when $specificity is greater, 0 when equal, >0 when smaller
-     *
-     * @param Specificity $specificity
-     * @return int
-     */
-    public function compareTo(Specificity $specificity)
-    {
-        if ($this->numberOfIdSelectors !== $specificity->numberOfIdSelectors) {
-            return $this->numberOfIdSelectors - $specificity->numberOfIdSelectors;
-        } elseif ($this->numberOfClassAttributesPseudoClassSelectors !== $specificity->numberOfClassAttributesPseudoClassSelectors) {
-            return $this->numberOfClassAttributesPseudoClassSelectors - $specificity->numberOfClassAttributesPseudoClassSelectors;
-        } else {
-            return $this->numberOfTypePseudoElementSelectors - $specificity->numberOfTypePseudoElementSelectors;
-        }
     }
 }

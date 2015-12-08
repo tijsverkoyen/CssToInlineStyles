@@ -2,6 +2,8 @@
 
 namespace TijsVerkoyen\CssToInlineStyles\Css\Property;
 
+use TijsVerkoyen\CssToInlineStyles\Css\Specificity\Specificity;
+
 class Processor
 {
     /**
@@ -61,7 +63,7 @@ class Processor
      * @param string $property
      * @return Property|null
      */
-    public function convertToObject($property)
+    public function convertToObject($property, Specificity $specificity = null)
     {
         if (strpos($property, ':') === false) {
             return null;
@@ -76,7 +78,7 @@ class Processor
             return null;
         }
 
-        return new Property($name, $value);
+        return new Property($name, $value, $specificity);
     }
 
     /**
@@ -85,12 +87,12 @@ class Processor
      * @param array $properties
      * @return Property[]
      */
-    public function convertArrayToObjects(array $properties)
+    public function convertArrayToObjects(array $properties, Specificity $specificity = null)
     {
         $objects = array();
 
         foreach ($properties as $property) {
-            $object = $this->convertToObject($property);
+            $object = $this->convertToObject($property, $specificity);
             if ($object === null) {
                 continue;
             }

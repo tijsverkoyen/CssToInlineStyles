@@ -2,6 +2,8 @@
 
 namespace TijsVerkoyen\CssToInlineStyles\Css\Property;
 
+use TijsVerkoyen\CssToInlineStyles\Css\Specificity\Specificity;
+
 final class Property
 {
     /**
@@ -15,15 +17,21 @@ final class Property
     private $value;
 
     /**
-     * Property constructor.
-     *
-     * @param string $name
-     * @param string $value
+     * @var Specificity
      */
-    public function __construct($name, $value)
+    private $originalSpecificity;
+
+    /**
+     * Property constructor.
+     * @param                  $name
+     * @param                  $value
+     * @param Specificity|null $specificity
+     */
+    public function __construct($name, $value, Specificity $specificity = null)
     {
         $this->name = $name;
         $this->value = $value;
+        $this->originalSpecificity = $specificity;
     }
 
     /**
@@ -44,6 +52,16 @@ final class Property
     public function getValue()
     {
         return $this->value;
+    }
+
+    /**
+     * Get originalSpecificity
+     *
+     * @return Specificity
+     */
+    public function getOriginalSpecificity()
+    {
+        return $this->originalSpecificity;
     }
 
     /**
