@@ -5,7 +5,7 @@ namespace TijsVerkoyen\CssToInlineStyles;
  * CSS to Inline Styles class
  *
  * @author         Tijs Verkoyen <php-css-to-inline-styles@verkoyen.eu>
- * @version        1.5.4
+ * @version        1.5.5
  * @copyright      Copyright (c), Tijs Verkoyen. All rights reserved.
  * @license        Revised BSD License
  */

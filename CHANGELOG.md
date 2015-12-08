@@ -1,3 +1,13 @@
+# Changelog since 1.5.4
+
+* Better README + License
+* Use DOM instead of regexp in cleanupHTML()
+* Use Selector class
+* Fixed stripping of XML-header
+* Converted $cssRules to a local variable returned by processCSS
+* Allow Symfony/CssSelector 3.0
+* Removed unneeded stability change
+
 # Changelog since 1.5.3
 
 * Fix properties split on base64 encoded url content, thx to [tguyard](https://github.com/Giga-gg),
