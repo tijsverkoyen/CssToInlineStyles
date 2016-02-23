@@ -1,6 +1,8 @@
 # CssToInlineStyles class
 
-[![Build Status](https://travis-ci.org/tijsverkoyen/CssToInlineStyles.svg?branch=master)](https://travis-ci.org/tijsverkoyen/CssToInlineStyles)
+[![Build Status](https://travis-ci.org/tijsverkoyen/CssToInlineStyles.svg?branch=master)](https://travis-ci.org/tijsverkoyen/CssToInlineStyles) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/tijsverkoyen/CssToInlineStyles/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/tijsverkoyen/CssToInlineStyles/?branch=master) [![Code Coverage](https://scrutinizer-ci.com/g/tijsverkoyen/CssToInlineStyles/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/tijsverkoyen/CssToInlineStyles/?branch=master) [![SensioLabsInsight](https://insight.sensiolabs.com/projects/5c0ce94f-de6d-403e-9e0a-431268deb75c/mini.png)](https://insight.sensiolabs.com/projects/5c0ce94f-de6d-403e-9e0a-431268deb75c)
+
+## Installation
 
 > CssToInlineStyles is a class that enables you to convert HTML-pages/files into
 > HTML-pages/files with inline styles. This is very usefull when you're sending
@@ -22,32 +24,22 @@ $ composer require tijsverkoyen/css-to-inline-styles
 
     use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 
-    // Convert HTML + CSS to HTML with inlined CSS
-    $cssToInlineStyles= new CssToInlineStyles();
-    $cssToInlineStyles->setHTML($html);
-    $cssToInlineStyles->setCSS($css);
-    $html = $cssToInlineStyles->convert();
+    // create instance
+    $cssToInlineStyles = new CssToInlineStyles();
 
-    // Or use inline-styles blocks from the HTML as CSS
-    $cssToInlineStyles = new CssToInlineStyles($html);
-    $cssToInlineStyles->setUseInlineStylesBlock(true);
-    $html = $cssToInlineStyles->convert();
+    $html = file_get_contents(__DIR__ . '/examples/sumo/index.htm');
+    $css = file_get_contents(__DIR__ . '/examples/sumo/style.css');
 
-
-## Documentation
-
-The following properties exists and have get/set methods available:
-
-Property | Default | Description
--------|---------|------------
-cleanup|false|Should the generated HTML be cleaned?
-useInlineStylesBlock |false|Use inline-styles block as CSS.
-stripOriginalStyleTags |false|Strip original style tags.
-excludeMediaQueries |true|Exclude the media queries from the inlined styles.
+    // output
+    echo $cssToInlineStyles->convert(
+        $html,
+        $css
+    );
 
 ## Known issues
 
 * no support for pseudo selectors
+* no support for [css-escapes](https://mathiasbynens.be/notes/css-escapes)
 * UTF-8 charset is not always detected correctly. Make sure you set the charset to UTF-8 using the following meta-tag in the head: `<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />`. _(Note: using `<meta charset="UTF-8">` does NOT work!)_
 
 ## Sites using this class

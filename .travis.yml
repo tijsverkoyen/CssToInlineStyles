@@ -1,20 +1,23 @@
 language: php
 
-php:
-  - 5.3
-  - 5.4
-  - 5.5
-  - 5.6
-  - 7.0
-  - hhvm
+sudo: false
 
 matrix:
-  allow_failures:
+  include:
+    - php: 5.5
+    - php: 5.6
     - php: 7.0
+    - php: hhvm
+  allow_failures:
+    - php: hhvm
 
 before_script:
-  - travis_retry composer self-update
-  - travis_retry composer install --no-interaction --prefer-source --dev
+  - composer self-update
+  - composer install --prefer-source  --no-interaction --no-scripts
 
 script:
-  - vendor/bin/phpunit --verbose --coverage-text
+  - vendor/bin/phpunit --verbose --coverage-clover=coverage.clover
+
+after_success:
+  - if [[ "$TRAVIS_PHP_VERSION" != "hhvm" ]] && [[ "$TRAVIS_PHP_VERSION" != "nightly" ]]; then wget https://scrutinizer-ci.com/ocular.phar; fi
+  - if [[ "$TRAVIS_PHP_VERSION" != "hhvm" ]] && [[ "$TRAVIS_PHP_VERSION" != "nightly" ]]; then php ocular.phar code-coverage:upload --format=php-clover coverage.clover; fi
