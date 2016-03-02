@@ -87,6 +87,26 @@ EOF;
         $this->assertEmpty($this->processor->getRules($css));
     }
 
+    public function testCssWithCharset()
+    {
+        $css = <<<EOF
+@charset "UTF-8";
+a {
+  color: red;
+}
+EOF;
+
+        $rules = $this->processor->getRules($css);
+
+        $this->assertCount(1, $rules);
+        $this->assertInstanceOf('TijsVerkoyen\CssToInlineStyles\Css\Rule\Rule', $rules[0]);
+        $this->assertEquals('a', $rules[0]->getSelector());
+        $this->assertCount(1, $rules[0]->getProperties());
+        $this->assertEquals('color', $rules[0]->getProperties()[0]->getName());
+        $this->assertEquals('red', $rules[0]->getProperties()[0]->getValue());
+        $this->assertEquals(1, $rules[0]->getOrder());
+    }
+
     public function testSimpleStyleTagsInHtml()
     {
         $expected = 'p { color: #F00; }' . "\n";
