@@ -35,6 +35,18 @@ $ composer require tijsverkoyen/css-to-inline-styles
         $html,
         $css
     );
+    
+    // parse <style></style> blocks from file
+
+    $cssToInlineStyles = new CssToInlineStyles();
+    // set to parse <style> blocks
+	$toInline->setUseInlineStylesBlock();
+	
+    // output
+    echo $cssToInlineStyles->convert(
+        $html
+    );
+	
 
 ## Known issues
 
