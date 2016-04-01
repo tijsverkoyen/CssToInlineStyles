@@ -22,19 +22,21 @@ $ composer require tijsverkoyen/css-to-inline-styles
 
 ## Example
 
-    use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
+```php
+use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 
-    // create instance
-    $cssToInlineStyles = new CssToInlineStyles();
+// create instance
+$cssToInlineStyles = new CssToInlineStyles();
 
-    $html = file_get_contents(__DIR__ . '/examples/sumo/index.htm');
-    $css = file_get_contents(__DIR__ . '/examples/sumo/style.css');
+$html = file_get_contents(__DIR__ . '/examples/sumo/index.htm');
+$css = file_get_contents(__DIR__ . '/examples/sumo/style.css');
 
-    // output
-    echo $cssToInlineStyles->convert(
-        $html,
-        $css
-    );
+// output
+echo $cssToInlineStyles->convert(
+    $html,
+    $css
+);
+```
 
 ## Known issues
 
