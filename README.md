@@ -24,17 +24,14 @@ $ composer require tijsverkoyen/css-to-inline-styles
 
     use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 
-    // create instance
-    $cssToInlineStyles = new CssToInlineStyles();
-
     $html = file_get_contents(__DIR__ . '/examples/sumo/index.htm');
     $css = file_get_contents(__DIR__ . '/examples/sumo/style.css');
 
+    // create instance
+    $cssToInlineStyles = new CssToInlineStyles($html, $css);
+
     // output
-    echo $cssToInlineStyles->convert(
-        $html,
-        $css
-    );
+    echo $cssToInlineStyles->convert();
 
 ## Known issues
 
@@ -47,3 +44,4 @@ $ composer require tijsverkoyen/css-to-inline-styles
 * [Each site based on Fork CMS](http://www.fork-cms.com)
 * [Print en Bind](http://www.printenbind.nl)
 * [Tiki Wiki CMS Groupware](http://sourceforge.net/p/tikiwiki/code/49505) (starting in Tiki 13)
+* [Implico Email Framework](https://github.com/implico/email-framework)
