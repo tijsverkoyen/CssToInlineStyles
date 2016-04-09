@@ -24,17 +24,14 @@ $ composer require tijsverkoyen/css-to-inline-styles
 
     use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 
-    // create instance
-    $cssToInlineStyles = new CssToInlineStyles();
-
     $html = file_get_contents(__DIR__ . '/examples/sumo/index.htm');
     $css = file_get_contents(__DIR__ . '/examples/sumo/style.css');
 
+    // create instance
+    $cssToInlineStyles = new CssToInlineStyles($html, $css);
+
     // output
-    echo $cssToInlineStyles->convert(
-        $html,
-        $css
-    );
+    echo $cssToInlineStyles->convert();
 
 ## Known issues
 
