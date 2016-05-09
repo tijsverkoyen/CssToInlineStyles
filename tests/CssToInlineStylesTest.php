@@ -140,6 +140,27 @@ EOF;
         $this->assertCorrectConversion($expected, $html);
     }
 
+    public function testInlineStylesBlockWithUtf8CharactersShouldNotEscapeUtf8Characters()
+    {
+        $html = <<<EOF
+<html>
+<head>
+    <style type="text/css">
+      p {
+        display: none;
+      }
+    </style>
+</head>
+<body>
+    <p>€ ∞ π ⾀ ™ ♠ ♣ ♥ ♦</p>
+</body>
+</html>
+EOF;
+        $expected = '<p style="display: none;">€ ∞ π ⾀ ™ ♠ ♣ ♥ ♦</p>';
+
+        $this->assertCorrectConversion($expected, $html);
+    }
+
     public function testSpecificity()
     {
         $html = <<<EOF
