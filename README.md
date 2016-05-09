@@ -42,7 +42,6 @@ echo $cssToInlineStyles->convert(
 
 * no support for pseudo selectors
 * no support for [css-escapes](https://mathiasbynens.be/notes/css-escapes)
-* UTF-8 charset is not always detected correctly. Make sure you set the charset to UTF-8 using the following meta-tag in the head: `<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />`. _(Note: using `<meta charset="UTF-8">` does NOT work!)_
 
 ## Sites using this class
 

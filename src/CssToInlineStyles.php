@@ -100,11 +100,13 @@ class CssToInlineStyles
      */
     protected function createDomDocumentFromHtml($html)
     {
-        $document = new \DOMDocument('1.0', 'UTF-8');
+        $xml = '<?xml encoding="UTF-8">' . $html;
+        $document = new \DOMDocument();
         $internalErrors = libxml_use_internal_errors(true);
-        $document->loadHTML($html);
+        $document->loadHTML($xml);
         libxml_use_internal_errors($internalErrors);
         $document->formatOutput = true;
+        $document->encoding = 'UTF-8';
 
         return $document;
     }
