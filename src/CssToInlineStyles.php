@@ -100,12 +100,12 @@ class CssToInlineStyles
      */
     protected function createDomDocumentFromHtml($html)
     {
+        $html = $this->replaceAmperstampToPreserveHtmlEntities($html);
         $html = trim($html);
         if (strstr('<?xml', $html) !== 0) {
             $xmlHeader = '<?xml encoding="utf-8" ?>';
             $html = $xmlHeader . $html;
         }
-
         $document = new \DOMDocument('1.0', 'UTF-8');
         $internalErrors = libxml_use_internal_errors(true);
         $document->loadHTML($html);
@@ -122,6 +122,7 @@ class CssToInlineStyles
     protected function getHtmlFromDocument(\DOMDocument $document)
     {
         $xml = $document->saveXML(null, LIBXML_NOEMPTYTAG);
+        $xml = $this->putReplacedAmperstampBackToPreserveHtmlEntities($xml);
 
         $html = preg_replace(
             '|<\?xml (.*)\?>|',
@@ -247,5 +248,23 @@ class CssToInlineStyles
         );
 
         return $element;
+    }
+
+    /**
+     * @param string $html
+     * @return string
+     */
+    private function replaceAmperstampToPreserveHtmlEntities($html)
+    {
+        return str_replace('&', '!AMP!', $html);
+    }
+
+    /**
+     * @param string $html
+     * @return string
+     */
+    private function putReplacedAmperstampBackToPreserveHtmlEntities($html)
+    {
+        return str_replace('!AMP!', '&', $html);
     }
 }
