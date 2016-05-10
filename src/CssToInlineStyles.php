@@ -101,7 +101,7 @@ class CssToInlineStyles
     protected function createDomDocumentFromHtml($html)
     {
         $html = trim($html);
-        if (strstr('<?xml', $html) !== 0) {
+        if (strpos('<?xml', $html) !== 0) {
             $xmlHeader = '<?xml encoding="utf-8" ?>';
             $html = $xmlHeader . $html;
         }
