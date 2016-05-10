@@ -198,6 +198,14 @@ EOF;
         $this->assertCorrectConversion($expected, $html, $css);
     }
 
+    public function testHtmlEncoding()
+    {
+        $text = 'Žluťoučký kůň pije pivo nebo jak to je dál';
+        $expectedText = '&#x17D;lu&#x165;ou&#x10D;k&#xFD; k&#x16F;&#x148; pije pivo nebo jak to je d&#xE1;l';
+
+        $this->assertEquals($expectedText, trim(strip_tags($this->cssToInlineStyles->convert($text, ''))));
+    }
+
     private function assertCorrectConversion($expected, $html, $css = null)
     {
         $this->assertEquals(
