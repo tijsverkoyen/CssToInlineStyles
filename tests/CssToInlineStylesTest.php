@@ -140,6 +140,27 @@ EOF;
         $this->assertCorrectConversion($expected, $html);
     }
 
+    public function testInlineStylesBlockWithHtmlEntities()
+    {
+        $html = <<<EOF
+<html>
+<head>
+    <style type="text/css">
+      p {
+        display: none;
+      }
+    </style>
+</head>
+<body>
+    <p>&amp; &eacute; &euro;</p>
+</body>
+</html>
+EOF;
+        $expected = '<p style="display: none;">&amp; &eacute; &euro;</p>';
+
+        $this->assertCorrectConversion($expected, $html);
+    }
+
     public function testSpecificity()
     {
         $html = <<<EOF
