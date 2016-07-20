@@ -49,6 +49,8 @@ class Processor
      */
     private function doCleanup($css)
     {
+        // remove charset
+        $css = preg_replace('/@charset "[^"]+";/', '', $css);
         // remove media queries
         $css = preg_replace('/@media [^{]*{([^{}]|{[^{}]*})*}/', '', $css);
 
