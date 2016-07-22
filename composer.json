@@ -12,6 +12,7 @@
     }
   ],
   "require": {
+    "php": "^5.5 || ^7",
     "symfony/css-selector": "^2.7|~3.0"
   },
   "require-dev": {
