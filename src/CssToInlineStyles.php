@@ -50,7 +50,7 @@ class CssToInlineStyles
     }
 
     /**
-     * Inle the given properties on an given DOMElement
+     * Inline the given properties on an given DOMElement
      *
      * @param \DOMElement             $element
      * @param Css\Property\Property[] $properties
@@ -154,6 +154,8 @@ class CssToInlineStyles
             return $document;
         }
 
+        $propertyStorage = new \SplObjectStorage();
+
         $xPath = new \DOMXPath($document);
         foreach ($rules as $rule) {
             try {
@@ -174,53 +176,32 @@ class CssToInlineStyles
             }
 
             foreach ($elements as $element) {
-                $this->calculatePropertiesToBeApplied($element, $rule->getProperties());
+                $propertyStorage[$element] = $this->calculatePropertiesToBeApplied(
+                    $rule->getProperties(),
+                    $propertyStorage->contains($element) ? $propertyStorage[$element] : array()
+                );
             }
         }
 
-        $elements = $xPath->query('//*[@data-css-to-inline-styles]');
-
-        foreach ($elements as $element) {
-            $propertiesToBeApplied = $element->attributes->getNamedItem('data-css-to-inline-styles');
-            $element->removeAttribute('data-css-to-inline-styles');
-
-            if ($propertiesToBeApplied !== null) {
-                $properties = unserialize(base64_decode($propertiesToBeApplied->value));
-                $this->inlineCssOnElement($element, $properties);
-            }
+        foreach ($propertyStorage as $element) {
+            $this->inlineCssOnElement($element, $propertyStorage[$element]);
         }
 
         return $document;
     }
 
     /**
-     * Store the calculated values in a temporary data-attribute
+     * Merge the CSS rules to determine the applied properties.
      *
-     * @param \DOMElement             $element
      * @param Css\Property\Property[] $properties
-     * @return \DOMElement
+     * @param Css\Property\Property[] $cssProperties existing applied properties indexed by name
+     *
+     * @return Css\Property\Property[] updated properties, indexed by name
      */
-    private function calculatePropertiesToBeApplied(
-        \DOMElement $element,
-        array $properties
-    ) {
+    private function calculatePropertiesToBeApplied(array $properties, array $cssProperties)
+    {
         if (empty($properties)) {
-            return $element;
-        }
-
-        $cssProperties = array();
-        $currentStyles = $element->attributes->getNamedItem('data-css-to-inline-styles');
-
-        if ($currentStyles !== null) {
-            $currentProperties = unserialize(
-                base64_decode(
-                    $currentStyles->value
-                )
-            );
-
-            foreach ($currentProperties as $property) {
-                $cssProperties[$property->getName()] = $property;
-            }
+            return $cssProperties;
         }
 
         foreach ($properties as $property) {
@@ -248,15 +229,6 @@ class CssToInlineStyles
             }
         }
 
-        $element->setAttribute(
-            'data-css-to-inline-styles',
-            base64_encode(
-                serialize(
-                    array_values($cssProperties)
-                )
-            )
-        );
-
-        return $element;
+        return $cssProperties;
     }
 }
