@@ -129,6 +129,20 @@ class CssToInlineStyles
             $xml
         );
 
+        /*
+         * Replace entities such as &lt; &gt; with adding extra &
+         * but ignores entities with & following by # such as &#100;
+         * so &lt; will become &amp;lt;
+         * after calling html_entity_decode() &lt; will stay &lt; etc.
+         */
+        $replace = array(
+            '&#60;' => '&lt;',
+            '&#62;' => '&gt;',
+        );
+        $html = str_replace(array_keys($replace), array_values($replace), $html);
+        $html = preg_replace('~(&)([^\#])~', '&amp;$2', $html);
+        $html = html_entity_decode($html, ENT_COMPAT | ENT_HTML401, 'UTF-8');
+
         return ltrim($html);
     }
 
