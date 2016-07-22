@@ -32,10 +32,10 @@ class Processor
     {
         $css = '';
         $matches = array();
-        preg_match_all('|<style(.*)>(.*)</style>|isU', $html, $matches);
+        preg_match_all('|<style(?:\s.*)?>(.*)</style>|isU', $html, $matches);
 
-        if (!empty($matches[2])) {
-            foreach ($matches[2] as $match) {
+        if (!empty($matches[1])) {
+            foreach ($matches[1] as $match) {
                 $css .= trim($match) . "\n";
             }
         }
