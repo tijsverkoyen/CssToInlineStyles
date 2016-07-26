@@ -174,7 +174,7 @@ img {
 }
 EOF;
         $expected = <<<EOF
-<a class="one" id="ONE" style="padding: 100px; border: 1px solid red; margin: 10px; width: 20px !important;">
+<a class="one" id="ONE" style="padding: 100px; border: 1px solid red; width: 20px !important; margin: 10px;">
   <img class="two" id="TWO" style="border: none;"></img></a>
 EOF;
         $this->assertCorrectConversion($expected, $html, $css);
@@ -185,6 +185,35 @@ EOF;
         $html = '<div class="one"></div>';
         $css = ' .one { display: inline; } a > strong {} a {} a {} a {} a {} a {} a {}a {} img { display: block; }';
         $expected = '<div class="one" style="display: inline;"></div>';
+
+        $this->assertCorrectConversion($expected, $html, $css);
+    }
+
+    public function testPropertyOrdering() {
+        $html = '<p class="one"></p>';
+        $css = <<<EOF
+p {
+  margin: 0;
+}
+
+p {
+  margin-bottom: 10px;
+}
+
+p {
+  margin: 0;
+}
+
+p.one {
+  padding-bottom: 10px;
+}
+
+p {
+  padding: 10px;
+}
+EOF;
+
+        $expected = '<p class="one" style="margin-bottom: 10px; margin: 0; padding: 10px; padding-bottom: 10px;"></p>';
 
         $this->assertCorrectConversion($expected, $html, $css);
     }

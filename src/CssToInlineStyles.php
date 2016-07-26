@@ -221,15 +221,19 @@ class CssToInlineStyles
                     ($existingProperty->getOriginalSpecificity()->compareTo($property->getOriginalSpecificity()) <= 0)
                 ) {
                     // if both the properties are important we should use the specificity
+                    // unset first so that the new order is kept
+                    unset($cssProperties[$property->getName()]);
                     $cssProperties[$property->getName()] = $property;
                 } elseif (!$existingProperty->isImportant() && $property->isImportant()) {
                     // if the existing property is not important but the new one is, it should be overruled
+                    unset($cssProperties[$property->getName()]);
                     $cssProperties[$property->getName()] = $property;
                 } elseif (
                     !$existingProperty->isImportant() &&
                     ($existingProperty->getOriginalSpecificity()->compareTo($property->getOriginalSpecificity()) <= 0)
                 ) {
                     // if the existing property is not important we should check the specificity
+                    unset($cssProperties[$property->getName()]);
                     $cssProperties[$property->getName()] = $property;
                 }
             } else {
