@@ -84,11 +84,17 @@ class CssToInlineStylesTest extends \PHPUnit_Framework_TestCase
 
     public function testBasicRealHTMLExample()
     {
-        $html = '<!DOCTYPE html><html><body><p>foo</p></body></html>';
+        $html = '<!doctype html><html><head><style>body{color:blue}</style></head><body><p>foo</p></body></html>';
         $css = 'p { color: red; }';
-        $expected = '<p style="color: red;">foo</p>';
+        $expected = <<<EOF
+<!doctype html>
+<html>
+<head><style>body{color:blue}</style></head>
+<body style="color: blue;"><p style="color: red;">foo</p></body>
+</html>
+EOF;
 
-        $this->assertCorrectConversion($expected, $html, $css);
+        $this->assertEquals($expected, $this->cssToInlineStyles->convert($html, $css));
     }
 
     public function testSimpleElementSelector()
@@ -175,7 +181,7 @@ img {
 EOF;
         $expected = <<<EOF
 <a class="one" id="ONE" style="padding: 100px; border: 1px solid red; margin: 10px; width: 20px !important;">
-  <img class="two" id="TWO" style="border: none;"></img></a>
+  <img class="two" id="TWO" style="border: none;"></a>
 EOF;
         $this->assertCorrectConversion($expected, $html, $css);
     }
@@ -201,9 +207,34 @@ EOF;
     public function testHtmlEncoding()
     {
         $text = 'Žluťoučký kůň pije pivo nebo jak to je dál';
-        $expectedText = '&#x17D;lu&#x165;ou&#x10D;k&#xFD; k&#x16F;&#x148; pije pivo nebo jak to je d&#xE1;l';
+        $expected = $text;
 
-        $this->assertEquals($expectedText, trim(strip_tags($this->cssToInlineStyles->convert($text, ''))));
+        $this->assertEquals($expected, trim(strip_tags($this->cssToInlineStyles->convert($text))));
+    }
+
+    public function testSpecialCharacters()
+    {
+        $text = '1 &lt; 2';
+        $expected = $text;
+
+        $this->assertEquals($expected, trim(strip_tags($this->cssToInlineStyles->convert($text))));
+    }
+
+    public function testSpecialCharactersExplicit()
+    {
+        $text = '&amp;lt;script&amp;&gt;';
+        $expected = $text;
+
+        $this->assertEquals($expected, trim(strip_tags($this->cssToInlineStyles->convert($text))));
+    }
+
+    public function testSelfClosingTags()
+    {
+        $html = '<br>';
+        $css = '';
+        $expected = $html;
+
+        $this->assertCorrectConversion($expected, $html, $css);
     }
 
     private function assertCorrectConversion($expected, $html, $css = null)

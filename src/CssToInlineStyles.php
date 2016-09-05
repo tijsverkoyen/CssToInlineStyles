@@ -100,15 +100,9 @@ class CssToInlineStyles
      */
     protected function createDomDocumentFromHtml($html)
     {
-        $html = trim($html);
-        if (strstr('<?xml', $html) !== 0) {
-            $xmlHeader = '<?xml encoding="utf-8" ?>';
-            $html = $xmlHeader . $html;
-        }
-
         $document = new \DOMDocument('1.0', 'UTF-8');
         $internalErrors = libxml_use_internal_errors(true);
-        $document->loadHTML($html);
+        $document->loadHTML(mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8'));
         libxml_use_internal_errors($internalErrors);
         $document->formatOutput = true;
 
@@ -121,15 +115,23 @@ class CssToInlineStyles
      */
     protected function getHtmlFromDocument(\DOMDocument $document)
     {
-        $xml = $document->saveXML(null, LIBXML_NOEMPTYTAG);
+        // retrieve the document element
+        // we do it this way to preserve the utf-8 encoding
+        $htmlElement = $document->documentElement;
+        $html = $document->saveHTML($htmlElement);
+        $html = trim($html);
 
-        $html = preg_replace(
-            '|<\?xml (.*)\?>|',
-            '',
-            $xml
-        );
+        // retrieve the doctype
+        $document->removeChild($htmlElement);
+        $doctype = $document->saveHTML();
+        $doctype = trim($doctype);
 
-        return ltrim($html);
+        // if it is the html5 doctype convert it to lowercase
+        if ($doctype === '<!DOCTYPE html>') {
+            $doctype = strtolower($doctype);
+        }
+
+        return $doctype."\n".$html;
     }
 
     /**
