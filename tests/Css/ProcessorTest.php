@@ -44,6 +44,31 @@ EOF;
         $this->assertEquals(1, $rules[0]->getOrder());
     }
 
+    public function testCssWithComments()
+    {
+        $css = <<<CSS
+a {
+    padding: 5px;
+    display: block;
+}
+/* style the titles */
+h1 {
+    color: rebeccapurple;
+}
+/* end of title styles */
+CSS;
+
+        $rules = $this->processor->getRules($css);
+
+        $this->assertCount(2, $rules);
+        $this->assertEquals('a', $rules[0]->getSelector());
+        $this->assertCount(2, $rules[0]->getProperties());
+        $this->assertEquals(1, $rules[0]->getOrder());
+        $this->assertEquals('h1', $rules[1]->getSelector());
+        $this->assertCount(1, $rules[1]->getProperties());
+        $this->assertEquals(2, $rules[1]->getOrder());
+    }
+
     public function testCssWithMediaQueries()
     {
         $css = <<<EOF
