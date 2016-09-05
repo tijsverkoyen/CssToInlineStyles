@@ -11,6 +11,15 @@ use TijsVerkoyen\CssToInlineStyles\Css\Rule\Rule;
 
 class CssToInlineStyles
 {
+    private $cssConverter;
+
+    public function __construct()
+    {
+        if (class_exists('Symfony\Component\CssSelector\CssSelectorConverter')) {
+            $this->cssConverter = new CssSelectorConverter();
+        }
+    }
+
     /**
      * Will inline the $css into the given $html
      *
@@ -148,10 +157,10 @@ class CssToInlineStyles
         $xPath = new \DOMXPath($document);
         foreach ($rules as $rule) {
             try {
-                if (class_exists('Symfony\Component\CssSelector\CssSelectorConverter')) {
-                    $converter = new CssSelectorConverter();
-                    $expression = $converter->toXPath($rule->getSelector());
+                if (null !== $this->cssConverter) {
+                    $expression = $this->cssConverter->toXPath($rule->getSelector());
                 } else {
+                    // Compatibility layer for Symfony 2.7 and older
                     $expression = CssSelector::toXPath($rule->getSelector());
                 }
             } catch (ExceptionInterface $e) {
