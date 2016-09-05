@@ -129,6 +129,28 @@ EOF
         );
     }
 
+    public function testStyleTagsWithAttributeInHtml()
+    {
+        $expected = 'p { color: #F00; }' . "\n";
+        $this->assertEquals(
+            $expected,
+            $this->processor->getCssFromStyleTags(
+                <<<HTML
+                    <html>
+    <head>
+        <style type="text/css">
+            p { color: #F00; }
+        </style>
+    </head>
+    <body>
+        <p>foo</p>
+    </body>
+    </html>
+HTML
+            )
+        );
+    }
+
     public function testMultipleStyleTagsInHtml()
     {
         $expected = 'p { color: #F00; }' . "\n" . 'p { color: #0F0; }' . "\n";
@@ -152,5 +174,30 @@ EOF
 EOF
             )
         );
+    }
+
+    public function testWeirdTagsInHtml()
+    {
+        $expected = 'p { color: #F00; }' . "\n";
+        $this->assertEquals(
+            $expected,
+            $this->processor->getCssFromStyleTags(
+                <<<HTML
+                    <html>
+    <head>
+        <!-- weird tag name starting with style -->
+        <stylesheet></stylesheet>
+        <style>
+            p { color: #F00; }
+        </style>
+    </head>
+    <body>
+        <p>foo</p>
+    </body>
+    </html>
+HTML
+            )
+        );
+
     }
 }
