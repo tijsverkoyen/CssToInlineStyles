@@ -3,6 +3,7 @@
 namespace TijsVerkoyen\CssToInlineStyles\Css;
 
 use TijsVerkoyen\CssToInlineStyles\Css\Rule\Processor as RuleProcessor;
+use TijsVerkoyen\CssToInlineStyles\Css\Rule\Rule;
 
 class Processor
 {
@@ -50,15 +51,15 @@ class Processor
     private function doCleanup($css)
     {
         // remove charset
-        $css = preg_replace('/@charset "[^"]+";/', '', $css);
+        $css = preg_replace('/@charset "[^"]++";/', '', $css);
         // remove media queries
-        $css = preg_replace('/@media [^{]*{([^{}]|{[^{}]*})*}/', '', $css);
+        $css = preg_replace('/@media [^{]*+{([^{}]++|{[^{}]*+})*+}/', '', $css);
 
         $css = str_replace(array("\r", "\n"), '', $css);
         $css = str_replace(array("\t"), ' ', $css);
         $css = str_replace('"', '\'', $css);
         $css = preg_replace('|/\*.*?\*/|', '', $css);
-        $css = preg_replace('/\s\s+/', ' ', $css);
+        $css = preg_replace('/\s\s++/', ' ', $css);
         $css = trim($css);
 
         return $css;

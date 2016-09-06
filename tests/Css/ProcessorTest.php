@@ -94,6 +94,13 @@ EOF;
         $this->assertEquals(1, $rules[0]->getOrder());
     }
 
+    public function testCssWithBigMediaQueries()
+    {
+        $rules = $this->processor->getRules(file_get_contents(__DIR__.'/test.css'));
+
+        $this->assertCount(414, $rules);
+    }
+
     public function testMakeSureMediaQueriesAreRemoved()
     {
         $css = '@media tv and (min-width: 700px) and (orientation: landscape) {.foo {display: none;}}';
