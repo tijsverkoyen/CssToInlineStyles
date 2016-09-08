@@ -2,18 +2,27 @@ language: php
 
 sudo: false
 
+cache:
+  directories:
+    - $HOME/.composer/cache
+
 matrix:
   include:
     - php: 5.5
     - php: 5.6
     - php: 7.0
+    - php: 7.1
     - php: hhvm
   allow_failures:
     - php: hhvm
 
-before_script:
-  - composer self-update
-  - composer install --prefer-source  --no-interaction --no-scripts
+env:
+  global:
+    - setup=basic
+
+install:
+  - if [[ $setup = 'basic' ]]; then travis_retry composer install --prefer-dist --no-interaction; fi
+  - if [[ $setup = 'lowest' ]]; then travis_retry composer update --prefer-dist --no-interaction --prefer-lowest --prefer-stable; fi
 
 script:
   - vendor/bin/phpunit --verbose --coverage-clover=coverage.clover
