@@ -77,7 +77,7 @@ class CssToInlineStylesTest extends \PHPUnit_Framework_TestCase
         $document->appendChild($inlineElement);
 
         $this->assertEquals(
-            '<a style="color: green; padding: 5px;">foo</a>',
+            '<a style="padding: 5px; color: green;">foo</a>',
             trim($document->saveHTML())
         );
     }
