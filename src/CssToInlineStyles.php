@@ -63,18 +63,21 @@ class CssToInlineStyles
         }
 
         $cssProperties = array();
+        $cssInlineProperties = array();
         $inlineProperties = $this->getInlineStyles($element);
 
-        foreach ($properties as $property) {
-            $cssProperties[$property->getName()] = $property;
+        foreach ($inlineProperties as $property) {
+            $cssInlineProperties[$property->getName()] = $property;
         }
 
-        foreach ($inlineProperties as $property) {
-            $cssProperties[$property->getName()] = $property;
+        foreach ($properties as $property) {
+            if (!isset($cssInlineProperties[$property->getName()])) {
+                $cssProperties[$property->getName()] = $property;
+            }
         }
 
         $rules = array();
-        foreach ($cssProperties as $property) {
+        foreach (array_merge($cssProperties, $cssInlineProperties) as $property) {
             $rules[] = $property->toString();
         }
         $element->setAttribute('style', implode(' ', $rules));
