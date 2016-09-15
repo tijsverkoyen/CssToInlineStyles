@@ -153,6 +153,7 @@ EOF;
   <img class="two" id="TWO">
   <img class="three" id="THREE">
   <img class="four" id="FOUR" style="margin-left: 100px;">
+  <img class="five" id="FIVE" style="padding-left: 10px; padding: 100px;">
 </a>
 EOF;
         $css = <<<EOF
@@ -192,10 +193,18 @@ img {
 .four {
   margin: 10px;
 }
+
+.five {
+  padding: 15px;
+}
+
+#FIVE {
+  padding-left: 20px;
+}
 EOF;
         $expected = <<<EOF
 <a class="one" id="ONE" style="padding: 100px; border: 1px solid red; margin: 10px; width: 20px !important;">
-  <img class="two" id="TWO" style="border: none;"><img class="three" id="THREE" style="border: none; padding: 100px; padding-left: 10px;"><img class="four" id="FOUR" style="margin-left: 100px; border: none; margin: 10px;"></a>
+  <img class="two" id="TWO" style="border: none;"><img class="three" id="THREE" style="border: none; padding: 100px; padding-left: 10px;"><img class="four" id="FOUR" style="margin-left: 100px; border: none; margin: 10px;"><img class="five" id="FIVE" style="border: none; padding-left: 10px; padding: 100px;"></a>
 EOF;
         $this->assertCorrectConversion($expected, $html, $css);
     }
