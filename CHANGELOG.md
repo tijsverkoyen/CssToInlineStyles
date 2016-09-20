@@ -1,3 +1,24 @@
+# Changelog since 2.1.0
+
+* Better ordering of style rules and properties, thx to [Hikariii](https://github.com/Hikariii),
+    for more information see the [Pull Request](https://github.com/tijsverkoyen/CssToInlineStyles/pull/160)
+* Some Travis improvements, thx to [barryvdh](https://github.com/barryvdh),
+    for more information see the [Pull Request](https://github.com/tijsverkoyen/CssToInlineStyles/pull/158)
+* Refactor the storage of the computed properties, thx to [stof](https://github.com/stof),
+    for more information see the [Pull Request](https://github.com/tijsverkoyen/CssToInlineStyles/pull/153)
+* Use possessive quantifiers to avoid reaching PCRE limits, thx to [stof](https://github.com/stof),
+    for more information see the [Pull Request](https://github.com/tijsverkoyen/CssToInlineStyles/pull/146)
+* Reuse the same CssSelectorConverter, thx to [stof](https://github.com/stof),
+    for more information see the [Pull Request](https://github.com/tijsverkoyen/CssToInlineStyles/pull/152)
+* Add a test for the removal of comments, thx to [stof](https://github.com/stof),
+    for more information see the [Pull Request](https://github.com/tijsverkoyen/CssToInlineStyles/pull/147)
+* Add the PHP requirement in the composer.json, thx to [stof](https://github.com/stof),
+    for more information see the [Pull Request](https://github.com/tijsverkoyen/CssToInlineStyles/pull/148)
+* Fix the detection of style tags, thx to [stof](https://github.com/stof),
+    for more information see the [Pull Request](https://github.com/tijsverkoyen/CssToInlineStyles/pull/149)
+* Remove the useless Selector class, thx to [stof](https://github.com/stof),
+    for more information see the [Pull Request](https://github.com/tijsverkoyen/CssToInlineStyles/pull/150)
+
 # Changelog since 2.0.0
 
 * Remove the charset in css-files before processing, thx to [mdio](https://github.com/mdio)
