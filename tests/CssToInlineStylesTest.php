@@ -66,18 +66,19 @@ class CssToInlineStylesTest extends \PHPUnit_Framework_TestCase
     {
         $document = new \DOMDocument();
         $element = $document->createElement('a', 'foo');
-        $element->setAttribute('style', 'color: green;');
+        $element->setAttribute('style', 'color: green; border: 1px;');
         $inlineElement = $this->cssToInlineStyles->inlineCssOnElement(
             $element,
             array(
-                new Property('padding', '5px'),
+                new Property('border-bottom', '5px'),
+                new Property('border', '2px'),
             )
         );
 
         $document->appendChild($inlineElement);
 
         $this->assertEquals(
-            '<a style="color: green; padding: 5px;">foo</a>',
+            '<a style="border-bottom: 5px; color: green; border: 1px;">foo</a>',
             trim($document->saveHTML())
         );
     }
@@ -150,25 +151,36 @@ EOF;
     {
         $html = <<<EOF
 <a class="one" id="ONE" style="padding: 100px;">
-  <img class="two" id="TWO">
+  <img class="two" id="TWO" style="padding-top: 30px;">
 </a>
 EOF;
         $css = <<<EOF
+a.one  {
+  border-bottom: 2px;
+  height: 20px;
+}
+
 a {
   border: 1px solid red;
   padding: 10px;
   margin: 20px;
   width: 10px !important;
+  height: 10px;
 }
 
 .one {
   padding: 15px;
   width: 20px !important;
+  height: 5px;
 }
 
 #ONE {
   margin: 10px;
   width: 30px;
+}
+
+img {
+  padding: 0;
 }
 
 a img {
@@ -177,11 +189,16 @@ a img {
 
 img {
   border: 2px solid green;
+  padding-bottom: 20px;
+}
+
+img {
+  padding: 0;
 }
 EOF;
         $expected = <<<EOF
-<a class="one" id="ONE" style="padding: 100px; border: 1px solid red; margin: 10px; width: 20px !important;">
-  <img class="two" id="TWO" style="border: none;"></a>
+<a class="one" id="ONE" style="border: 1px solid red; width: 20px !important; border-bottom: 2px; height: 20px; margin: 10px; padding: 100px;">
+  <img class="two" id="TWO" style="padding-bottom: 20px; padding: 0; border: none; padding-top: 30px;"></a>
 EOF;
         $this->assertCorrectConversion($expected, $html, $css);
     }
