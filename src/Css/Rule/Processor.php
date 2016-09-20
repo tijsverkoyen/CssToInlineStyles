@@ -133,13 +133,14 @@ class Processor
     }
 
     /**
-     * Sort an array on the specificity element
+     * Sort an array on the specificity element in an ascending way
+     * Lower specificity will be sorted to the beginning of the array
      *
      * @return int
      * @param  Rule $e1 The first element.
      * @param  Rule $e2 The second element.
      */
-    private static function sortOnSpecificity(Rule $e1, Rule $e2)
+    public static function sortOnSpecificity(Rule $e1, Rule $e2)
     {
         $e1Specificity = $e1->getSpecificity();
         $value = $e1Specificity->compareTo($e2->getSpecificity());

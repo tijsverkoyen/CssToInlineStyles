@@ -154,21 +154,32 @@ EOF;
 </a>
 EOF;
         $css = <<<EOF
+a.one  {
+  border-bottom: 2px;
+  height: 20px;
+}
+
 a {
   border: 1px solid red;
   padding: 10px;
   margin: 20px;
   width: 10px !important;
+  height: 10px;
 }
 
 .one {
   padding: 15px;
   width: 20px !important;
+  height: 5px;
 }
 
 #ONE {
   margin: 10px;
   width: 30px;
+}
+
+img {
+  padding: 0;
 }
 
 a img {
@@ -177,11 +188,16 @@ a img {
 
 img {
   border: 2px solid green;
+  padding-bottom: 20px;
+}
+
+img {
+  padding: 0;
 }
 EOF;
         $expected = <<<EOF
-<a class="one" id="ONE" style="padding: 100px; border: 1px solid red; margin: 10px; width: 20px !important;">
-  <img class="two" id="TWO" style="border: none;"></a>
+<a class="one" id="ONE" style="padding: 100px; border: 1px solid red; width: 20px !important; border-bottom: 2px; height: 20px; margin: 10px;">
+  <img class="two" id="TWO" style="padding-bottom: 20px; padding: 0; border: none;"></a>
 EOF;
         $this->assertCorrectConversion($expected, $html, $css);
     }

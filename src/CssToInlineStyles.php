@@ -7,6 +7,7 @@ use Symfony\Component\CssSelector\CssSelectorConverter;
 use Symfony\Component\CssSelector\Exception\ExceptionInterface;
 use TijsVerkoyen\CssToInlineStyles\Css\Processor;
 use TijsVerkoyen\CssToInlineStyles\Css\Property\Processor as PropertyProcessor;
+use TijsVerkoyen\CssToInlineStyles\Css\Rule\Processor as RuleProcessor;
 use TijsVerkoyen\CssToInlineStyles\Css\Rule\Rule;
 
 class CssToInlineStyles
@@ -155,6 +156,9 @@ class CssToInlineStyles
         }
 
         $xPath = new \DOMXPath($document);
+
+        usort($rules, array(RuleProcessor::class, 'sortOnSpecificity'));
+
         foreach ($rules as $rule) {
             try {
                 if (null !== $this->cssConverter) {
@@ -227,20 +231,19 @@ class CssToInlineStyles
             if (isset($cssProperties[$property->getName()])) {
                 $existingProperty = $cssProperties[$property->getName()];
 
-                if (
-                    ($existingProperty->isImportant() && $property->isImportant()) &&
-                    ($existingProperty->getOriginalSpecificity()->compareTo($property->getOriginalSpecificity()) <= 0)
-                ) {
-                    // if both the properties are important we should use the specificity
-                    $cssProperties[$property->getName()] = $property;
-                } elseif (!$existingProperty->isImportant() && $property->isImportant()) {
-                    // if the existing property is not important but the new one is, it should be overruled
-                    $cssProperties[$property->getName()] = $property;
-                } elseif (
-                    !$existingProperty->isImportant() &&
-                    ($existingProperty->getOriginalSpecificity()->compareTo($property->getOriginalSpecificity()) <= 0)
-                ) {
-                    // if the existing property is not important we should check the specificity
+                //skip check to overrule if existing property is important and current is not
+                if ($existingProperty->isImportant() && !$property->isImportant()) {
+                    continue;
+                }
+
+                //overrule if current property is important and existing is not, else check specificity
+                $overrule = !$existingProperty->isImportant() && $property->isImportant();
+                if (!$overrule) {
+                    $overrule = $existingProperty->getOriginalSpecificity()->compareTo($property->getOriginalSpecificity()) <= 0;
+                }
+
+                if ($overrule) {
+                    unset($cssProperties[$property->getName()]);
                     $cssProperties[$property->getName()] = $property;
                 }
             } else {
