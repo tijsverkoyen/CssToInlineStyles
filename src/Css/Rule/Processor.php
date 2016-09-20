@@ -129,6 +129,8 @@ class Processor
             $order++;
         }
 
+        usort($objects, ['self', 'sortOnSpecificity']);
+
         return $objects;
     }
 
