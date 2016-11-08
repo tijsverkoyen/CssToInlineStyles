@@ -232,4 +232,36 @@ HTML
         );
 
     }
+
+    public function testStyleTagsInCommentInHtml()
+    {
+        $expected = 'p { color: #F00; }' . "\n";
+        $this->assertEquals(
+            $expected,
+            $this->processor->getCssFromStyleTags(
+                <<<EOF
+                    <html>
+    <head>
+        <style>
+            p { color: #F00; }
+        </style>
+<!--
+        <style>
+            p { color: #0F0; }
+        </style>
+-->
+<!--[if mso]>
+        <style>
+            p { color: #00F; }
+        </style>
+<![endif]-->
+    </head>
+    <body>
+        <p>foo</p>
+    </body>
+    </html>
+EOF
+            )
+        );
+    }
 }
