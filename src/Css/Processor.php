@@ -33,7 +33,8 @@ class Processor
     {
         $css = '';
         $matches = array();
-        preg_match_all('|<style(?:\s.*)?>(.*)</style>|isU', $html, $matches);
+        $htmlNoComments = preg_replace('|<!--.*?-->|s', '', $html);
+        preg_match_all('|<style(?:\s.*)?>(.*)</style>|isU', $htmlNoComments, $matches);
 
         if (!empty($matches[1])) {
             foreach ($matches[1] as $match) {
