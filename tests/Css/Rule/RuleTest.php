@@ -5,8 +5,9 @@ namespace TijsVerkoyen\CssToInlineStyles\Tests\Css\Rule;
 use TijsVerkoyen\CssToInlineStyles\Css\Property\Property;
 use TijsVerkoyen\CssToInlineStyles\Css\Rule\Rule;
 use Symfony\Component\CssSelector\Node\Specificity;
+use PHPUnit\Framework\TestCase;
 
-class PropertyTest extends \PHPUnit_Framework_TestCase
+class PropertyTest extends TestCase
 {
     public function testGetters()
     {

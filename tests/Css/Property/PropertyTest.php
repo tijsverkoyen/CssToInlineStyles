@@ -3,8 +3,9 @@
 namespace TijsVerkoyen\CssToInlineStyles\Tests\Css\Property;
 
 use TijsVerkoyen\CssToInlineStyles\Css\Property\Property;
+use PHPUnit\Framework\TestCase;
 
-class PropertyTest extends \PHPUnit_Framework_TestCase
+class PropertyTest extends TestCase
 {
     public function testGetters()
     {

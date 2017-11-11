@@ -4,8 +4,9 @@ namespace TijsVerkoyen\CssToInlineStyles\Tests\Css\Rule;
 
 use Symfony\Component\CssSelector\Node\Specificity;
 use TijsVerkoyen\CssToInlineStyles\Css\Rule\Processor;
+use PHPUnit\Framework\TestCase;
 
-class ProcessorTest extends \PHPUnit_Framework_TestCase
+class ProcessorTest extends TestCase
 {
     /**
      * @var Processor

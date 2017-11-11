@@ -4,8 +4,9 @@ namespace TijsVerkoyen\CssToInlineStyles\tests;
 
 use TijsVerkoyen\CssToInlineStyles\Css\Property\Property;
 use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
+use PHPUnit\Framework\TestCase;
 
-class CssToInlineStylesTest extends \PHPUnit_Framework_TestCase
+class CssToInlineStylesTest extends TestCase
 {
     /**
      * @var CssToInlineStyles

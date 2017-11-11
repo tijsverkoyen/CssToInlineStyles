@@ -4,8 +4,9 @@
 namespace TijsVerkoyen\CssToInlineStyles\Tests\Css;
 
 use TijsVerkoyen\CssToInlineStyles\Css\Processor;
+use PHPUnit\Framework\TestCase;
 
-class ProcessorTest extends \PHPUnit_Framework_TestCase
+class ProcessorTest extends TestCase
 {
     /**
      * @var Processor
