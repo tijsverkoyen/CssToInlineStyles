@@ -34,6 +34,9 @@ class CssToInlineStyles
     public function convert($html, $css = null)
     {
         $document = $this->createDomDocumentFromHtml($html);
+        if ($document->documentElement === null) {
+            return $html;
+        }
         $processor = new Processor();
 
         // get all styles from the style-tags

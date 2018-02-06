@@ -255,6 +255,14 @@ EOF;
         $this->assertCorrectConversion($expected, $html, $css);
     }
 
+    public function testOnlyDoctype()
+    {
+        $html = '<!DOCTYPE html>';
+
+        $this->assertEquals($html, $this->cssToInlineStyles->convert($html));
+    }
+
+
     private function assertCorrectConversion($expected, $html, $css = null)
     {
         $this->assertEquals(
