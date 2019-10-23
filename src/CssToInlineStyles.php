@@ -8,7 +8,6 @@ use Symfony\Component\CssSelector\Exception\ExceptionInterface;
 use TijsVerkoyen\CssToInlineStyles\Css\Processor;
 use TijsVerkoyen\CssToInlineStyles\Css\Property\Processor as PropertyProcessor;
 use TijsVerkoyen\CssToInlineStyles\Css\Rule\Processor as RuleProcessor;
-use TijsVerkoyen\CssToInlineStyles\Css\Rule\Rule;
 
 class CssToInlineStyles
 {
