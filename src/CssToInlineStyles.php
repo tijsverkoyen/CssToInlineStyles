@@ -28,6 +28,7 @@ class CssToInlineStyles
      *
      * @param string $html
      * @param string $css
+     *
      * @return string
      */
     public function convert($html, $css = null)
@@ -54,6 +55,7 @@ class CssToInlineStyles
      *
      * @param \DOMElement             $element
      * @param Css\Property\Property[] $properties
+     *
      * @return \DOMElement
      */
     public function inlineCssOnElement(\DOMElement $element, array $properties)
@@ -88,6 +90,7 @@ class CssToInlineStyles
      * Get the current inline styles for a given DOMElement
      *
      * @param \DOMElement $element
+     *
      * @return Css\Property\Property[]
      */
     public function getInlineStyles(\DOMElement $element)
@@ -103,6 +106,7 @@ class CssToInlineStyles
 
     /**
      * @param string $html
+     *
      * @return \DOMDocument
      */
     protected function createDomDocumentFromHtml($html)
@@ -118,6 +122,7 @@ class CssToInlineStyles
 
     /**
      * @param \DOMDocument $document
+     *
      * @return string
      */
     protected function getHtmlFromDocument(\DOMDocument $document)
@@ -144,6 +149,7 @@ class CssToInlineStyles
     /**
      * @param \DOMDocument    $document
      * @param Css\Rule\Rule[] $rules
+     *
      * @return \DOMDocument
      */
     protected function inline(\DOMDocument $document, array $rules)
