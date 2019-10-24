@@ -24,7 +24,7 @@
 * Remove the charset in css-files before processing, thx to [mdio](https://github.com/mdio)
 * Several fixes related to UTF8-encoding, thx to [techi602](https://github.com/techi602), 
     [josh18](https://github.com/josh18)
-* php-syntax-hilighting in the examples, thx to [Big-Shark](https://github.com/Big-Shark)
+* php-syntax-highlighting in the examples, thx to [Big-Shark](https://github.com/Big-Shark)
 
 # Changelog since 1.5.5
 
