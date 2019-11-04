@@ -214,8 +214,8 @@ class CssToInlineStyles
         if ( ! sizeof($mediaQueries) ) return $document;
         $style = $document->createElement('style', implode($mediaQueries));
         if ( $style ) {
-            $body = $document->getElementsByTagName('body')->item(0);
-            $body->appendChild($style);
+            $head = $document->getElementsByTagName('head')->item(0);
+            $head->appendChild($style);
         }
         return $document;
     }
