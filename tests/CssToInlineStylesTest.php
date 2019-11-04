@@ -108,15 +108,18 @@ EOF;
         $this->assertCorrectConversion($expected, $html, $css);
     }
 
-    public function testMediaQueryExtraction()
+    public function testMediaQueryNoHeadTag()
     {
         $html = '<div></div>';
         $css = 'div { display: none; }; @media screen and (max-width: 600px) { div {display: block} }';
-        $expected = implode("\n", [
-            '<div style="display: none;"></div>',
-            '<style>@media screen and (max-width: 600px) { div {display: block} }</style>'
-        ]);
-        $this->assertCorrectConversion($expected, $html, $css);
+        $this->assertHeadHasMediaQuery($html, $css);
+    }
+
+    public function testAddMediaQueriesToHead()
+    {
+        $html = '<html><head></head><div></div></html>';
+        $css = 'div { display: none; }; @media screen and (max-width: 600px) { div {display: block} }';
+        $this->assertHeadHasMediaQuery($html, $css);
     }
 
     public function testSimpleCssSelector()
@@ -266,6 +269,16 @@ EOF;
         $this->assertCorrectConversion($expected, $html, $css);
     }
 
+    private function assertHeadHasMediaQuery($html, $css = null)
+    {
+        $this->assertContains(
+            '@media',
+            $this->getHeadContent(
+                $this->cssToInlineStyles->convert($html, $css)
+            )
+        );
+    }
+
     private function assertCorrectConversion($expected, $html, $css = null)
     {
         $this->assertEquals(
@@ -283,6 +296,18 @@ EOF;
 
         if (!isset($matches[1])) {
             return null;
+        }
+
+        return trim($matches[1]);
+    }
+
+    private function getHeadContent($html)
+    {
+        $matches = array();
+        preg_match('|<head>(.*)</head>|ims', $html, $matches);
+
+        if (!isset($matches[1])) {
+            return '';
         }
 
         return trim($matches[1]);

@@ -215,7 +215,15 @@ class CssToInlineStyles
         $style = $document->createElement('style', implode($mediaQueries));
         if ( $style ) {
             $head = $document->getElementsByTagName('head')->item(0);
-            $head->appendChild($style);
+            // Partials aren't supported (missing head tag). But lets play nice.
+            if ( $head !== null ) {
+                $head->appendChild($style);
+            } else {
+                $docNode = $document->documentElement;
+                $head = $document->createElement('head');
+                $head->appendChild($style);
+                $docNode->appendChild($head);
+            }
         }
         return $document;
     }
