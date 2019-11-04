@@ -108,6 +108,17 @@ EOF;
         $this->assertCorrectConversion($expected, $html, $css);
     }
 
+    public function testMediaQueryExtraction()
+    {
+        $html = '<div></div>';
+        $css = 'div { display: none; }; @media screen and (max-width: 600px) { div {display: block} }';
+        $expected = implode("\n", [
+            '<div style="display: none;"></div>',
+            '<style>@media screen and (max-width: 600px) { div {display: block} }</style>'
+        ]);
+        $this->assertCorrectConversion($expected, $html, $css);
+    }
+
     public function testSimpleCssSelector()
     {
         $html = '<a class="test-class">nodeContent</a>';

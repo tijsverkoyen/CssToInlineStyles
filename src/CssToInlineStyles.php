@@ -24,7 +24,8 @@ class CssToInlineStyles
      * Will inline the $css into the given $html
      *
      * Remark: if the html contains <style>-tags those will be used, the rules
-     * in $css will be appended.
+     * in $css will be appended. Media queries if available will be filtered out
+     * and appended to the body in their own <style> tag.
      *
      * @param string $html
      * @param string $css
@@ -33,19 +34,24 @@ class CssToInlineStyles
      */
     public function convert($html, $css = null)
     {
-        $document = $this->createDomDocumentFromHtml($html);
+        $document  = $this->createDomDocumentFromHtml($html);
         $processor = new Processor();
 
         // get all styles from the style-tags
-        $rules = $processor->getRules(
-            $processor->getCssFromStyleTags($html)
-        );
+        $styleTagCss = $processor->getCssFromStyleTags($html);
 
-        if ($css !== null) {
-            $rules = $processor->getRules($css, $rules);
+        // proccess style tag css
+        $mediaQueries = $processor->getMediaQueries($styleTagCss);
+        $rules        = $processor->getRules($styleTagCss);
+
+        // process extra css included as string argument to this function
+        if ( $css !== null ) {
+            $mediaQueries = $processor->getMediaQueries($css, $mediaQueries);
+            $rules        = $processor->getRules($css, $rules);
         }
 
         $document = $this->inline($document, $rules);
+        $document = $this->appendMediaQueries($document, $mediaQueries);
 
         return $this->getHtmlFromDocument($document);
     }
@@ -194,6 +200,23 @@ class CssToInlineStyles
             $this->inlineCssOnElement($element, $propertyStorage[$element]);
         }
 
+        return $document;
+    }
+
+    /**
+     * Appends a style tag to the body element containing all media queries.
+     *
+     * @param $document
+     * @param $mediaQueries
+     * @return \DOMDocument
+     */
+    protected function appendMediaQueries(\DOMDocument $document, array $mediaQueries) {
+        if ( ! sizeof($mediaQueries) ) return $document;
+        $style = $document->createElement('style', implode($mediaQueries));
+        if ( $style ) {
+            $body = $document->getElementsByTagName('body')->item(0);
+            $body->appendChild($style);
+        }
         return $document;
     }
 
