@@ -206,7 +206,8 @@ class CssToInlineStyles
      * Appends a style tag to the body element containing all media queries.
      *
      * @param \DOMDocument $document
-     * @param array $mediaQueries
+     * @param string[] $mediaQueries
+     *
      * @return \DOMDocument
      */
     protected function appendMediaQueries(\DOMDocument $document, array $mediaQueries)

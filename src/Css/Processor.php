@@ -29,7 +29,8 @@ class Processor
      * when non were found.
      *
      * @param string $css
-     * @return array
+     *
+     * @return string[]
      */
     public function getMediaQueries($css)
     {
