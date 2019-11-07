@@ -37,7 +37,7 @@ class CssToInlineStyles
         $document = $this->createDomDocumentFromHtml($html);
         $processor = new Processor();
 
-        // process style tag css
+        // get all styles from the style-tags
         $rules = $processor->getRules(
             $processor->getCssFromStyleTags($html)
         );
