@@ -43,7 +43,7 @@ class CssToInlineStyles
         );
 
         // process extra css included as string argument to this function
-        $mediaQueries = [];
+        $mediaQueries = array();
         if (null !== $css) {
             $mediaQueries = $processor->getMediaQueries($css);
             $rules = $processor->getRules($css, $rules);

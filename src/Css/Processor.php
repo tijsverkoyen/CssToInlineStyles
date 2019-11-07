@@ -37,7 +37,7 @@ class Processor
         if (preg_match_all('/@media [^{]*+{([^{}]++|{[^{}]*+})*+}/', $css, $matches)) {
             return $matches[0];
         }
-        return [];
+        return array();
     }
 
     /**
