@@ -205,23 +205,26 @@ class CssToInlineStyles
     /**
      * Appends a style tag to the body element containing all media queries.
      *
-     * @param $document
-     * @param $mediaQueries
+     * @param \DOMDocument $document
+     * @param array $mediaQueries
      * @return \DOMDocument
      */
-    protected function appendMediaQueries(\DOMDocument $document, array $mediaQueries) {
-        if ( ! sizeof($mediaQueries) ) return $document;
+    protected function appendMediaQueries(\DOMDocument $document, array $mediaQueries)
+    {
+        if (!count($mediaQueries)) {
+            return $document;
+        }
         $style = $document->createElement('style', implode($mediaQueries));
-        if ( $style ) {
+        if ($style) {
             $head = $document->getElementsByTagName('head')->item(0);
             // Partials aren't supported (missing head tag). But lets play nice.
-            if ( $head !== null ) {
+            if (null !== $head) {
                 $head->appendChild($style);
             } else {
                 $docNode = $document->documentElement;
                 $head = $document->createElement('head');
                 $head->appendChild($style);
-                $docNode->appendChild($head);
+                $docNode->insertBefore($head, $docNode->firstChild);
             }
         }
         return $document;
