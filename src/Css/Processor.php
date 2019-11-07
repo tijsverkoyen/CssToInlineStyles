@@ -25,18 +25,18 @@ class Processor
     }
 
     /**
-     * Get all media queries from the given css string.
+     * Get all media queries from the given css string. Returns an empty array
+     * when non were found.
      *
-     * @param $css
-     * @param array $existingMediaQueries
+     * @param string $css
      * @return array
      */
-    public function getMediaQueries(string $css, array $existingMediaQueries = array()) {
-        $matches = [];
-        if ( preg_match_all( '/@media [^{]*+{([^{}]++|{[^{}]*+})*+}/', $css, $matches ) ) {
-            return array_merge($existingMediaQueries, $matches[0]);
+    public function getMediaQueries(string $css)
+    {
+        if (preg_match_all('/@media [^{]*+{([^{}]++|{[^{}]*+})*+}/', $css, $matches)) {
+            return $matches[0];
         }
-        return $existingMediaQueries;
+        return [];
     }
 
     /**

@@ -32,22 +32,21 @@ class CssToInlineStyles
      *
      * @return string
      */
-    public function convert($html, $css = null)
+    public function convert(string $html, string $css = null)
     {
-        $document  = $this->createDomDocumentFromHtml($html);
+        $document = $this->createDomDocumentFromHtml($html);
         $processor = new Processor();
 
-        // get all styles from the style-tags
-        $styleTagCss = $processor->getCssFromStyleTags($html);
-
-        // proccess style tag css
-        $mediaQueries = $processor->getMediaQueries($styleTagCss);
-        $rules        = $processor->getRules($styleTagCss);
+        // process style tag css
+        $rules = $processor->getRules(
+            $processor->getCssFromStyleTags($html)
+        );
 
         // process extra css included as string argument to this function
-        if ( $css !== null ) {
-            $mediaQueries = $processor->getMediaQueries($css, $mediaQueries);
-            $rules        = $processor->getRules($css, $rules);
+        $mediaQueries = [];
+        if (null !== $css) {
+            $mediaQueries = $processor->getMediaQueries($css);
+            $rules = $processor->getRules($css, $rules);
         }
 
         $document = $this->inline($document, $rules);
