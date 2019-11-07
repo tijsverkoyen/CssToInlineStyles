@@ -31,7 +31,7 @@ class Processor
      * @param string $css
      * @return array
      */
-    public function getMediaQueries(string $css)
+    public function getMediaQueries($css)
     {
         if (preg_match_all('/@media [^{]*+{([^{}]++|{[^{}]*+})*+}/', $css, $matches)) {
             return $matches[0];

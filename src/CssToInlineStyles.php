@@ -32,7 +32,7 @@ class CssToInlineStyles
      *
      * @return string
      */
-    public function convert(string $html, string $css = null)
+    public function convert($html, $css = null)
     {
         $document = $this->createDomDocumentFromHtml($html);
         $processor = new Processor();
