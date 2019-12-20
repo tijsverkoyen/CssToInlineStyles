@@ -28,7 +28,7 @@ class CssToInlineStyles
      * and appended to the body in their own <style> tag.
      *
      * @param string $html
-     * @param string $css
+     * @param string[] $css
      *
      * @return string
      */
