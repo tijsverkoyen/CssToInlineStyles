@@ -7,6 +7,7 @@ cache:
 env:
   global:
     - setup=basic
+    - nightly=false
 
 matrix:
   include:
@@ -30,10 +31,14 @@ matrix:
       dist: bionic
     - php: 7.4
       dist: bionic
+    - php: nightly
+      dist: bionic
+      env: nightly=true
 
 install:
-  - if [[ $setup = 'basic' ]]; then travis_retry composer install --prefer-dist --no-interaction; fi
-  - if [[ $setup = 'lowest' ]]; then travis_retry composer update --prefer-dist --no-interaction --prefer-lowest --prefer-stable; fi
+  - if [[ $setup = 'basic' && $nightly = 'false' ]]; then travis_retry composer install --prefer-dist --no-interaction; fi
+  - if [[ $setup = 'lowest' && $nightly = 'false' ]]; then travis_retry composer update --prefer-dist --no-interaction --prefer-lowest --prefer-stable; fi
+  - if [[ $nightly = 'true' ]]; then travis_retry composer install --prefer-dist --no-interaction --ignore-platform-reqs; fi
 
 script:
   - vendor/bin/phpunit --verbose --coverage-clover=coverage.clover
