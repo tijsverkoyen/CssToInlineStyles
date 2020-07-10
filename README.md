@@ -49,4 +49,4 @@ echo $cssToInlineStyles->convert(
 * [Each site based on Fork CMS](http://www.fork-cms.com)
 * [Print en Bind](http://www.printenbind.nl)
 * [Tiki Wiki CMS Groupware](http://sourceforge.net/p/tikiwiki/code/49505) (starting in Tiki 13)
-* [Laravel Framework] (https://github.com/laravel/framework/blob/086c02a544af2870c52976408cded8cf59d7cf40/src/Illuminate/Mail/Markdown.php#L52)
+* [Laravel Framework](https://github.com/laravel/framework/blob/086c02a544af2870c52976408cded8cf59d7cf40/src/Illuminate/Mail/Markdown.php#L52)
