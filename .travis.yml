@@ -7,7 +7,6 @@ cache:
 env:
   global:
     - setup=basic
-    - nightly=false
 
 matrix:
   include:
@@ -33,16 +32,15 @@ matrix:
       dist: bionic
     - php: nightly
       dist: bionic
-      env: nightly=true
 
 install:
-  - if [[ $setup = 'basic' && $nightly = 'false' ]]; then travis_retry composer install --prefer-dist --no-interaction; fi
-  - if [[ $setup = 'lowest' && $nightly = 'false' ]]; then travis_retry composer update --prefer-dist --no-interaction --prefer-lowest --prefer-stable; fi
-  - if [[ $nightly = 'true' ]]; then travis_retry composer install --prefer-dist --no-interaction --ignore-platform-reqs; fi
+  - if [[ $setup = 'basic' && "$TRAVIS_PHP_VERSION" != "nightly" ]]; then travis_retry composer install --prefer-dist --no-interaction; fi
+  - if [[ $setup = 'lowest' && "$TRAVIS_PHP_VERSION" != "nightly" ]]; then travis_retry composer update --prefer-dist --no-interaction --prefer-lowest --prefer-stable; fi
+  - if [[ "$TRAVIS_PHP_VERSION" = "nightly" ]]; then travis_retry composer install --prefer-dist --no-interaction --ignore-platform-reqs; fi
 
 script:
   - vendor/bin/phpunit --verbose --coverage-clover=coverage.clover
 
 after_success:
-  - if [[ "$TRAVIS_PHP_VERSION" != "hhvm" ]]; then wget https://scrutinizer-ci.com/ocular.phar; fi
-  - if [[ "$TRAVIS_PHP_VERSION" != "hhvm" ]]; then php ocular.phar code-coverage:upload --format=php-clover coverage.clover; fi
+  - if [[ "$TRAVIS_PHP_VERSION" != "nightly" ]]; then wget https://scrutinizer-ci.com/ocular.phar; fi
+  - if [[ "$TRAVIS_PHP_VERSION" != "nightly" ]]; then php ocular.phar code-coverage:upload --format=php-clover coverage.clover; fi
