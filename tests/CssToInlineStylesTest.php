@@ -13,12 +13,18 @@ class CssToInlineStylesTest extends TestCase
      */
     protected $cssToInlineStyles;
 
-    public function setUp()
+    /**
+     * @before
+     */
+    protected function prepare()
     {
         $this->cssToInlineStyles = new CssToInlineStyles();
     }
 
-    public function tearDown()
+    /**
+     * @after
+     */
+    protected function clear()
     {
         $this->cssToInlineStyles = null;
     }
