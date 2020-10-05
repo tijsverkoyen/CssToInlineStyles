@@ -50,4 +50,4 @@ echo $cssToInlineStyles->convert(
 * [Print en Bind](http://www.printenbind.nl)
 * [Tiki Wiki CMS Groupware](http://sourceforge.net/p/tikiwiki/code/49505) (starting in Tiki 13)
 * [Laravel Framework](https://github.com/laravel/framework/blob/v6.18.24/src/Illuminate/Mail/Markdown.php#L55)
-* [Record not found] (https://recordnotfound.com/CssToInlineStyles-tijsverkoyen-12698)
+* [Record not found](https://recordnotfound.com/memegen-jacebrowning-61250)
