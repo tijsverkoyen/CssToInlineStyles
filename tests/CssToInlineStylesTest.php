@@ -159,6 +159,20 @@ EOF;
         $this->assertCorrectConversion($expected, $html);
     }
 
+    public function testLinuxWindowsOutputDifference()
+    {
+        $html = <<<EOF
+<a>
+  <img>
+</a>
+EOF;
+        $expected = <<<EOF
+<a>
+  <img></a>
+EOF;
+        $this->assertCorrectConversion($expected, $html, '');
+    }
+
     public function testSpecificity()
     {
         $html = <<<EOF
@@ -210,8 +224,7 @@ img {
 EOF;
         $expected = <<<EOF
 <a class="one" id="ONE" style="border: 1px solid red; width: 20px !important; border-bottom: 2px; height: 20px; margin: 10px; padding: 100px;">
-  <img class="two" id="TWO" style="padding-bottom: 20px; padding: 0; border: none; padding-top: 30px;">
-</a>
+  <img class="two" id="TWO" style="padding-bottom: 20px; padding: 0; border: none; padding-top: 30px;"></a>
 EOF;
         $this->assertCorrectConversion($expected, $html, $css);
     }
