@@ -105,6 +105,19 @@ EOF;
         $this->assertEquals($expected, $this->cssToInlineStyles->convert($html, $css));
     }
 
+    public function testLastLibxmlErrors()
+    {
+        $start = array_fill(0, 257, '<span>');
+        $end = array_fill(0, 257, '</span>');
+        $html = sprintf('%s%s', implode('', $start), implode('', $end));
+
+        $result = $this->cssToInlineStyles->convert($html);
+        $errors = $this->cssToInlineStyles->getLastLibxmlErrors();
+
+        $this->assertNotEquals(strlen($html), strlen($result));
+        $this->assertEquals(1, count($errors));
+    }
+
     public function testSimpleElementSelector()
     {
         $html = '<div></div>';
