@@ -2,6 +2,8 @@
 
 namespace TijsVerkoyen\CssToInlineStyles;
 
+use LogicException;
+use Masterminds\HTML5;
 use Symfony\Component\CssSelector\CssSelector;
 use Symfony\Component\CssSelector\CssSelectorConverter;
 use Symfony\Component\CssSelector\Exception\ExceptionInterface;
@@ -13,10 +15,27 @@ class CssToInlineStyles
 {
     private $cssConverter;
 
-    public function __construct()
+    /** @var HTML5|null */
+    private $html5Parser;
+
+    /** @var bool */
+    private $isHtml5Document = false;
+
+    /**
+     * @param bool|null $useHtml5Parser Whether to use a HTML5 parser or the native DOM parser
+     */
+    public function __construct($useHtml5Parser = null)
     {
         if (class_exists('Symfony\Component\CssSelector\CssSelectorConverter')) {
             $this->cssConverter = new CssSelectorConverter();
+        }
+
+        if ($useHtml5Parser) {
+            if (! class_exists(HTML5::class)) {
+                throw new LogicException('Using the HTML5 parser requires the html5-php library. Try running "composer require masterminds/html5".');
+            }
+
+            $this->html5Parser = new HTML5(['disable_html_ns' => true]);
         }
     }
 
@@ -111,13 +130,42 @@ class CssToInlineStyles
      */
     protected function createDomDocumentFromHtml($html)
     {
+        return null !== $this->html5Parser ? $this->parseHtml5($html) : $this->parseXhtml($html);
+    }
+
+    /**
+     * @param string $html
+     * @return \DOMDocument
+     */
+    protected function parseHtml5($html)
+    {
+        $this->isHtml5Document = strspn($html, " \t\r\n") === stripos($html, '<!doctype html>');
+
+        return $this->html5Parser->parse($this->convertToHtmlEntities($html));
+    }
+
+    /**
+     * @param string $html
+     * @return \DOMDocument
+     */
+    protected function parseXhtml($html)
+    {
         $document = new \DOMDocument('1.0', 'UTF-8');
         $internalErrors = libxml_use_internal_errors(true);
-        $document->loadHTML(mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8'));
+        $document->loadHTML($this->convertToHtmlEntities($html));
         libxml_use_internal_errors($internalErrors);
         $document->formatOutput = true;
 
         return $document;
+    }
+
+    /**
+     * @param string $html
+     * @return array|false|string
+     */
+    protected function convertToHtmlEntities($html)
+    {
+        return mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8');
     }
 
     /**
@@ -127,10 +175,15 @@ class CssToInlineStyles
      */
     protected function getHtmlFromDocument(\DOMDocument $document)
     {
+        $parser = $document;
+        if (null !== $this->html5Parser && $this->isHtml5Document) {
+            $parser = $this->html5Parser;
+        }
+
         // retrieve the document element
         // we do it this way to preserve the utf-8 encoding
         $htmlElement = $document->documentElement;
-        $html = $document->saveHTML($htmlElement);
+        $html = $parser->saveHTML($htmlElement);
         $html = trim($html);
 
         // retrieve the doctype
