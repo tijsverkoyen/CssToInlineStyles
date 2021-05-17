@@ -130,7 +130,13 @@ class CssToInlineStyles
      */
     protected function createDomDocumentFromHtml($html)
     {
-        return null !== $this->html5Parser ? $this->parseHtml5($html) : $this->parseXhtml($html);
+        $this->isHtml5Document = false;
+
+        if ($this->canParseHtml5String($html)) {
+            return $this->parseHtml5($html);
+        }
+
+        return $this->parseXhtml($html);
     }
 
     /**
@@ -139,7 +145,7 @@ class CssToInlineStyles
      */
     protected function parseHtml5($html)
     {
-        $this->isHtml5Document = strspn($html, " \t\r\n") === stripos($html, '<!doctype html>');
+        $this->isHtml5Document = true;
 
         return $this->html5Parser->parse($this->convertToHtmlEntities($html));
     }
@@ -157,6 +163,34 @@ class CssToInlineStyles
         $document->formatOutput = true;
 
         return $document;
+    }
+
+    /**
+     * @param string $content
+     * @return bool
+     */
+    protected function canParseHtml5String($content)
+    {
+        if (null === $this->html5Parser) {
+            return false;
+        }
+
+        if (false === ($pos = stripos($content, '<!doctype html>'))) {
+            return false;
+        }
+
+        $header = substr($content, 0, $pos);
+
+        return '' === $header || $this->isValidHtml5Heading($header);
+    }
+
+    /**
+     * @param string $heading
+     * @return bool
+     */
+    protected function isValidHtml5Heading($heading)
+    {
+        return 1 === preg_match('/^\x{FEFF}?\s*(<!--[^>]*?-->\s*)*$/u', $heading);
     }
 
     /**
