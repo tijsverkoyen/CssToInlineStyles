@@ -2,6 +2,8 @@
 
 namespace TijsVerkoyen\CssToInlineStyles\Css;
 
+use DOMDocument;
+use DOMElement;
 use TijsVerkoyen\CssToInlineStyles\Css\Rule\Processor as RuleProcessor;
 use TijsVerkoyen\CssToInlineStyles\Css\Rule\Rule;
 
@@ -33,18 +35,37 @@ class Processor
      */
     public function getCssFromStyleTags($html)
     {
-        $css = '';
-        $matches = array();
-        $htmlNoComments = preg_replace('|<!--.*?-->|s', '', $html);
-        preg_match_all('|<style(?:\s.*)?>(.*)</style>|isU', $htmlNoComments, $matches);
+        $document = new DOMDocument('1.0', 'UTF-8');
+        $internalErrors = libxml_use_internal_errors(true);
+        $document->loadHTML(mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8'));
+        libxml_use_internal_errors($internalErrors);
 
-        if (!empty($matches[1])) {
-            foreach ($matches[1] as $match) {
-                $css .= trim($match) . "\n";
-            }
+        $css = '';
+
+        /** @var DOMElement $style */
+        foreach ($document->getElementsByTagName('style') as $style) {
+            $css .= $this->trimHtmlComments($style->nodeValue) . "\n";
         }
 
         return $css;
+    }
+
+    /**
+     * @param string $css
+     * @return string
+     */
+    protected function trimHtmlComments($css)
+    {
+        $css = trim($css);
+        if (strncmp('<!--', $css, 4) === 0) {
+            $css = substr($css, 4);
+        }
+
+        if (strlen($css) > 3 && substr($css, -3) === '-->') {
+            $css = substr($css, 0, -3);
+        }
+
+        return trim($css);
     }
 
     /**
