@@ -24,10 +24,11 @@ class CssToInlineStyles
      * Will inline the $css into the given $html
      *
      * Remark: if the html contains <style>-tags those will be used, the rules
-     * in $css will be appended.
+     * in $css will be appended. Media queries if available will be filtered out
+     * and appended to the body in their own <style> tag.
      *
      * @param string $html
-     * @param string $css
+     * @param string[] $css
      *
      * @return string
      */
@@ -41,11 +42,15 @@ class CssToInlineStyles
             $processor->getCssFromStyleTags($html)
         );
 
-        if ($css !== null) {
+        // process extra css included as string argument to this function
+        $mediaQueries = array();
+        if (null !== $css) {
+            $mediaQueries = $processor->getMediaQueries($css);
             $rules = $processor->getRules($css, $rules);
         }
 
         $document = $this->inline($document, $rules);
+        $document = $this->appendMediaQueries($document, $mediaQueries);
 
         return $this->getHtmlFromDocument($document);
     }
@@ -194,6 +199,35 @@ class CssToInlineStyles
             $this->inlineCssOnElement($element, $propertyStorage[$element]);
         }
 
+        return $document;
+    }
+
+    /**
+     * Appends a style tag to the body element containing all media queries.
+     *
+     * @param \DOMDocument $document
+     * @param string[] $mediaQueries
+     *
+     * @return \DOMDocument
+     */
+    protected function appendMediaQueries(\DOMDocument $document, array $mediaQueries)
+    {
+        if (!count($mediaQueries)) {
+            return $document;
+        }
+        $style = $document->createElement('style', implode($mediaQueries));
+        if ($style) {
+            $head = $document->getElementsByTagName('head')->item(0);
+            // Partials aren't supported (missing head tag). But lets play nice.
+            if (null !== $head) {
+                $head->appendChild($style);
+            } else {
+                $docNode = $document->documentElement;
+                $head = $document->createElement('head');
+                $head->appendChild($style);
+                $docNode->insertBefore($head, $docNode->firstChild);
+            }
+        }
         return $document;
     }
 

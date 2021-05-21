@@ -25,6 +25,22 @@ class Processor
     }
 
     /**
+     * Get all media queries from the given css string. Returns an empty array
+     * when non were found.
+     *
+     * @param string $css
+     *
+     * @return string[]
+     */
+    public function getMediaQueries($css)
+    {
+        if (preg_match_all('/@media [^{]*+{([^{}]++|{[^{}]*+})*+}/', $css, $matches)) {
+            return $matches[0];
+        }
+        return array();
+    }
+
+    /**
      * Get the CSS from the style-tags in the given HTML-string
      *
      * @param string $html
