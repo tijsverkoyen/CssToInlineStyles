@@ -154,6 +154,20 @@ EOF;
         $this->assertCorrectConversion($expected, $html);
     }
 
+    public function testLinuxWindowsOutputDifference()
+    {
+        $html = <<<EOF
+<a>
+  <img>
+</a>
+EOF;
+        $expected = <<<EOF
+<a>
+  <img></a>
+EOF;
+        $this->assertCorrectConversion($expected, $html, '');
+    }
+
     public function testSpecificity()
     {
         $html = <<<EOF
