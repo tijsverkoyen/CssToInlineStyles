@@ -261,6 +261,23 @@ EOF;
         $this->assertCorrectConversion($expected, $html, $css);
     }
 
+    public function testSetLibXmlOptions()
+    {
+        $dtd = '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">';
+        $expected = '<html><body><p></p></body></html>';
+
+        $this->assertSame(
+            $dtd . "\n" . $expected,
+            $this->cssToInlineStyles->convert('<p></p>')
+        );
+
+        $this->cssToInlineStyles->setLibXmlOptions(LIBXML_HTML_NODEFDTD);
+        $this->assertSame(
+            "\n" . $expected,
+            $this->cssToInlineStyles->convert('<p></p>')
+        );
+    }
+
     private function assertCorrectConversion($expected, $html, $css = null)
     {
         $this->assertEquals(
