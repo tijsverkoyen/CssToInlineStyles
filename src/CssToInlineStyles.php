@@ -13,11 +13,27 @@ class CssToInlineStyles
 {
     private $cssConverter;
 
+    /** @var int */
+    private $libXmlOptions = 0;
+
     public function __construct()
     {
         if (class_exists('Symfony\Component\CssSelector\CssSelectorConverter')) {
             $this->cssConverter = new CssSelectorConverter();
         }
+    }
+
+    /**
+     * Set DOMDocument LibXML parameters.
+     *
+     * @param int $options
+     * @return self
+     */
+    public function setLibXmlOptions($options)
+    {
+        $this->libXmlOptions = $options;
+
+        return $this;
     }
 
     /**
@@ -113,7 +129,7 @@ class CssToInlineStyles
     {
         $document = new \DOMDocument('1.0', 'UTF-8');
         $internalErrors = libxml_use_internal_errors(true);
-        $document->loadHTML(mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8'));
+        $document->loadHTML(mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8'), $this->libXmlOptions);
         libxml_use_internal_errors($internalErrors);
         $document->formatOutput = true;
 
