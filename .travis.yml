@@ -37,9 +37,10 @@ install:
   - if [[ $setup = 'basic' && "$TRAVIS_PHP_VERSION" != "nightly" ]]; then travis_retry composer install --prefer-dist --no-interaction; fi
   - if [[ $setup = 'lowest' && "$TRAVIS_PHP_VERSION" != "nightly" ]]; then travis_retry composer update --prefer-dist --no-interaction --prefer-lowest --prefer-stable; fi
   - if [[ "$TRAVIS_PHP_VERSION" = "nightly" ]]; then travis_retry composer install --prefer-dist --no-interaction --ignore-platform-reqs; fi
+  - if [[ "$TRAVIS_PHP_VERSION" = "7.4" ]]; then travis_retry composer requrie --dev phpstan/phpstan:1.1.2; fi
 
 script:
-  - if [[ "$TRAVIS_PHP_VERSION" = "7.4" ]]; then vendor/bin/phpstan; fi
+  - if [[ "$TRAVIS_PHP_VERSION" = "7.4" ]]; then composer require vendor/bin/phpstan; fi
   - vendor/bin/phpunit --verbose --coverage-clover=coverage.clover
 
 after_success:
