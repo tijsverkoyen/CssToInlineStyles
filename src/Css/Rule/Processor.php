@@ -31,8 +31,8 @@ class Processor
         $string = str_replace(array("\r", "\n"), '', $string);
         $string = str_replace(array("\t"), ' ', $string);
         $string = str_replace('"', '\'', $string);
-        $string = preg_replace('|/\*.*?\*/|', '', $string);
-        $string = preg_replace('/\s\s+/', ' ', $string);
+        $string = preg_replace('|/\*.*?\*/|', '', $string) ?: $string;
+        $string = preg_replace('/\s\s+/', ' ', $string) ?: $string;
 
         $string = trim($string);
         $string = rtrim($string, '}');
@@ -116,9 +116,9 @@ class Processor
                       )";
 
         return new Specificity(
-            preg_match_all("/{$idSelectorsPattern}/ix", $selector, $matches),
-            preg_match_all("/{$classAttributesPseudoClassesSelectorsPattern}/ix", $selector, $matches),
-            preg_match_all("/{$typePseudoElementsSelectorPattern}/ix", $selector, $matches)
+            preg_match_all("/{$idSelectorsPattern}/ix", $selector, $matches) ?: 0,
+            preg_match_all("/{$classAttributesPseudoClassesSelectorsPattern}/ix", $selector, $matches) ?: 0,
+            preg_match_all("/{$typePseudoElementsSelectorPattern}/ix", $selector, $matches) ?: 0
         );
     }
 

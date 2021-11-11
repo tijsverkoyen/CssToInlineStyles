@@ -39,6 +39,7 @@ install:
   - if [[ "$TRAVIS_PHP_VERSION" = "nightly" ]]; then travis_retry composer install --prefer-dist --no-interaction --ignore-platform-reqs; fi
 
 script:
+  - if [[ "$TRAVIS_PHP_VERSION" = "7.4" ]]; then vendor/bin/phpstan; fi
   - vendor/bin/phpunit --verbose --coverage-clover=coverage.clover
 
 after_success:

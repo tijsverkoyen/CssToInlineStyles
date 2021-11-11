@@ -17,7 +17,7 @@ final class Property
     private $value;
 
     /**
-     * @var Specificity
+     * @var Specificity|null
      */
     private $originalSpecificity;
 
@@ -57,7 +57,7 @@ final class Property
     /**
      * Get originalSpecificity
      *
-     * @return Specificity
+     * @return Specificity|null
      */
     public function getOriginalSpecificity()
     {
