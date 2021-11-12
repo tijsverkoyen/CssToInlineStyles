@@ -40,7 +40,7 @@ install:
   - if [[ "$TRAVIS_PHP_VERSION" = "7.4" ]]; then travis_retry composer requrie --dev phpstan/phpstan:1.1.2; fi
 
 script:
-  - if [[ "$TRAVIS_PHP_VERSION" = "7.4" ]]; then composer require vendor/bin/phpstan; fi
+  - if [[ "$TRAVIS_PHP_VERSION" = "7.4" ]]; then vendor/bin/phpstan analyse; fi
   - vendor/bin/phpunit --verbose --coverage-clover=coverage.clover
 
 after_success:
