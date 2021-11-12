@@ -1,0 +1,34 @@
+<?php
+
+namespace Symfony\Component\CssSelector;
+
+class CssSelector
+{
+    /** @var bool */
+    private static $html = true;
+
+    /**
+     * @param mixed  $cssExpr The CSS expression
+     * @param string $prefix  An optional prefix for the XPath expression
+     *
+     * @return string
+     */
+    public static function toXPath($cssExpr, $prefix = 'descendant-or-self::')
+    {
+        $converter = new CssSelectorConverter(self::$html);
+
+        return $converter->toXPath($cssExpr, $prefix);
+    }
+
+    /** @return void */
+    public static function enableHtmlExtension()
+    {
+        self::$html = true;
+    }
+
+    /** @return void */
+    public static function disableHtmlExtension()
+    {
+        self::$html = false;
+    }
+}
