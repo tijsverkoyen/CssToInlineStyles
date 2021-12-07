@@ -25,6 +25,11 @@
       "TijsVerkoyen\\CssToInlineStyles\\": "src"
     }
   },
+  "autoload-dev": {
+    "psr-4": {
+      "TijsVerkoyen\\CssToInlineStyles\\Tests\\": "tests"
+    }
+  },
   "extra": {
     "branch-alias": {
       "dev-master": "2.2.x-dev"

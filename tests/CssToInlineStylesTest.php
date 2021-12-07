@@ -1,6 +1,6 @@
 <?php
 
-namespace TijsVerkoyen\CssToInlineStyles\tests;
+namespace TijsVerkoyen\CssToInlineStyles\Tests;
 
 use TijsVerkoyen\CssToInlineStyles\Css\Property\Property;
 use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
