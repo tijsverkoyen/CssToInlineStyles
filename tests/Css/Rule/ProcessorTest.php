@@ -13,14 +13,12 @@ class ProcessorTest extends TestCase
      */
     protected $processor;
 
-    public function setUp()
+    /**
+     * @before
+     */
+    protected function prepare()
     {
         $this->processor = new Processor();
-    }
-
-    public function tearDown()
-    {
-        $this->processor = null;
     }
 
     public function testMostBasicRule()

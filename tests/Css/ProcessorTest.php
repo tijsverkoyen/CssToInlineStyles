@@ -1,6 +1,5 @@
 <?php
 
-
 namespace TijsVerkoyen\CssToInlineStyles\Tests\Css;
 
 use TijsVerkoyen\CssToInlineStyles\Css\Processor;
@@ -13,14 +12,12 @@ class ProcessorTest extends TestCase
      */
     protected $processor;
 
-    public function setUp()
+    /**
+     * @before
+     */
+    protected function prepare()
     {
         $this->processor = new Processor();
-    }
-
-    public function tearDown()
-    {
-        $this->processor = null;
     }
 
     public function testCssWithOneRule()

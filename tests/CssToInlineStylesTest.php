@@ -1,6 +1,6 @@
 <?php
 
-namespace TijsVerkoyen\CssToInlineStyles\tests;
+namespace TijsVerkoyen\CssToInlineStyles\Tests;
 
 use TijsVerkoyen\CssToInlineStyles\Css\Property\Property;
 use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
@@ -31,7 +31,12 @@ class CssToInlineStylesTest extends TestCase
 
     public function testNoXMLHeaderPresent()
     {
-        $this->assertNotContains(
+        if (method_exists($this, 'assertStringNotContainsString')) {
+            $assertionMethod = 'assertStringNotContainsString';
+        } else {
+            $assertionMethod = 'assertNotContains'; // Support for PHPUnit <7.5.0
+        }
+        $this->$assertionMethod(
             '<?xml',
             $this->cssToInlineStyles->convert(
                 '<!DOCTYPE html><html><body><p>foo</p></body></html>',
@@ -205,7 +210,8 @@ img {
 EOF;
         $expected = <<<EOF
 <a class="one" id="ONE" style="border: 1px solid red; width: 20px !important; border-bottom: 2px; height: 20px; margin: 10px; padding: 100px;">
-  <img class="two" id="TWO" style="padding-bottom: 20px; padding: 0; border: none; padding-top: 30px;"></a>
+  <img class="two" id="TWO" style="padding-bottom: 20px; padding: 0; border: none; padding-top: 30px;">
+</a>
 EOF;
         $this->assertCorrectConversion($expected, $html, $css);
     }
