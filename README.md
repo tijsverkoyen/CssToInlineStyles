@@ -1,17 +1,12 @@
 # CssToInlineStyles class
 
 [![CI](https://github.com/tijsverkoyen/CssToInlineStyles/actions/workflows/ci.yml/badge.svg)](https://github.com/tijsverkoyen/CssToInlineStyles/actions/workflows/ci.yml)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/tijsverkoyen/CssToInlineStyles/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/tijsverkoyen/CssToInlineStyles/?branch=master) [![Code Coverage](https://scrutinizer-ci.com/g/tijsverkoyen/CssToInlineStyles/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/tijsverkoyen/CssToInlineStyles/?branch=master) [![SensioLabsInsight](https://insight.sensiolabs.com/projects/5c0ce94f-de6d-403e-9e0a-431268deb75c/mini.png)](https://insight.sensiolabs.com/projects/5c0ce94f-de6d-403e-9e0a-431268deb75c)
-
-## Installation
-
-> CssToInlineStyles is a class that enables you to convert HTML-pages/files into
-> HTML-pages/files with inline styles. This is very useful when you're sending
-> emails.
 
 ## About
 
-PHP CssToInlineStyles is a class to convert HTML into HTML with inline styles.
+CssToInlineStyles is a class that enables you to convert HTML-pages/files into
+HTML-pages/files with inline styles. This is very useful when you're sending
+emails.
 
 ## Installation
 
