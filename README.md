@@ -2,15 +2,11 @@
 
 [![CI](https://github.com/tijsverkoyen/CssToInlineStyles/actions/workflows/ci.yml/badge.svg)](https://github.com/tijsverkoyen/CssToInlineStyles/actions/workflows/ci.yml)
 
-## Installation
-
-> CssToInlineStyles is a class that enables you to convert HTML-pages/files into
-> HTML-pages/files with inline styles. This is very useful when you're sending
-> emails.
-
 ## About
 
-PHP CssToInlineStyles is a class to convert HTML into HTML with inline styles.
+CssToInlineStyles is a class that enables you to convert HTML-pages/files into
+HTML-pages/files with inline styles. This is very useful when you're sending
+emails.
 
 ## Installation
 
