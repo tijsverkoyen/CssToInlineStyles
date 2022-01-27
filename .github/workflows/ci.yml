@@ -19,20 +19,27 @@ jobs:
       - run: composer validate --strict --no-check-lock
 
   tests:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.operating-system }}
 
     strategy:
       fail-fast: false
       matrix:
         php: [ '5.5', '5.6', '7.0', '7.1', '7.2', '7.3', '7.4', '8.0', '8.1' ]
+        operating-system: [ ubuntu-latest ]
         composer_flags: [ '' ]
         include:
           - php: '5.5'
             composer_flags: '--prefer-lowest'
+            operating-system: ubuntu-latest
           - php: '7.0'
             composer_flags: '--prefer-lowest'
+            operating-system: ubuntu-latest
+          - php: '8.1'
+            operating-system: windows-latest
 
     steps:
+      - name: Prepare git # see https://github.com/actions/checkout/issues/226#issue-606867805
+        run: git config --global core.autocrlf false && git config --global core.eol lf
       - uses: actions/checkout@v2
       - uses: shivammathur/setup-php@v2
         with:
