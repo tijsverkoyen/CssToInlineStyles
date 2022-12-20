@@ -267,6 +267,46 @@ EOF;
         $this->assertCorrectConversion($expected, $html, $css);
     }
 
+    public function testConversionAsciiRegular()
+    {
+        $html = '~';
+        $css = '';
+        $expected = "<p>{$html}</p>";
+        $this->assertCorrectConversion($expected, $html, $css);
+    }
+
+    public function testConversionAsciiDelete()
+    {
+        $html = "\u{007F}";
+        $css = '';
+        $expected = "<p>{$html}</p>";
+        $this->assertCorrectConversion($expected, $html, $css);
+    }
+
+    public function testConversionLowestCodepoint()
+    {
+        $html = "\u{0080}";
+        $css = '';
+        $expected = "<p>{$html}</p>";
+        $this->assertCorrectConversion($expected, $html, $css);
+    }
+
+    public function testConversionHighestCodepoint()
+    {
+        $html = "\u{10FFFF}";
+        $css = '';
+        $expected = "<p>{$html}</p>";
+        $this->assertCorrectConversion($expected, $html, $css);
+    }
+
+    public function testMB4character()
+    {
+        $html = '🇳🇱';
+        $css = '';
+        $expected = "<p>{$html}</p>";
+        $this->assertCorrectConversion($expected, $html, $css);
+    }
+
     private function assertCorrectConversion($expected, $html, $css = null)
     {
         $this->assertEquals(
