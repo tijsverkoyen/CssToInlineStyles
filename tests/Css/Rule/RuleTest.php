@@ -7,7 +7,7 @@ use TijsVerkoyen\CssToInlineStyles\Css\Rule\Rule;
 use Symfony\Component\CssSelector\Node\Specificity;
 use PHPUnit\Framework\TestCase;
 
-class PropertyTest extends TestCase
+class RuleTest extends TestCase
 {
     public function testGetters()
     {
