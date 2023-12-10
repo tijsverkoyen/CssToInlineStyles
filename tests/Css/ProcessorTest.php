@@ -262,4 +262,21 @@ EOF
             )
         );
     }
+
+    public function testHtmlCommentsInStyle()
+    {
+        $expected = 'p{color:blue}' . "\n";
+        $this->assertEquals(
+            $expected,
+            $this->processor->getCssFromStyleTags(
+                <<<EOF
+<!doctype html>
+<html>
+<head><style><!-- p{color:blue} --></style></head>
+<body><p>foo</p></body>
+</html>
+EOF
+            )
+        );
+    }
 }
