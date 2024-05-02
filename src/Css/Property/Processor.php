@@ -66,7 +66,7 @@ class Processor
      *
      * @return Property|null
      */
-    public function convertToObject($property, Specificity $specificity = null)
+    public function convertToObject($property, ?Specificity $specificity = null)
     {
         if (strpos($property, ':') === false) {
             return null;
@@ -91,7 +91,7 @@ class Processor
      *
      * @return Property[]
      */
-    public function convertArrayToObjects(array $properties, Specificity $specificity = null)
+    public function convertArrayToObjects(array $properties, ?Specificity $specificity = null)
     {
         $objects = array();
 
