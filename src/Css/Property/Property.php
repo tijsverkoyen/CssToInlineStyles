@@ -27,7 +27,7 @@ final class Property
      * @param string           $value
      * @param Specificity|null $specificity
      */
-    public function __construct($name, $value, Specificity $specificity = null)
+    public function __construct($name, $value, ?Specificity $specificity = null)
     {
         $this->name = $name;
         $this->value = $value;

@@ -24,14 +24,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: [ '5.5', '5.6', '7.0', '7.1', '7.2', '7.3', '7.4', '8.0', '8.1', '8.2', '8.3' ]
+        php: [ '7.2', '7.3', '7.4', '8.0', '8.1', '8.2', '8.3', '8.4' ]
         operating-system: [ ubuntu-latest ]
         composer_flags: [ '' ]
         include:
-          - php: '5.5'
+          - php: '7.2'
             composer_flags: '--prefer-lowest'
             operating-system: ubuntu-latest
-          - php: '7.0'
+          - php: '8.0'
             composer_flags: '--prefer-lowest'
             operating-system: ubuntu-latest
           - php: '8.1'
