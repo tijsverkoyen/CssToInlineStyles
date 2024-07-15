@@ -33,21 +33,26 @@ class CssToInlineStyles
      */
     public function convert($html, $css = null)
     {
-        $document = $this->createDomDocumentFromHtml($html);
-        $processor = new Processor();
-
-        // get all styles from the style-tags
-        $rules = $processor->getRules(
-            $processor->getCssFromStyleTags($html)
-        );
-
-        if ($css !== null) {
-            $rules = $processor->getRules($css, $rules);
+        if(!empty(trim($html)))
+        {
+            $document = $this->createDomDocumentFromHtml($html);
+            $processor = new Processor();
+            
+            // get all styles from the style-tags
+            $rules = $processor->getRules(
+                    $processor->getCssFromStyleTags($html)
+                    );
+            
+            if ($css !== null) {
+                $rules = $processor->getRules($css, $rules);
+            }
+            
+            $document = $this->inline($document, $rules);  
+            
+            return $this->getHtmlFromDocument($document);
         }
 
-        $document = $this->inline($document, $rules);
-
-        return $this->getHtmlFromDocument($document);
+        return "";
     }
 
     /**
