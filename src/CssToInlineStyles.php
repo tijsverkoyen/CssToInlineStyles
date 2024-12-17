@@ -2,7 +2,6 @@
 
 namespace TijsVerkoyen\CssToInlineStyles;
 
-use Symfony\Component\CssSelector\CssSelector;
 use Symfony\Component\CssSelector\CssSelectorConverter;
 use Symfony\Component\CssSelector\Exception\ExceptionInterface;
 use TijsVerkoyen\CssToInlineStyles\Css\Processor;
@@ -11,13 +10,14 @@ use TijsVerkoyen\CssToInlineStyles\Css\Rule\Processor as RuleProcessor;
 
 class CssToInlineStyles
 {
+    /**
+     * @var CssSelectorConverter
+     */
     private $cssConverter;
 
     public function __construct()
     {
-        if (class_exists('Symfony\Component\CssSelector\CssSelectorConverter')) {
-            $this->cssConverter = new CssSelectorConverter();
-        }
+        $this->cssConverter = new CssSelectorConverter();
     }
 
     /**
@@ -166,12 +166,7 @@ class CssToInlineStyles
 
         foreach ($rules as $rule) {
             try {
-                if (null !== $this->cssConverter) {
-                    $expression = $this->cssConverter->toXPath($rule->getSelector());
-                } else {
-                    // Compatibility layer for Symfony 2.7 and older
-                    $expression = CssSelector::toXPath($rule->getSelector());
-                }
+                $expression = $this->cssConverter->toXPath($rule->getSelector());
             } catch (ExceptionInterface $e) {
                 continue;
             }
