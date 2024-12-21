@@ -50,7 +50,11 @@ class CssToInlineStylesTest extends TestCase
         );
 
         $document->appendChild($inlineElement);
-        $this->assertEquals('<a>foo</a>', trim($document->saveHTML()));
+
+        $html = $document->saveHTML();
+        $this->assertIsString($html);
+
+        $this->assertEquals('<a>foo</a>', trim($html));
     }
 
     public function testApplyBasicStylesOnElement(): void
@@ -66,7 +70,10 @@ class CssToInlineStylesTest extends TestCase
 
         $document->appendChild($inlineElement);
 
-        $this->assertEquals('<a style="padding: 5px;">foo</a>', trim($document->saveHTML()));
+        $html = $document->saveHTML();
+        $this->assertIsString($html);
+
+        $this->assertEquals('<a style="padding: 5px;">foo</a>', trim($html));
     }
 
     public function testApplyBasicStylesOnElementWithInlineStyles(): void
@@ -84,9 +91,12 @@ class CssToInlineStylesTest extends TestCase
 
         $document->appendChild($inlineElement);
 
+        $html = $document->saveHTML();
+        $this->assertIsString($html);
+
         $this->assertEquals(
             '<a style="border-bottom: 5px; color: green; border: 1px;">foo</a>',
-            trim($document->saveHTML())
+            trim($html)
         );
     }
 
