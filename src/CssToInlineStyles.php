@@ -52,7 +52,7 @@ class CssToInlineStyles
     }
 
     /**
-     * Inline the given properties on an given DOMElement
+     * Inline the given properties on a given DOMElement
      *
      * @param \DOMElement             $element
      * @param Property[] $properties
@@ -234,6 +234,8 @@ class CssToInlineStyles
                 //overrule if current property is important and existing is not, else check specificity
                 $overrule = !$existingProperty->isImportant() && $property->isImportant();
                 if (!$overrule) {
+                    \assert($existingProperty->getOriginalSpecificity() !== null, 'Properties created for parsed CSS always have their associated specificity.');
+                    \assert($property->getOriginalSpecificity() !== null, 'Properties created for parsed CSS always have their associated specificity.');
                     $overrule = $existingProperty->getOriginalSpecificity()->compareTo($property->getOriginalSpecificity()) <= 0;
                 }
 
