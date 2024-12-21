@@ -94,7 +94,9 @@ EOF;
 
     public function testCssWithBigMediaQueries(): void
     {
-        $rules = $this->processor->getRules(file_get_contents(__DIR__.'/test.css'));
+        $css = file_get_contents(__DIR__.'/test.css');
+        $this->assertIsString($css, 'The fixture CSS file should be readable.');
+        $rules = $this->processor->getRules($css);
 
         $this->assertCount(414, $rules);
     }
