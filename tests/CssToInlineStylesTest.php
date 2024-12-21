@@ -16,27 +16,14 @@ class CssToInlineStylesTest extends TestCase
     /**
      * @before
      */
-    protected function prepare()
+    protected function prepare(): void
     {
         $this->cssToInlineStyles = new CssToInlineStyles();
     }
 
-    /**
-     * @after
-     */
-    protected function clear()
+    public function testNoXMLHeaderPresent(): void
     {
-        $this->cssToInlineStyles = null;
-    }
-
-    public function testNoXMLHeaderPresent()
-    {
-        if (method_exists($this, 'assertStringNotContainsString')) {
-            $assertionMethod = 'assertStringNotContainsString';
-        } else {
-            $assertionMethod = 'assertNotContains'; // Support for PHPUnit <7.5.0
-        }
-        $this->$assertionMethod(
+        $this->assertStringNotContainsString(
             '<?xml',
             $this->cssToInlineStyles->convert(
                 '<!DOCTYPE html><html><body><p>foo</p></body></html>',
@@ -45,7 +32,7 @@ class CssToInlineStylesTest extends TestCase
         );
     }
 
-    public function testApplyNoStylesOnElement()
+    public function testApplyNoStylesOnElement(): void
     {
         $document = new \DOMDocument();
         $element = $document->createElement('a', 'foo');
@@ -55,10 +42,14 @@ class CssToInlineStylesTest extends TestCase
         );
 
         $document->appendChild($inlineElement);
-        $this->assertEquals('<a>foo</a>', trim($document->saveHTML()));
+
+        $html = $document->saveHTML();
+        $this->assertIsString($html);
+
+        $this->assertEquals('<a>foo</a>', trim($html));
     }
 
-    public function testApplyBasicStylesOnElement()
+    public function testApplyBasicStylesOnElement(): void
     {
         $document = new \DOMDocument();
         $element = $document->createElement('a', 'foo');
@@ -71,10 +62,13 @@ class CssToInlineStylesTest extends TestCase
 
         $document->appendChild($inlineElement);
 
-        $this->assertEquals('<a style="padding: 5px;">foo</a>', trim($document->saveHTML()));
+        $html = $document->saveHTML();
+        $this->assertIsString($html);
+
+        $this->assertEquals('<a style="padding: 5px;">foo</a>', trim($html));
     }
 
-    public function testApplyBasicStylesOnElementWithInlineStyles()
+    public function testApplyBasicStylesOnElementWithInlineStyles(): void
     {
         $document = new \DOMDocument();
         $element = $document->createElement('a', 'foo');
@@ -89,13 +83,16 @@ class CssToInlineStylesTest extends TestCase
 
         $document->appendChild($inlineElement);
 
+        $html = $document->saveHTML();
+        $this->assertIsString($html);
+
         $this->assertEquals(
             '<a style="border-bottom: 5px; color: green; border: 1px;">foo</a>',
-            trim($document->saveHTML())
+            trim($html)
         );
     }
 
-    public function testBasicRealHTMLExample()
+    public function testBasicRealHTMLExample(): void
     {
         $html = '<!doctype html><html><head><style>body{color:blue}</style></head><body><p>foo</p></body></html>';
         $css = 'p { color: red; }';
@@ -110,7 +107,7 @@ EOF;
         $this->assertEquals($expected, $this->cssToInlineStyles->convert($html, $css));
     }
 
-    public function testSimpleElementSelector()
+    public function testSimpleElementSelector(): void
     {
         $html = '<div></div>';
         $css = 'div { display: none; }';
@@ -119,7 +116,7 @@ EOF;
         $this->assertCorrectConversion($expected, $html, $css);
     }
 
-    public function testSimpleCssSelector()
+    public function testSimpleCssSelector(): void
     {
         $html = '<a class="test-class">nodeContent</a>';
         $css = '.test-class { background-color: #aaa; text-decoration: none; }';
@@ -128,7 +125,7 @@ EOF;
         $this->assertCorrectConversion($expected, $html, $css);
     }
 
-    public function testSimpleIdSelector()
+    public function testSimpleIdSelector(): void
     {
         $html = '<div id="div1">';
         $css = '#div1 { border: 1px solid red; }';
@@ -137,7 +134,7 @@ EOF;
         $this->assertCorrectConversion($expected, $html, $css);
     }
 
-    public function testInlineStylesBlock()
+    public function testInlineStylesBlock(): void
     {
         $html = <<<EOF
 <html>
@@ -159,7 +156,7 @@ EOF;
         $this->assertCorrectConversion($expected, $html);
     }
 
-    public function testSpecificity()
+    public function testSpecificity(): void
     {
         $html = <<<EOF
 <a class="one" id="ONE" style="padding: 100px;">
@@ -216,7 +213,7 @@ EOF;
         $this->assertCorrectConversion($expected, $html, $css);
     }
 
-    public function testEqualSpecificity()
+    public function testEqualSpecificity(): void
     {
         $html = '<div class="one"></div>';
         $css = ' .one { display: inline; } a > strong {} a {} a {} a {} a {} a {} a {}a {} img { display: block; }';
@@ -225,7 +222,7 @@ EOF;
         $this->assertCorrectConversion($expected, $html, $css);
     }
 
-    public function testInvalidSelector()
+    public function testInvalidSelector(): void
     {
         $html = "<p></p>";
         $css = ' p&@*$%& { display: inline; }';
@@ -234,7 +231,7 @@ EOF;
         $this->assertCorrectConversion($expected, $html, $css);
     }
 
-    public function testHtmlEncoding()
+    public function testHtmlEncoding(): void
     {
         $text = 'Žluťoučký kůň pije pivo nebo jak to je dál';
         $expected = $text;
@@ -242,7 +239,7 @@ EOF;
         $this->assertEquals($expected, trim(strip_tags($this->cssToInlineStyles->convert($text))));
     }
 
-    public function testSpecialCharacters()
+    public function testSpecialCharacters(): void
     {
         $text = '1 &lt; 2';
         $expected = $text;
@@ -250,7 +247,7 @@ EOF;
         $this->assertEquals($expected, trim(strip_tags($this->cssToInlineStyles->convert($text))));
     }
 
-    public function testSpecialCharactersExplicit()
+    public function testSpecialCharactersExplicit(): void
     {
         $text = '&amp;lt;script&amp;&gt;';
         $expected = $text;
@@ -258,7 +255,7 @@ EOF;
         $this->assertEquals($expected, trim(strip_tags($this->cssToInlineStyles->convert($text))));
     }
 
-    public function testSelfClosingTags()
+    public function testSelfClosingTags(): void
     {
         $html = '<br>';
         $css = '';
@@ -267,7 +264,7 @@ EOF;
         $this->assertCorrectConversion($expected, $html, $css);
     }
 
-    public function testConversionAsciiRegular()
+    public function testConversionAsciiRegular(): void
     {
         $html = '~';
         $css = '';
@@ -275,7 +272,7 @@ EOF;
         $this->assertCorrectConversion($expected, $html, $css);
     }
 
-    public function testConversionAsciiDelete()
+    public function testConversionAsciiDelete(): void
     {
         $html = "\u{007F}";
         $css = '';
@@ -283,7 +280,7 @@ EOF;
         $this->assertCorrectConversion($expected, $html, $css);
     }
 
-    public function testConversionLowestCodepoint()
+    public function testConversionLowestCodepoint(): void
     {
         $html = "\u{0080}";
         $css = '';
@@ -291,7 +288,7 @@ EOF;
         $this->assertCorrectConversion($expected, $html, $css);
     }
 
-    public function testConversionHighestCodepoint()
+    public function testConversionHighestCodepoint(): void
     {
         $html = "\u{10FFFF}";
         $css = '';
@@ -299,7 +296,7 @@ EOF;
         $this->assertCorrectConversion($expected, $html, $css);
     }
 
-    public function testMB4character()
+    public function testMB4character(): void
     {
         $html = '🇳🇱';
         $css = '';
@@ -307,7 +304,7 @@ EOF;
         $this->assertCorrectConversion($expected, $html, $css);
     }
 
-    private function assertCorrectConversion($expected, $html, $css = null)
+    private function assertCorrectConversion(string $expected, string $html, ?string $css = null): void
     {
         $this->assertEquals(
             $expected,
@@ -317,7 +314,7 @@ EOF;
         );
     }
 
-    private function getBodyContent($html)
+    private function getBodyContent(string $html): ?string
     {
         $matches = array();
         preg_match('|<body>(.*)</body>|ims', $html, $matches);

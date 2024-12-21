@@ -15,12 +15,12 @@ class ProcessorTest extends TestCase
     /**
      * @before
      */
-    protected function prepare()
+    protected function prepare(): void
     {
         $this->processor = new Processor();
     }
 
-    public function testCssWithOneRule()
+    public function testCssWithOneRule(): void
     {
         $css = <<<EOF
             a {
@@ -42,7 +42,7 @@ EOF;
         $this->assertEquals(1, $rules[0]->getOrder());
     }
 
-    public function testCssWithComments()
+    public function testCssWithComments(): void
     {
         $css = <<<CSS
 a {
@@ -67,7 +67,7 @@ CSS;
         $this->assertEquals(2, $rules[1]->getOrder());
     }
 
-    public function testCssWithMediaQueries()
+    public function testCssWithMediaQueries(): void
     {
         $css = <<<EOF
 @media (max-width: 600px) {
@@ -92,14 +92,16 @@ EOF;
         $this->assertEquals(1, $rules[0]->getOrder());
     }
 
-    public function testCssWithBigMediaQueries()
+    public function testCssWithBigMediaQueries(): void
     {
-        $rules = $this->processor->getRules(file_get_contents(__DIR__.'/test.css'));
+        $css = file_get_contents(__DIR__.'/test.css');
+        $this->assertIsString($css, 'The fixture CSS file should be readable.');
+        $rules = $this->processor->getRules($css);
 
         $this->assertCount(414, $rules);
     }
 
-    public function testMakeSureMediaQueriesAreRemoved()
+    public function testMakeSureMediaQueriesAreRemoved(): void
     {
         $css = '@media tv and (min-width: 700px) and (orientation: landscape) {.foo {display: none;}}';
         $this->assertEmpty($this->processor->getRules($css));
@@ -117,7 +119,7 @@ EOF;
         $this->assertEmpty($this->processor->getRules($css));
     }
 
-    public function testCssWithCharset()
+    public function testCssWithCharset(): void
     {
         $css = <<<EOF
 @charset "UTF-8";
@@ -137,7 +139,7 @@ EOF;
         $this->assertEquals(1, $rules[0]->getOrder());
     }
 
-    public function testSimpleStyleTagsInHtml()
+    public function testSimpleStyleTagsInHtml(): void
     {
         $expected = 'p { color: #F00; }' . "\n";
         $this->assertEquals(
@@ -159,7 +161,7 @@ EOF
         );
     }
 
-    public function testStyleTagsWithAttributeInHtml()
+    public function testStyleTagsWithAttributeInHtml(): void
     {
         $expected = 'p { color: #F00; }' . "\n";
         $this->assertEquals(
@@ -181,7 +183,7 @@ HTML
         );
     }
 
-    public function testMultipleStyleTagsInHtml()
+    public function testMultipleStyleTagsInHtml(): void
     {
         $expected = 'p { color: #F00; }' . "\n" . 'p { color: #0F0; }' . "\n";
         $this->assertEquals(
@@ -206,7 +208,7 @@ EOF
         );
     }
 
-    public function testWeirdTagsInHtml()
+    public function testWeirdTagsInHtml(): void
     {
         $expected = 'p { color: #F00; }' . "\n";
         $this->assertEquals(
@@ -231,7 +233,7 @@ HTML
 
     }
 
-    public function testStyleTagsInCommentInHtml()
+    public function testStyleTagsInCommentInHtml(): void
     {
         $expected = 'p { color: #F00; }' . "\n";
         $this->assertEquals(
