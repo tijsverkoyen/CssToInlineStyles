@@ -6,6 +6,7 @@ use Symfony\Component\CssSelector\CssSelectorConverter;
 use Symfony\Component\CssSelector\Exception\ExceptionInterface;
 use TijsVerkoyen\CssToInlineStyles\Css\Processor;
 use TijsVerkoyen\CssToInlineStyles\Css\Property\Processor as PropertyProcessor;
+use TijsVerkoyen\CssToInlineStyles\Css\Property\Property;
 use TijsVerkoyen\CssToInlineStyles\Css\Rule\Processor as RuleProcessor;
 
 class CssToInlineStyles
@@ -54,7 +55,7 @@ class CssToInlineStyles
      * Inline the given properties on an given DOMElement
      *
      * @param \DOMElement             $element
-     * @param Css\Property\Property[] $properties
+     * @param Property[] $properties
      *
      * @return \DOMElement
      */
@@ -91,7 +92,7 @@ class CssToInlineStyles
      *
      * @param \DOMElement $element
      *
-     * @return Css\Property\Property[]
+     * @return Property[]
      */
     public function getInlineStyles(\DOMElement $element)
     {
@@ -158,6 +159,7 @@ class CssToInlineStyles
             return $document;
         }
 
+        /** @var \SplObjectStorage<\DOMElement, array<string, Property>> $propertyStorage */
         $propertyStorage = new \SplObjectStorage();
 
         $xPath = new \DOMXPath($document);
@@ -178,6 +180,7 @@ class CssToInlineStyles
             }
 
             foreach ($elements as $element) {
+                \assert($element instanceof \DOMElement);
                 $propertyStorage[$element] = $this->calculatePropertiesToBeApplied(
                     $rule->getProperties(),
                     $propertyStorage->contains($element) ? $propertyStorage[$element] : array()
@@ -195,12 +198,12 @@ class CssToInlineStyles
     /**
      * Merge the CSS rules to determine the applied properties.
      *
-     * @param Css\Property\Property[] $properties
-     * @param Css\Property\Property[] $cssProperties existing applied properties indexed by name
+     * @param Property[] $properties
+     * @param array<string, Property> $cssProperties existing applied properties indexed by name
      *
-     * @return Css\Property\Property[] updated properties, indexed by name
+     * @return array<string, Property> updated properties, indexed by name
      */
-    private function calculatePropertiesToBeApplied(array $properties, array $cssProperties)
+    private function calculatePropertiesToBeApplied(array $properties, array $cssProperties): array
     {
         if (empty($properties)) {
             return $cssProperties;
