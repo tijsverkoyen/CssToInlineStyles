@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 class RuleTest extends TestCase
 {
-    public function testGetters()
+    public function testGetters(): void
     {
         $property = new Property('padding', '5px');
         $specificity = new Specificity(0, 0, 0);

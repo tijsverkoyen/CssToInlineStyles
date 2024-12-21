@@ -16,12 +16,12 @@ class ProcessorTest extends TestCase
     /**
      * @before
      */
-    protected function prepare()
+    protected function prepare(): void
     {
         $this->processor = new Processor();
     }
 
-    public function testMostBasicProperty()
+    public function testMostBasicProperty(): void
     {
         $propertiesString = 'padding: 0;';
         $this->assertEquals(
@@ -32,14 +32,14 @@ class ProcessorTest extends TestCase
         );
     }
 
-    public function testInvalidProperty()
+    public function testInvalidProperty(): void
     {
         $this->assertNull(
             $this->processor->convertToObject('foo:')
         );
     }
 
-    public function testBase64ContainsSemiColon()
+    public function testBase64ContainsSemiColon(): void
     {
         $propertiesString = <<<EOF
             background:
@@ -58,7 +58,7 @@ EOF;
         );
     }
 
-    public function testBuildingPropertiesString()
+    public function testBuildingPropertiesString(): void
     {
         $properties = array(
             new Property('padding', '5px'),
@@ -71,7 +71,7 @@ EOF;
         );
     }
 
-    public function testFaultyProperties()
+    public function testFaultyProperties(): void
     {
         $this->assertNull($this->processor->convertToObject('foo'));
         $this->assertNull($this->processor->convertToObject('foo:'));

@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 class PropertyTest extends TestCase
 {
-    public function testGetters()
+    public function testGetters(): void
     {
         $property = new Property('padding', '5px');
 
@@ -15,7 +15,7 @@ class PropertyTest extends TestCase
         $this->assertEquals('5px', $property->getValue());
     }
 
-    public function testSimplePropertyToString()
+    public function testSimplePropertyToString(): void
     {
         $property = new Property('padding', '5px');
 
@@ -25,7 +25,7 @@ class PropertyTest extends TestCase
         );
     }
 
-    public function testIfImportantIsDetected()
+    public function testIfImportantIsDetected(): void
     {
         $property = new Property('padding', '5px !important');
         $this->assertTrue($property->isImportant());

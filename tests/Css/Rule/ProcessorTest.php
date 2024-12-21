@@ -16,12 +16,12 @@ class ProcessorTest extends TestCase
     /**
      * @before
      */
-    protected function prepare()
+    protected function prepare(): void
     {
         $this->processor = new Processor();
     }
 
-    public function testMostBasicRule()
+    public function testMostBasicRule(): void
     {
         $css = <<<EOF
             a {
@@ -43,7 +43,7 @@ EOF;
         $this->assertEquals(1, $rules[0]->getOrder());
     }
 
-    public function testMaintainOrderOfProperties()
+    public function testMaintainOrderOfProperties(): void
     {
         $css = <<<EOF
             div {
@@ -64,7 +64,7 @@ EOF;
         $this->assertEquals(1, $rules[0]->getOrder());
     }
 
-    public function testSingleIdSelector()
+    public function testSingleIdSelector(): void
     {
         $this->assertEquals(
             new Specificity(1, 0, 0),
@@ -72,7 +72,7 @@ EOF;
         );
     }
 
-    public function testSingleClassSelector()
+    public function testSingleClassSelector(): void
     {
         $this->assertEquals(
             new Specificity(0, 1, 0),
@@ -80,7 +80,7 @@ EOF;
         );
     }
 
-    public function testSingleElementSelector()
+    public function testSingleElementSelector(): void
     {
         $this->assertEquals(
             new Specificity(0, 0, 1),
