@@ -31,12 +31,7 @@ class CssToInlineStylesTest extends TestCase
 
     public function testNoXMLHeaderPresent(): void
     {
-        if (method_exists($this, 'assertStringNotContainsString')) {
-            $assertionMethod = 'assertStringNotContainsString';
-        } else {
-            $assertionMethod = 'assertNotContains'; // Support for PHPUnit <7.5.0
-        }
-        $this->$assertionMethod(
+        $this->assertStringNotContainsString(
             '<?xml',
             $this->cssToInlineStyles->convert(
                 '<!DOCTYPE html><html><body><p>foo</p></body></html>',
