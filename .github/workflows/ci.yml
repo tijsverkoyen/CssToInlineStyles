@@ -51,3 +51,18 @@ jobs:
       - name: Upload code coverage
         continue-on-error: true
         run: wget https://scrutinizer-ci.com/ocular.phar && php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+
+  static_analysis:
+    name: Static analysis
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          coverage: "none"
+          php-version: "8.3"
+          ini-file: development
+      - name: Install dependencies
+        run: composer update --ansi --no-progress
+      - name: Run phpstan
+        run: vendor/bin/phpstan analyse --ansi --no-progress

@@ -7,6 +7,7 @@
 /.gitignore export-ignore
 /.travis.yml export-ignore
 /phpunit.xml.dist export-ignore
+/phpstan.dist.neon export-ignore
 /CHANGELOG.md export-ignore
 /README.md export-ignore
 /.github export-ignore
