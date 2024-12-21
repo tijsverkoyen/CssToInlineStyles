@@ -307,7 +307,7 @@ EOF;
         $this->assertCorrectConversion($expected, $html, $css);
     }
 
-    private function assertCorrectConversion($expected, $html, $css = null)
+    private function assertCorrectConversion(string $expected, string $html, ?string $css = null): void
     {
         $this->assertEquals(
             $expected,
@@ -317,7 +317,7 @@ EOF;
         );
     }
 
-    private function getBodyContent($html)
+    private function getBodyContent(string $html): ?string
     {
         $matches = array();
         preg_match('|<body>(.*)</body>|ims', $html, $matches);
