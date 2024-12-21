@@ -21,14 +21,6 @@ class CssToInlineStylesTest extends TestCase
         $this->cssToInlineStyles = new CssToInlineStyles();
     }
 
-    /**
-     * @after
-     */
-    protected function clear(): void
-    {
-        $this->cssToInlineStyles = null;
-    }
-
     public function testNoXMLHeaderPresent(): void
     {
         $this->assertStringNotContainsString(
