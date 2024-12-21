@@ -131,12 +131,25 @@ class CssToInlineStyles
         // retrieve the document element
         // we do it this way to preserve the utf-8 encoding
         $htmlElement = $document->documentElement;
+
+        if ($htmlElement === null) {
+            throw new \RuntimeException('Failed to get HTML from empty document.');
+        }
+
         $html = $document->saveHTML($htmlElement);
+
+        if ($html === false) {
+            throw new \RuntimeException('Failed to get HTML from document.');
+        }
+
         $html = trim($html);
 
         // retrieve the doctype
         $document->removeChild($htmlElement);
         $doctype = $document->saveHTML();
+        if ($doctype === false) {
+            $doctype = '';
+        }
         $doctype = trim($doctype);
 
         // if it is the html5 doctype convert it to lowercase
