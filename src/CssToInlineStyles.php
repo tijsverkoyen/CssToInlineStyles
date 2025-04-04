@@ -16,9 +16,18 @@ class CssToInlineStyles
      */
     private $cssConverter;
 
-    public function __construct()
+    /**
+     * @var string|null
+     */
+    private $rootDirectory;
+
+    /**
+     * @param string|null $rootDirectory
+     */
+    public function __construct($rootDirectory = null)
     {
         $this->cssConverter = new CssSelectorConverter();
+        $this->rootDirectory = $rootDirectory;
     }
 
     /**
@@ -44,6 +53,12 @@ class CssToInlineStyles
 
         if ($css !== null) {
             $rules = $processor->getRules($css, $rules);
+        }
+
+        if ($this->rootDirectory !== null) {
+            $rules = $processor->getRules(
+                $processor->getCssFromInlineTags($document, $this->rootDirectory),
+            );
         }
 
         $document = $this->inline($document, $rules);

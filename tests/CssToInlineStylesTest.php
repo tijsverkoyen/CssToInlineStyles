@@ -304,6 +304,37 @@ EOF;
         $this->assertCorrectConversion($expected, $html, $css);
     }
 
+    public function testLinkTag()
+    {
+        $html = <<<EOF
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="stylesheet" href="sumo/style.css">
+</head>
+<body>
+    <p>foo</p>
+</body>
+</html>
+EOF;
+        $css = '';
+        $expected = <<<EOF
+<!doctype html>
+<html lang="en">
+<head>
+
+</head>
+<body style="width: 100% !important; -webkit-text-size-adjust: none; margin: 0; padding: 0; background-color: #FAFAFA;">
+    <p>foo</p>
+</body>
+</html>
+EOF;
+
+        $cssToInlineStyles = new CssToInlineStyles(realpath(__DIR__ . '/../example/examples/'));
+
+        $this->assertEquals($expected, $cssToInlineStyles->convert($html, $css));
+    }
+
     private function assertCorrectConversion(string $expected, string $html, ?string $css = null): void
     {
         $this->assertEquals(
