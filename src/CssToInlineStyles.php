@@ -58,6 +58,7 @@ class CssToInlineStyles
         if ($this->rootDirectory !== null) {
             $rules = $processor->getRules(
                 $processor->getCssFromInlineTags($document, $this->rootDirectory),
+                $rules
             );
         }
 
