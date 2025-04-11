@@ -59,6 +59,8 @@ class Processor
     {
         $css = '';
 
+        $nodesToRemove = [];
+
         /** @var \DOMElement $node */
         foreach ($document->getElementsByTagName('link') as $node) {
             $file = $rootDirectory . '/' . $node->getAttribute('href');
@@ -66,8 +68,12 @@ class Processor
             if (\file_exists($file)) {
                 $css .= \file_get_contents($file);
 
-                $node->remove();
+                $nodesToRemove[] = $node;
             }
+        }
+
+        foreach ($nodesToRemove as $node) {
+            $node->remove();
         }
 
         return $css;

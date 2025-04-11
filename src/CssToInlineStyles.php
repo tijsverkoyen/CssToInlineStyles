@@ -16,18 +16,9 @@ class CssToInlineStyles
      */
     private $cssConverter;
 
-    /**
-     * @var string|null
-     */
-    private $rootDirectory;
-
-    /**
-     * @param string|null $rootDirectory
-     */
-    public function __construct($rootDirectory = null)
+    public function __construct()
     {
         $this->cssConverter = new CssSelectorConverter();
-        $this->rootDirectory = $rootDirectory;
     }
 
     /**
@@ -38,10 +29,11 @@ class CssToInlineStyles
      *
      * @param string $html
      * @param string $css
+     * @param string|null $rootPath if set, it will also read files in <link> tags, using this path as root
      *
      * @return string
      */
-    public function convert($html, $css = null)
+    public function convert($html, $css = null, $rootPath = null)
     {
         $document = $this->createDomDocumentFromHtml($html);
         $processor = new Processor();
@@ -55,9 +47,9 @@ class CssToInlineStyles
             $rules = $processor->getRules($css, $rules);
         }
 
-        if ($this->rootDirectory !== null) {
+        if ($rootPath !== null) {
             $rules = $processor->getRules(
-                $processor->getCssFromInlineTags($document, $this->rootDirectory),
+                $processor->getCssFromInlineTags($document, $rootPath),
                 $rules
             );
         }
