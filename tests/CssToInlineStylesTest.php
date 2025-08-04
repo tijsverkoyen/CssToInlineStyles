@@ -266,41 +266,41 @@ EOF;
 
     public function testConversionAsciiRegular(): void
     {
-        $html = '~';
+        $html = '<p>~</p>';
         $css = '';
-        $expected = "<p>{$html}</p>";
+        $expected = $html;
         $this->assertCorrectConversion($expected, $html, $css);
     }
 
     public function testConversionAsciiDelete(): void
     {
-        $html = "\u{007F}";
+        $html = "<p>\u{007F}</p>";
         $css = '';
-        $expected = "<p>{$html}</p>";
+        $expected = $html;
         $this->assertCorrectConversion($expected, $html, $css);
     }
 
     public function testConversionLowestCodepoint(): void
     {
-        $html = "\u{0080}";
+        $html = "<p>\u{0080}</p>";
         $css = '';
-        $expected = "<p>{$html}</p>";
+        $expected = $html;
         $this->assertCorrectConversion($expected, $html, $css);
     }
 
     public function testConversionHighestCodepoint(): void
     {
-        $html = "\u{10FFFF}";
+        $html = "<p>\u{10FFFF}</p>";
         $css = '';
-        $expected = "<p>{$html}</p>";
+        $expected = $html;
         $this->assertCorrectConversion($expected, $html, $css);
     }
 
     public function testMB4character(): void
     {
-        $html = '🇳🇱';
+        $html = '<p>🇳🇱</p>';
         $css = '';
-        $expected = "<p>{$html}</p>";
+        $expected = $html;
         $this->assertCorrectConversion($expected, $html, $css);
     }
 
