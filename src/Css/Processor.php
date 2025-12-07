@@ -48,6 +48,38 @@ class Processor
     }
 
     /**
+     * Get the CSS from the link-tags in the given HTML document.
+     *
+     * @param \DOMDocument $document
+     * @param string $rootDirectory The relative directory to the css files.
+     *
+     * @return string
+     */
+    public function getCssFromInlineTags(\DOMDocument $document, string $rootDirectory)
+    {
+        $css = '';
+
+        $nodesToRemove = [];
+
+        /** @var \DOMElement $node */
+        foreach ($document->getElementsByTagName('link') as $node) {
+            $file = $rootDirectory . '/' . $node->getAttribute('href');
+
+            if (\file_exists($file)) {
+                $css .= \file_get_contents($file);
+
+                $nodesToRemove[] = $node;
+            }
+        }
+
+        foreach ($nodesToRemove as $node) {
+            $node->remove();
+        }
+
+        return $css;
+    }
+
+    /**
      * @param string $css
      *
      * @return string

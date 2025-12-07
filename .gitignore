@@ -2,3 +2,5 @@
 composer.lock
 /.phpunit.result.cache
 /phpunit.neon
+.idea
+*.cache

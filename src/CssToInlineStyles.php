@@ -29,10 +29,11 @@ class CssToInlineStyles
      *
      * @param string $html
      * @param string $css
+     * @param string|null $rootPath if set, it will also read files in <link> tags, using this path as root
      *
      * @return string
      */
-    public function convert($html, $css = null)
+    public function convert($html, $css = null, $rootPath = null)
     {
         $document = $this->createDomDocumentFromHtml($html);
         $processor = new Processor();
@@ -44,6 +45,13 @@ class CssToInlineStyles
 
         if ($css !== null) {
             $rules = $processor->getRules($css, $rules);
+        }
+
+        if ($rootPath !== null) {
+            $rules = $processor->getRules(
+                $processor->getCssFromInlineTags($document, $rootPath),
+                $rules
+            );
         }
 
         $document = $this->inline($document, $rules);
