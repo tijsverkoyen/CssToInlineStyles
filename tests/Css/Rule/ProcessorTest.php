@@ -87,4 +87,18 @@ EOF;
             $this->processor->calculateSpecificityBasedOnASelector('a')
         );
     }
+
+    public function testRuleExposesSpecificityComponents(): void
+    {
+        $rules = $this->processor->convertToObjects(
+            '.c1.c2.c3.c4.c5.c6.c7.c8.c9.c10.c11 { color: red; }',
+            1
+        );
+
+        $this->assertCount(1, $rules);
+        // 11 class selectors => specificity (0, 11, 0)
+        $this->assertSame(0, $rules[0]->getSpecificityA());
+        $this->assertSame(11, $rules[0]->getSpecificityB());
+        $this->assertSame(0, $rules[0]->getSpecificityC());
+    }
 }

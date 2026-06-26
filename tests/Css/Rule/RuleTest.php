@@ -26,4 +26,35 @@ class RuleTest extends TestCase
         $this->assertEquals($specificity, $rule->getSpecificity());
         $this->assertEquals(1, $rule->getOrder());
     }
+
+    public function testExplicitSpecificityComponents(): void
+    {
+        $rule = new Rule(
+            '#foo.bar',
+            array(new Property('padding', '5px')),
+            new Specificity(1, 1, 0),
+            1,
+            array(1, 1, 0)
+        );
+
+        $this->assertSame(1, $rule->getSpecificityA());
+        $this->assertSame(1, $rule->getSpecificityB());
+        $this->assertSame(0, $rule->getSpecificityC());
+    }
+
+    public function testSpecificityComponentsFallBackToDecomposedValue(): void
+    {
+        // When no explicit components are passed, they are decomposed from the
+        // (lossy) packed value, preserving the previous behavior.
+        $rule = new Rule(
+            '#foo.bar a',
+            array(new Property('padding', '5px')),
+            new Specificity(1, 1, 1),
+            1
+        );
+
+        $this->assertSame(1, $rule->getSpecificityA());
+        $this->assertSame(1, $rule->getSpecificityB());
+        $this->assertSame(1, $rule->getSpecificityC());
+    }
 }

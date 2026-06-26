@@ -7,7 +7,6 @@ use Symfony\Component\CssSelector\Exception\ExceptionInterface;
 use TijsVerkoyen\CssToInlineStyles\Css\Processor;
 use TijsVerkoyen\CssToInlineStyles\Css\Property\Processor as PropertyProcessor;
 use TijsVerkoyen\CssToInlineStyles\Css\Property\Property;
-use TijsVerkoyen\CssToInlineStyles\Css\Rule\Processor as RuleProcessor;
 
 class CssToInlineStyles
 {
@@ -177,7 +176,27 @@ class CssToInlineStyles
 
         $xPath = new \DOMXPath($document);
 
-        usort($rules, array(RuleProcessor::class, 'sortOnSpecificity'));
+        // Sort the rules ascending by specificity. The specificity is compared on its
+        // (a, b, c) components rather than on Specificity::getValue(), because that single
+        // packed value misranks selectors with 10 or more class/type selectors (e.g. 11
+        // classes would beat an ID selector). Ties are broken by the document order.
+        $specificityA = [];
+        $specificityB = [];
+        $specificityC = [];
+        $orders = [];
+        foreach ($rules as $rule) {
+            $specificityA[] = $rule->getSpecificityA();
+            $specificityB[] = $rule->getSpecificityB();
+            $specificityC[] = $rule->getSpecificityC();
+            $orders[] = $rule->getOrder();
+        }
+        array_multisort(
+            $specificityA, SORT_ASC, SORT_NUMERIC,
+            $specificityB, SORT_ASC, SORT_NUMERIC,
+            $specificityC, SORT_ASC, SORT_NUMERIC,
+            $orders, SORT_ASC, SORT_NUMERIC,
+            $rules
+        );
 
         foreach ($rules as $rule) {
             try {
@@ -224,28 +243,16 @@ class CssToInlineStyles
 
         foreach ($properties as $property) {
             if (isset($cssProperties[$property->getName()])) {
-                $existingProperty = $cssProperties[$property->getName()];
-
-                //skip check to overrule if existing property is important and current is not
-                if ($existingProperty->isImportant() && !$property->isImportant()) {
+                if (!$property->isImportant() && $cssProperties[$property->getName()]->isImportant()) {
                     continue;
                 }
 
-                //overrule if current property is important and existing is not, else check specificity
-                $overrule = !$existingProperty->isImportant() && $property->isImportant();
-                if (!$overrule) {
-                    \assert($existingProperty->getOriginalSpecificity() !== null, 'Properties created for parsed CSS always have their associated specificity.');
-                    \assert($property->getOriginalSpecificity() !== null, 'Properties created for parsed CSS always have their associated specificity.');
-                    $overrule = $existingProperty->getOriginalSpecificity()->compareTo($property->getOriginalSpecificity()) <= 0;
-                }
-
-                if ($overrule) {
-                    unset($cssProperties[$property->getName()]);
-                    $cssProperties[$property->getName()] = $property;
-                }
-            } else {
-                $cssProperties[$property->getName()] = $property;
+                // assigning to an existing array key preserves the key's position,
+                // while the unset() + re-insert moves it to the end of the array
+                unset($cssProperties[$property->getName()]);
             }
+
+            $cssProperties[$property->getName()] = $property;
         }
 
         return $cssProperties;

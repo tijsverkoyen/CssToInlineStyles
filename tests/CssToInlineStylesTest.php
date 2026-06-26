@@ -222,6 +222,19 @@ EOF;
         $this->assertCorrectConversion($expected, $html, $css);
     }
 
+    public function testIdSelectorBeatsManyClassSelectors(): void
+    {
+        // A selector with 11 classes has specificity (0, 11, 0); an ID selector
+        // has (1, 0, 0) and must win. This guards against ranking the specificity
+        // by Specificity::getValue() (0*100 + 11*10 = 110 vs 1*100 = 100), which
+        // would incorrectly let the classes win.
+        $html = '<p id="x" class="c1 c2 c3 c4 c5 c6 c7 c8 c9 c10 c11"></p>';
+        $css = '.c1.c2.c3.c4.c5.c6.c7.c8.c9.c10.c11 { color: red; } #x { color: blue; }';
+        $expected = '<p id="x" class="c1 c2 c3 c4 c5 c6 c7 c8 c9 c10 c11" style="color: blue;"></p>';
+
+        $this->assertCorrectConversion($expected, $html, $css);
+    }
+
     public function testInvalidSelector(): void
     {
         $html = "<p></p>";

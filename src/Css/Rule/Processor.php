@@ -63,13 +63,15 @@ class Processor
 
         foreach ($selectors as $selector) {
             $selector = trim($selector);
-            $specificity = $this->calculateSpecificityBasedOnASelector($selector);
+            [$a, $b, $c] = $this->countSpecificity($selector);
+            $specificity = new Specificity($a, $b, $c);
 
             $rules[] = new Rule(
                 $selector,
                 $propertiesProcessor->convertArrayToObjects($properties, $specificity),
                 $specificity,
-                $originalOrder
+                $originalOrder,
+                [$a, $b, $c]
             );
         }
 
@@ -78,15 +80,29 @@ class Processor
 
     /**
      * Calculates the specificity based on a CSS Selector string,
-     * Based on the patterns from premailer/css_parser by Alex Dunae
-     *
-     * @see https://github.com/premailer/css_parser/blob/master/lib/css_parser/regexps.rb
      *
      * @param string $selector
      *
      * @return Specificity
      */
     public function calculateSpecificityBasedOnASelector($selector)
+    {
+        [$a, $b, $c] = $this->countSpecificity($selector);
+
+        return new Specificity($a, $b, $c);
+    }
+
+    /**
+     * Counts the specificity components (a, b, c) of a CSS Selector string,
+     * Based on the patterns from premailer/css_parser by Alex Dunae
+     *
+     * @see https://github.com/premailer/css_parser/blob/master/lib/css_parser/regexps.rb
+     *
+     * @param string $selector
+     *
+     * @return int[] the [a, b, c] specificity components of the selector
+     */
+    private function countSpecificity($selector)
     {
         $idSelectorCount = preg_match_all("/  \#/ix", $selector, $matches);
         $classAttributesPseudoClassesSelectorsPattern = "  (\.[\w]+)                     # classes
@@ -121,11 +137,11 @@ class Processor
             throw new \RuntimeException('Failed to calculate specificity based on selector.');
         }
 
-        return new Specificity(
+        return [
             $idSelectorCount,
             $classAttributesPseudoClassesSelectorCount,
-            $typePseudoElementsSelectorCount
-        );
+            $typePseudoElementsSelectorCount,
+        ];
     }
 
     /**
