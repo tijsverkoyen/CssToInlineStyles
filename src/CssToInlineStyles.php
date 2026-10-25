@@ -34,6 +34,11 @@ class CssToInlineStyles
      */
     public function convert($html, $css = null)
     {
+        // there is nothing to inline in empty HTML, and DOMDocument::loadHTML() rejects an empty string
+        if (trim($html) === '') {
+            return $html;
+        }
+
         $document = $this->createDomDocumentFromHtml($html);
         $processor = new Processor();
 

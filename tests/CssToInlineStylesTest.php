@@ -32,6 +32,16 @@ class CssToInlineStylesTest extends TestCase
         );
     }
 
+    public function testEmptyHtml(): void
+    {
+        $this->assertSame('', $this->cssToInlineStyles->convert('', 'p { color: red; }'));
+    }
+
+    public function testWhitespaceOnlyHtml(): void
+    {
+        $this->assertSame(" \n\t", $this->cssToInlineStyles->convert(" \n\t", 'p { color: red; }'));
+    }
+
     public function testApplyNoStylesOnElement(): void
     {
         $document = new \DOMDocument();
