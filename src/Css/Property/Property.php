@@ -71,7 +71,7 @@ final class Property
      */
     public function isImportant()
     {
-        return (stripos($this->value, '!important') !== false);
+        return preg_match('/!\s*important\s*$/i', $this->value) === 1;
     }
 
     /**
